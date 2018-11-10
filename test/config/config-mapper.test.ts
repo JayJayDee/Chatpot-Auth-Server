@@ -18,4 +18,13 @@ describe('ConfigMapper tests', () => {
       mapConfig(source, rules);
     }).toThrowError(ConfigurationError);
   });
+
+  test('config value must be set normally', () => {
+    const source = {
+      'MANDANTORY_KEY': 4000
+    };
+    const rootConfig = mapConfig(source, rules);
+    expect(rootConfig.http.port).toEqual(4000);
+    expect(rootConfig.mysql.host).toEqual('test');
+  });
 });

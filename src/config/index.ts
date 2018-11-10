@@ -16,5 +16,10 @@ const read = (): RootConfig => {
   if (source === null) source = process.env;
   return mapConfig(source, configReadRule);
 };
-
 export default read;
+
+export { 
+  RootConfig,
+  MysqlConfig,
+  HttpConfig 
+} from './types';

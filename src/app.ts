@@ -1,3 +1,7 @@
 import config from './config';
+import initFactory from './factory';
 
-console.log(config());
+(async () => {
+  const rootConfig = config();
+  await initFactory(rootConfig);
+})();
