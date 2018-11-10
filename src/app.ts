@@ -6,4 +6,5 @@ import initFactory from './factory';
   console.log('chatpot-auth-server starting..');
   console.log(rootConfig);
   await initFactory(rootConfig);
+  console.log('chatpot-auth-server started');
 })();
