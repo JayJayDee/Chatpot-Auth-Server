@@ -3,7 +3,7 @@ export type QueryFunction = (query: string, params: any[]) => Promise<QueryResul
 export interface QueryResult {
   numInserted: number;
   insertId: number;
-}
-export interface MysqlDriver {
+};
+export type MysqlDriver = {
   query: QueryFunction;
-}
+};

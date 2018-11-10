@@ -13,6 +13,7 @@ export interface MysqlConfig {
   database: string;
   user: string;
   password: string;
+  connectionLimit: number;
 }
 
 export interface ConfigReadRule {

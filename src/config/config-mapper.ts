@@ -12,7 +12,8 @@ export const emptyConfig: RootConfig = {
     port: null,
     database: null,
     user: null,
-    password: null
+    password: null,
+    connectionLimit: null
   }
 };
 

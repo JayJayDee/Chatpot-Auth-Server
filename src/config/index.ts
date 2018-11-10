@@ -9,6 +9,7 @@ const configReadRule: ConfigReadRule[] = [
   {key: 'MYSQL_DATABASE', path: ['mysql', 'database']},
   {key: 'MYSQL_USER', path: ['mysql', 'user']},
   {key: 'MYSQL_PASSWORD', path: ['mysql', 'password']},
+  {key: 'MYSQL_CONNECTION_LIMIT', defaultValue: 10, path: ['mysql', 'connectionLimit']},
 ];
 
 const read = (): RootConfig => {

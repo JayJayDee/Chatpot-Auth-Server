@@ -7,5 +7,5 @@ export const mysql = async () => {
 };
 
 export default async (rootConfig: RootConfig) => {
-  await initMysql();
+  await initMysql(rootConfig.mysql);
 };
