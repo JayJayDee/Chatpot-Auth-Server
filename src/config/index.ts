@@ -1,6 +1,7 @@
 import { RootConfig, ConfigReadRule, ConfigSource } from './types';
 import fileConfReader from './file-conf-reader';
 import mapConfig from './config-mapper';
+import { readFileSync } from 'fs';
 
 const configReadRule: ConfigReadRule[] = [
   {key: 'HTTP_PORT', path: ['http', 'port']},
@@ -13,7 +14,7 @@ const configReadRule: ConfigReadRule[] = [
 ];
 
 const read = (): RootConfig => {
-  let source: ConfigSource = fileConfReader(process.env);
+  let source: ConfigSource = fileConfReader(process.env, readFileSync);
   if (source === null) source = process.env;
   return mapConfig(source, configReadRule);
 };
