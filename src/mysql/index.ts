@@ -6,14 +6,19 @@ import { createPoolConnectionDriver } from './node-mysql-driver';
 
 const init = async (mysqlConfig: MysqlConfig): Promise<MysqlConnection> => {
   const pool = createPool(mysqlConfig);
-  return createPoolConnectionDriver(pool);
+  return await createPoolConnectionDriver(pool);
 };
 export default init;
 
 export {
   MysqlPool,
+  NativePool,
   MysqlConnection
 } from './types';
+
+export { 
+  createPoolConnectionDriver
+} from './node-mysql-driver';
 
 export {
   MysqlConfig

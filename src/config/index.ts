@@ -13,7 +13,7 @@ const configReadRule: ConfigReadRule[] = [
   {key: 'MYSQL_CONNECTION_LIMIT', defaultValue: 10, path: ['mysql', 'connectionLimit']},
 ];
 
-const read = (): RootConfig => {
+export const read = (): RootConfig => {
   let source: ConfigSource = fileConfReader(process.env, readFileSync);
   if (source === null) source = process.env;
   return mapConfig(source, configReadRule);
