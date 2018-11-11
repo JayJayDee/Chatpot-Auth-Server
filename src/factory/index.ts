@@ -4,7 +4,7 @@ import {
   initMemberModel,
   initAuthModel
 } from '../models';
-
+import { NullInstanceError } from './errors';
 
 export enum InstanceType {
   Mysql = 'Mysql',
@@ -19,9 +19,10 @@ export function resolve<T>(type: InstanceType): T {
 };
 
 type Instantiator = () => Promise<any>;
-const createInstantiator = (map: Map<InstanceType, any>) =>
+export const createInstantiator = (map: Map<InstanceType, any>) =>
   async (type: InstanceType, instantiate: Instantiator) => {
     const instance = await instantiate();
+    if (!instance) throw new NullInstanceError(`instance was null for type:${type}`);
     map.set(type, instance);
   };
 
