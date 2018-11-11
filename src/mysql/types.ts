@@ -1,5 +1,3 @@
-import { Connection } from 'mysql';
-
 export type QueryResultRow = any;
 export type QueryFunction = (query: string, params: any[]) => Promise<QueryResult>;
 export interface QueryCuResult {
@@ -16,8 +14,9 @@ export type MysqlPool = {
 };
 
 export type NativePool = {
-  getConnection(callback: (err: Error, connection: Connection) => void): void;
+  getConnection(callback: (err: Error, connection: NativeConnection) => void): void;
 };
 export type NativeConnection = {
   query: (query: string, params?: any[], callback?: (err: Error, resp: any) => void) => void;
+  release: (callback?: (err: Error) => void) => void;
 };
