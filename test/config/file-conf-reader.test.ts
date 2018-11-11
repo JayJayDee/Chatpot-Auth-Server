@@ -27,7 +27,8 @@ describe('FileConfReader tests', () => {
 
   test('if CONFIG_FILE env was set and reader returns invalid json, must be throw exception', () => {
     const read: Reader = jest.fn((path: string) => {
-      return new Buffer('invalid-json');
+      const content = 'invalid-json';
+      return Buffer.alloc(content.length, content);
     });
     const source = {
       CONFIG_FILE: 'test-path'
@@ -39,9 +40,8 @@ describe('FileConfReader tests', () => {
 
   test('if CONFIG_FILE env was set and reader returns valid json, must returns valid object', () => {
     const read: Reader = jest.fn((path: string) => {
-      return new Buffer(JSON.stringify({
-        TEST_VALUE: 2
-      }));
+      const content = JSON.stringify({TEST_VALUE: 2});
+      return Buffer.alloc(content.length, content);
     });
     const source = {
       CONFIG_FILE: 'test-path'

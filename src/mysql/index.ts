@@ -23,3 +23,8 @@ export {
 export {
   MysqlConfig
 } from '../config';
+
+export {
+  MysqlInitError,
+  MysqlQueryError
+} from './errors';

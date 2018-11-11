@@ -12,7 +12,6 @@ export const createPoolConnectionDriver = async (nativePool: NativePool): Promis
     query(query: string, params?: any[]): Promise<QueryResult> {
       return new Promise((resolve, reject) => {
         nativePool.getConnection((err, con) => {
-          console.log(err);
           if (err) return reject(err);
           con.query(query, params, (err: Error, resp: any) => {
             if (err) {
