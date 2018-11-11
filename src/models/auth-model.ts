@@ -1,10 +1,8 @@
 import { MysqlConnection } from ".";
 
 const instantiate = (mysql: MysqlConnection) => ({
-  async createNewMember(member: any) {
-  },
-
-  async getMember(memberNo: number) {
+  async createNewAuth(auth: any) {
+    
   }
 });
 export default instantiate;
