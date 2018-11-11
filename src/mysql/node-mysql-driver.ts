@@ -10,6 +10,7 @@ export const createPoolConnectionDriver = (nativePool: NativePool): MysqlConnect
             con.release();
             return reject(err);
           }
+          con.release();
           return resolve(resp);
         });
       });
