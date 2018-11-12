@@ -1,7 +1,7 @@
 
 export interface MemberModel {
-  createNewMember(member: CreateMemberReq): Promise<CreateMemberRes>;
-  getMember(memberNo: number): Promise<GetMemberRes | null>;
+  insertNewMember(member: CreateMemberReq): Promise<CreateMemberRes>;
+  selectMember(memberNo: number): Promise<GetMemberRes | null>;
 }
 export interface CreateMemberReq {
   token: string;
@@ -18,7 +18,7 @@ export interface GetMemberRes {
 }
 
 export interface AuthModel {
-  createNewAuth(auth: CreateAuthReq): Promise<CreateAuthRes>;
+  insertNewAuth(auth: CreateAuthReq): Promise<CreateAuthRes>;
 }
 export interface CreateAuthReq {
   

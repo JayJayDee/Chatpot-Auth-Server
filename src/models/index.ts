@@ -16,5 +16,6 @@ export const initAuthModel = async (): Promise<AuthModel> => {
 
 export { MysqlConnection } from '../mysql';
 export {
-  MemberModel
+  MemberModel,
+  AuthModel
 } from './types';
