@@ -1,15 +1,21 @@
 import { RootConfig } from '../config';
+import { NullInstanceError } from './errors';
+
 import initMysql from '../mysql';
 import {
   initMemberModel,
   initAuthModel
 } from '../models';
-import { NullInstanceError } from './errors';
+import {
+  initMemberService
+} from '../services';
 
 export enum InstanceType {
   Mysql = 'Mysql',
   MemberModel = 'MemberModel',
-  AuthModel = 'AuthModel'
+  AuthModel = 'AuthModel',
+
+  MemberService = 'MemberService'
 }
 
 let instanceMap = new Map<InstanceType, any>();
@@ -29,7 +35,15 @@ export const createInstantiator = (map: Map<InstanceType, any>) =>
 export default async (rootConfig: RootConfig) => {
   const instantiate = createInstantiator(instanceMap);
 
+  // instantiate app base dependancies
   await instantiate(InstanceType.Mysql, async () => initMysql(rootConfig.mysql));
+
+  // instantiate models.
   await instantiate(InstanceType.MemberModel, async () => initMemberModel());
   await instantiate(InstanceType.AuthModel, async () => initAuthModel());
+
+  // instantiate services.
+  await instantiate(InstanceType.MemberService, async() => initMemberService());
+
+  console.log(instanceMap);
 };

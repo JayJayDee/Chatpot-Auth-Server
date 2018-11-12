@@ -1,6 +1,7 @@
 export interface RootConfig {
   http: HttpConfig;
   mysql: MysqlConfig;
+  redis: RedisConfig;
 }
 
 export interface HttpConfig {
@@ -14,6 +15,12 @@ export interface MysqlConfig {
   user: string;
   password: string;
   connectionLimit: number;
+}
+
+export interface RedisConfig {
+  host: string;
+  port: number;
+  password?: string;
 }
 
 export interface ConfigReadRule {

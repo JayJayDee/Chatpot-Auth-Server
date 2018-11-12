@@ -1,13 +1,10 @@
 import { MemberModel } from "../models";
 import { resolve, InstanceType } from '../factory';
-import { AuthModel } from '../models/types';
+import initMember from './member-service';
 
-const initMemberService = async () => {
+export const initMemberService = async () => {
   const memberModel: MemberModel = resolve(InstanceType.MemberModel);
-  const authModel: AuthModel = resolve(InstanceType.AuthModel);
-  console.log(memberModel);
-  console.log(authModel);
-
-  // TODO: to be implemented.
+  // const authModel: AuthModel = resolve(InstanceType.AuthModel);
+  // console.log(authModel);
+  return await initMember(memberModel);
 };
-export default initMemberService;

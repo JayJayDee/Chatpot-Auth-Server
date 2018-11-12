@@ -11,6 +11,9 @@ const configReadRule: ConfigReadRule[] = [
   {key: 'MYSQL_USER', path: ['mysql', 'user']},
   {key: 'MYSQL_PASSWORD', path: ['mysql', 'password']},
   {key: 'MYSQL_CONNECTION_LIMIT', defaultValue: 10, path: ['mysql', 'connectionLimit']},
+  {key: 'REDIS_HOST', path: ['redis', 'host']},
+  {key: 'REDIS_PORT', path: ['redis', 'port']},
+  {key: 'REDIS_PASSWORD', defaultValue: null,  path: ['redis', 'password']},
 ];
 
 export const read = (): RootConfig => {

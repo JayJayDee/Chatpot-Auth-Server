@@ -2,11 +2,11 @@ import { MysqlConnection } from ".";
 import { MemberModel } from './types';
 
 const instantiate = (mysql: MysqlConnection): MemberModel => ({
-  async createNewMember(member: any) {
+  async insertNewMember(member: any) {
     return null;
   },
 
-  async getMember(memberNo: number) {
+  async selectMember(memberNo: number) {
     return null;
   }
 });

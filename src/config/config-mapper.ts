@@ -14,6 +14,11 @@ export const emptyConfig: RootConfig = {
     user: null,
     password: null,
     connectionLimit: null
+  },
+  redis: {
+    host: null,
+    port: null,
+    password: null
   }
 };
 
@@ -21,7 +26,7 @@ const mapConfig = (source: ConfigSource, rules: ConfigReadRule[]): RootConfig =>
   const rootConfig: RootConfig = emptyConfig;
 
   rules.map((rule: ConfigReadRule) => {
-    if (!rule.defaultValue && !source[rule.key]) {
+    if (rule.defaultValue === undefined && !source[rule.key]) {
       throw new ConfigurationError(`configuration ${rule.key} not supplied`);
     }
     let value: any = source[rule.key];
