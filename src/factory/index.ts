@@ -44,6 +44,4 @@ export default async (rootConfig: RootConfig) => {
 
   // instantiate services.
   await instantiate(InstanceType.MemberService, async() => initMemberService());
-
-  console.log(instanceMap);
 };
