@@ -4,7 +4,8 @@ import { NullInstanceError } from './errors';
 import initMysql from '../mysql';
 import {
   initMemberModel,
-  initAuthModel
+  initAuthModel,
+  initNickModel
 } from '../models';
 import {
   initMemberService
@@ -14,6 +15,7 @@ export enum InstanceType {
   Mysql = 'Mysql',
   MemberModel = 'MemberModel',
   AuthModel = 'AuthModel',
+  NickModel = 'NickModel',
 
   MemberService = 'MemberService'
 }
@@ -41,6 +43,7 @@ export default async (rootConfig: RootConfig) => {
   // instantiate models.
   await instantiate(InstanceType.MemberModel, async () => initMemberModel());
   await instantiate(InstanceType.AuthModel, async () => initAuthModel());
+  await instantiate(InstanceType.NickModel, async () => initNickModel());
 
   // instantiate services.
   await instantiate(InstanceType.MemberService, async() => initMemberService());
