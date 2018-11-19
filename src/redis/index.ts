@@ -1,5 +1,4 @@
-import { createClient } from 'redis';
-
 const init = () => {
   
 };
+export default init;

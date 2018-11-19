@@ -20,9 +20,21 @@ export interface GetMemberRes {
 export interface AuthModel {
   insertNewAuth(auth: CreateAuthReq): Promise<CreateAuthRes>;
 }
-export interface CreateAuthReq {
-  
+enum AuthType {
+  SIMPLE = 'SIMPLE',
+  EMAIL = 'EMAIL'
+}
+interface CreateAuthReq {
+  member_no: number;
+  auth_type: AuthType;
+  login_id: string;
+  token: string;
+  password?: string;
 }
 export interface CreateAuthRes {
-  
+  auth_no: number;
+}
+
+export interface NickModel {
+
 }
