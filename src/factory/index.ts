@@ -10,6 +10,7 @@ import {
 import {
   initMemberService
 } from '../services';
+import initEndpoints from '../endpoints';
 
 export enum InstanceType {
   Mysql = 'Mysql',
@@ -17,7 +18,8 @@ export enum InstanceType {
   AuthModel = 'AuthModel',
   NickModel = 'NickModel',
 
-  MemberService = 'MemberService'
+  MemberService = 'MemberService',
+  EndpointsRunner = 'EndpointsRunner'
 }
 
 let instanceMap = new Map<InstanceType, any>();
@@ -47,4 +49,7 @@ export default async (rootConfig: RootConfig) => {
 
   // instantiate services.
   await instantiate(InstanceType.MemberService, async() => initMemberService());
+
+  // instantiace endpoints;.
+  await instantiate(InstanceType.EndpointsRunner, async() => initEndpoints(rootConfig.http));
 };

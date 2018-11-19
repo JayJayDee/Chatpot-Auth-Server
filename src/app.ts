@@ -1,5 +1,7 @@
 import config from './config';
-import initFactory from './factory';
+import initFactory, { resolve, InstanceType } from './factory';
+
+type HttpRunner = () => Promise<void>;
 
 (async () => {
   try {
@@ -7,6 +9,9 @@ import initFactory from './factory';
     console.log('chatpot-auth-server starting..');
     console.log(rootConfig);
     await initFactory(rootConfig);
+
+    const runHttp: HttpRunner = resolve(InstanceType.EndpointsRunner);
+    await runHttp();
     console.log('chatpot-auth-server started');
   } catch (err) {
     console.error(err);
