@@ -7,20 +7,21 @@ import { MemberModel, AuthModel, NickModel } from './types';
 
 export const initMemberModel = async (): Promise<MemberModel> => {
   const mysql: MysqlConnection = resolve(InstanceType.Mysql);
-  return await memberModel(mysql);
+  return await memberModel({ mysql });
 };
 
 export const initAuthModel = async (): Promise<AuthModel> => {
   const mysql: MysqlConnection = resolve(InstanceType.Mysql);
-  return await authModel(mysql);
+  return await authModel({ mysql });
 };
 
 export const initNickModel = async (): Promise<NickModel> => {
   const mysql: MysqlConnection = resolve(InstanceType.Mysql);
-  return await nickModel(mysql);
+  return await nickModel({ mysql });
 };
 
 export { MysqlConnection } from '../mysql';
+export { Logger } from '../logger';
 export {
   MemberModel,
   AuthModel

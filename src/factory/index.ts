@@ -2,6 +2,7 @@ import { RootConfig } from '../config';
 import { NullInstanceError } from './errors';
 
 import initMysql from '../mysql';
+import initLogger from '../logger';
 import {
   initMemberModel,
   initAuthModel,
@@ -10,10 +11,11 @@ import {
 import {
   initMemberService
 } from '../services';
-import initEndpoints from '../endpoints';
 
 export enum InstanceType {
   Mysql = 'Mysql',
+  Logger = 'Logger',
+
   MemberModel = 'MemberModel',
   AuthModel = 'AuthModel',
   NickModel = 'NickModel',
@@ -40,6 +42,7 @@ export default async (rootConfig: RootConfig) => {
   const instantiate = createInstantiator(instanceMap);
 
   // instantiate app base dependancies
+  await instantiate(InstanceType.Logger, async () => initLogger());
   await instantiate(InstanceType.Mysql, async () => initMysql(rootConfig.mysql));
 
   // instantiate models.
@@ -49,7 +52,4 @@ export default async (rootConfig: RootConfig) => {
 
   // instantiate services.
   await instantiate(InstanceType.MemberService, async() => initMemberService());
-
-  // instantiace endpoints;.
-  await instantiate(InstanceType.EndpointsRunner, async() => initEndpoints(rootConfig.http));
 };

@@ -1,7 +1,11 @@
 import { MysqlConnection } from ".";
 import { AuthModel } from './types';
 
-const instantiate = (mysql: MysqlConnection): AuthModel => ({
+interface Dependancies {
+  mysql: MysqlConnection;
+}
+
+const instantiate = (dep: Dependancies): AuthModel => ({
   async insertNewAuth(auth) {
     const query = 
     `
@@ -17,7 +21,7 @@ const instantiate = (mysql: MysqlConnection): AuthModel => ({
     `;
     const params = [auth.member_no, auth.auth_type,
       auth.login_id, auth.token, auth.password];
-    const resp: any = await mysql.query(query, params);
+    const resp: any = await dep.mysql.query(query, params);
     return {
       auth_no: resp.insertId
     };

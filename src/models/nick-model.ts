@@ -1,7 +1,11 @@
 import { MysqlConnection } from ".";
 import { NickModel } from './types';
 
-const instantiate = (mysql: MysqlConnection): NickModel => ({
+interface Dependancies {
+  mysql: MysqlConnection;
+}
+
+const instantiate = (dep: Dependancies): NickModel => ({
   
 });
 export default instantiate;
