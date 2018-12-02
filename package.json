@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "TS_NODE_FILES=true nodemon --exec ts-node -- --project ./tsconfig.json ./src/app",
+    "dev": "CONFIG_FILE=$HOME/chatpot-auth-conf.json TS_NODE_FILES=true nodemon --exec ts-node -- --project ./tsconfig.json ./src/app",
     "test": "jest",
     "test:coverage": "jest --coverage"
   },
@@ -19,10 +19,15 @@
   },
   "homepage": "https://github.com/JayJayDee/Chatpot-Auth-Server#readme",
   "devDependencies": {
+    "@types/lodash": "^4.14.118",
     "@types/node": "^10.12.11",
     "nodemon": "^1.18.7",
     "ts-node": "^7.0.1",
+    "tslib": "^1.9.3",
     "typescript": "^3.2.1"
   },
-  "dependencies": {}
+  "dependencies": {
+    "lodash": "^4.17.11",
+    "smart-factory": "^1.0.5"
+  }
 }
