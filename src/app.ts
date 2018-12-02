@@ -5,7 +5,8 @@ import { Logger } from './loggers/types';
 
 (async () => {
   await init({
-    includes: [`${__dirname}/**/*.ts`] 
+    includes: [`${__dirname}/**/*.ts`], 
+    debug: true
   });
   const httpCfg = resolve<HttpConfig>(Modules.Config.HttpConfig);
   const log = resolve<Logger>(Modules.Logger);

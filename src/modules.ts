@@ -12,9 +12,17 @@ export namespace Modules {
     ConfigRules = 'Config/ConfigRules'
   }
 
-  export enum Service {
-    Member = 'Service/Member'
+  export namespace Service {
+    export const MemberService = 'Service/Member';
+    export enum Member {
+      Fetch = 'Service/Member/Fetch'
+    }
   }
 
   export const Logger = 'Logger';
+  export const Mysql = 'Mysql';
+
+  export enum Endpoint {
+    Member = 'Endpoint/Member'
+  }
 }
