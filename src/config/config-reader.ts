@@ -6,7 +6,8 @@ const read = (src: ConfigSource): ConfigReader =>
   async () => {
     const configPath = src['CONFIG_FILE'];
     if (!configPath) return src;
-    return await readFileContent(configPath);
+    const configSrc = await readFileContent(configPath);
+    return configSrc;
   };
 export default read;
 
