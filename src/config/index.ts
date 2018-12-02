@@ -37,6 +37,14 @@ injectable(Modules.Config.RootConfig,
     src: ConfigSource,
     rules: ConfigRule[]): Promise<RootConfig> => parse(src, rules));
 
+injectable(Modules.Config.HttpConfig,
+  [Modules.Config.RootConfig],
+  async (root: RootConfig) => root.http);
+
+injectable(Modules.Config.MysqlConfig,
+  [Modules.Config.RootConfig],
+  async (root: RootConfig) => root.mysql);
+
 // configuration rules.
 injectable(Modules.Config.ConfigRules, [],
   async (): Promise<ConfigRule[]> => ([

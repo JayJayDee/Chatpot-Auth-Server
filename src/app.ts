@@ -6,7 +6,6 @@ import { Modules } from './modules';
   await init({
     includes: [`${__dirname}/**/*.ts`]
   });
-  
   const httpCfg: HttpConfig = resolve<HttpConfig>(Modules.Config.HttpConfig);
   console.log(`http server listening on ${httpCfg.port}`);
 })();
