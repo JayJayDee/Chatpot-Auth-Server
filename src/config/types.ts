@@ -11,7 +11,10 @@ export type MysqlConfig = {
   user: string;
   database: string;
 };
-
+export enum Env {
+  DEV = 'DEV',
+  PROD = 'PROD'
+}
 
 export type ConfigRule = {
   key: string;
@@ -21,3 +24,4 @@ export type ConfigRule = {
 export type ConfigSource = {[key: string]: any};
 export type ConfigReader = () => Promise<ConfigSource>;
 export type ConfigParser = (src: ConfigSource, rules: ConfigRule[]) => RootConfig;
+export type EnvReader = (src: ConfigSource) => Env;

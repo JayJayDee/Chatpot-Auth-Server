@@ -1,6 +1,6 @@
 import { injectable } from 'smart-factory';
 import { Modules } from '../modules';
-import { RootConfig, ConfigRule, ConfigReader, ConfigParser, ConfigSource } from './types';
+import { RootConfig, ConfigRule, ConfigReader, ConfigParser, ConfigSource, Env } from './types';
 
 import configParser from './config-parser';
 import configReader from './config-reader';
@@ -44,6 +44,14 @@ injectable(Modules.Config.HttpConfig,
 injectable(Modules.Config.MysqlConfig,
   [Modules.Config.RootConfig],
   async (root: RootConfig) => root.mysql);
+
+injectable(Modules.Config.Env,
+  [Modules.Config.ConfigSource],
+  async (src: ConfigSource) => {
+    const envExpr = src['NODE_ENV'];
+    if (!envExpr || envExpr === 'production') return Env.DEV;
+    return Env.PROD;
+  });
 
 // configuration rules.
 injectable(Modules.Config.ConfigRules, [],
