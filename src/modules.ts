@@ -20,6 +20,7 @@ export namespace Modules {
   }
 
   export const Logger = 'Logger';
+  export const Mysql = 'Mysql';
 
   export enum Endpoint {
     Member = 'Endpoint/Member'
