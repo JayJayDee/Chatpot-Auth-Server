@@ -13,7 +13,9 @@ export const emptyConfig: RootConfig = {
     host: null,
     port: null,
     user: null,
-    database: null
+    password: null,
+    database: null,
+    connectionLimit: null
   }
 };
 
@@ -56,5 +58,11 @@ injectable(Modules.Config.Env,
 // configuration rules.
 injectable(Modules.Config.ConfigRules, [],
   async (): Promise<ConfigRule[]> => ([
-    { key: 'HTTP_PORT', path: ['http', 'port'], defaultValue: 8080 }
+    { key: 'HTTP_PORT', path: ['http', 'port'], defaultValue: 8080 },
+    { key: 'MYSQL_HOST', path: ['mysql', 'host'] },
+    { key: 'MYSQL_PORT', path: ['mysql', 'port'] },
+    { key: 'MYSQL_USER', path: ['mysql', 'user'] },
+    { key: 'MYSQL_PASSWORD', path: ['mysql', 'password'] },
+    { key: 'MYSQL_DATABASE', path: ['mysql', 'database'] },
+    { key: 'MYSQL_CONNECTION_LIMIT', path: ['mysql', 'connectionLimit'], defaultValue: 10 }
   ]));
