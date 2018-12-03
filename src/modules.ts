@@ -13,7 +13,6 @@ export namespace Modules {
   }
 
   export namespace Service {
-    export const MemberService = 'Service/Member';
     export enum Member {
       Fetch = 'Service/Member/Fetch'
     }
@@ -22,7 +21,11 @@ export namespace Modules {
   export const Logger = 'Logger';
   export const Mysql = 'Mysql';
 
-  export enum Endpoint {
-    Member = 'Endpoint/Member'
+  export namespace Endpoint {
+    export const EndpoinRunner = 'Endpoint/EndpointRunner';
+    export enum Member {
+      Router = 'Endpoint/Member/Router',
+      Get = 'Endpoint/Member/Get'
+    }
   }
 }
