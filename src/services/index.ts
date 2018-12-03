@@ -1,11 +1,8 @@
-import memberService, { fetch } from './member-services';
+import { fetch } from './member-services';
 import { Modules } from '../modules';
 import { injectable } from 'smart-factory';
-
-injectable(Modules.Service.MemberService,
-  [],
-  async () => memberService());
+import { Logger } from '../loggers/types';
 
 injectable(Modules.Service.Member.Fetch,
-  [],
-  async () => fetch());
+  [Modules.Logger],
+  async (logger: Logger) => fetch(logger));
