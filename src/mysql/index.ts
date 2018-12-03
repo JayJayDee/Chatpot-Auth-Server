@@ -10,6 +10,6 @@ injectable(Modules.Mysql,
     Modules.Logger],
   async (cfg: MysqlConfig,
     logger: Logger): Promise<MysqlDriver> => {
-      const mysql = initMysql(cfg, logger);
-      return await mysql();
+      const mysqlInitializer = initMysql(cfg, logger);
+      return await mysqlInitializer();
     });
