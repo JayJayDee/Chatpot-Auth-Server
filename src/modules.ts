@@ -22,7 +22,7 @@ export namespace Modules {
   export const Mysql = 'Mysql';
 
   export namespace Endpoint {
-    export const EndpoinRunner = 'Endpoint/EndpointRunner';
+    export const EndpointRunner = 'Endpoint/EndpointRunner';
     export enum Member {
       Router = 'Endpoint/Member/Router',
       Get = 'Endpoint/Member/Get'
