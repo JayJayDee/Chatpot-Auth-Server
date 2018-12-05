@@ -43,7 +43,11 @@ export const buildMySQLDriver =
         return new Promise((resolve, reject) => {
           getConFunc(pool).then((con) => {
             con.query(query, param, (err, results) => {
-              if (err) return reject(err);
+              if (err) {
+                con.release();
+                return reject(err);
+              }
+              con.release();
               resolve(results);
             });
           })

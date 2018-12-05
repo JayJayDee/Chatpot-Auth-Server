@@ -28,4 +28,10 @@ export namespace Modules {
       Get = 'Endpoint/Member/Get'
     }
   }
+
+  export namespace Store {
+    export enum Member {
+      Get = 'Store/Member/Get'
+    }
+  }
 }
