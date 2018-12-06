@@ -33,5 +33,8 @@ export namespace Modules {
     export enum Member {
       Get = 'Store/Member/Get'
     }
+    export enum Nick {
+      Pick = 'Store/Nick/Pick'
+    }
   }
 }

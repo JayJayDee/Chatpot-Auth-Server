@@ -8,3 +8,17 @@ export namespace Member {
   };
   export type GetMember = (no: number) => Promise<MemberEntity>;
 }
+
+export namespace Nick {
+  export type NickEntity = {
+    ko: string;
+    en: string;
+    ja: string;
+  };
+  export type NickBaseEntity = {
+    ko: string;
+    en: string;
+    ja: string;
+  };
+  export type PickNick = () => Promise<NickEntity>;
+}
