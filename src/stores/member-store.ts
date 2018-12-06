@@ -8,10 +8,10 @@ export const getMember = (mysql: MysqlDriver): Member.GetMember =>
     const sql = `SELECT * FROM chatpot_member WHERE no=?`;
     const rows: any = await mysql.query(sql, [memberNo]);
     if (rows.length === 0) return null;
-    console.log(rows);
+    
     const member: Member.MemberEntity = {
-      no: rows[0].member,
-      region: rows[0].member,
+      no: rows[0].no,
+      region: rows[0].region,
       language: rows[0].language,
       gender: rows[0].gender,
       reg_date: new Date(rows[0].reg_date)
@@ -19,6 +19,7 @@ export const getMember = (mysql: MysqlDriver): Member.GetMember =>
     return member;
   };
 
-  injectable(Modules.Store.Member.Get,
-    [Modules.Mysql],
-    async (mysql: MysqlDriver) => getMember(mysql));
+injectable(Modules.Store.Member.Get,
+  [Modules.Mysql],
+  async (mysql: MysqlDriver) => getMember(mysql));
+

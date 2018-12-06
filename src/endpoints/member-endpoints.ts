@@ -2,20 +2,24 @@ import { Endpoint, EndpointMethod, EndpointRouter } from './types';
 import { injectable } from 'smart-factory';
 import { Modules } from '../modules';
 import { Router } from 'express';
-import { Member } from '../stores/types';
+import { Member, Nick } from '../stores/types';
 
-export const getMember = (memberGet: Member.GetMember): Endpoint => ({
-  uri: '/:member_no',
-  method: EndpointMethod.GET,
-  handler: [async (req, res, next) => {
-    const member = await memberGet(1);
-    res.status(200).json({ member });
-  }]
-});
+export const getMember = 
+  (memberGet: Member.GetMember, pickNick: Nick.PickNick): Endpoint => ({
+    uri: '/:member_no',
+    method: EndpointMethod.GET,
+    handler: [async (req, res, next) => {
+      const member = await memberGet(1);
+      const nick = await pickNick();
+      res.status(200).json({ member, nick });
+    }]
+  });
 
 injectable(Modules.Endpoint.Member.Get,
-  [Modules.Store.Member.Get],
-  async (memberGet) => getMember(memberGet));
+  [Modules.Store.Member.Get,
+    Modules.Store.Nick.Pick],
+  async (memberGet, pickNick: Nick.PickNick) =>
+    getMember(memberGet, pickNick));
 
 injectable(Modules.Endpoint.Member.Router,
   [Modules.Endpoint.Member.Get],
