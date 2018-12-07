@@ -31,7 +31,8 @@ export namespace Modules {
 
   export namespace Store {
     export enum Member {
-      Get = 'Store/Member/Get'
+      Get = 'Store/Member/Get',
+      Insert = 'Store/Member/Insert'
     }
     export enum Nick {
       Pick = 'Store/Nick/Pick'
