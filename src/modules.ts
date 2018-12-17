@@ -4,6 +4,7 @@ export namespace Modules {
     RootConfig = 'Config/RootConfig',
     HttpConfig = 'Config/HttpConfig',
     MysqlConfig = 'Config/MysqlConfig',
+    CredentialConfig = 'Config/CredentialConfig',
     Env = 'Config/Env',
     
     ConfigSource = 'Config/ConfigSource',
@@ -13,16 +14,38 @@ export namespace Modules {
   }
 
   export namespace Service {
-    export const MemberService = 'Service/Member';
     export enum Member {
-      Fetch = 'Service/Member/Fetch'
+      Fetch = 'Service/Member/Fetch',
+      Create = 'Service/Member/Create'
     }
   }
 
   export const Logger = 'Logger';
   export const Mysql = 'Mysql';
 
-  export enum Endpoint {
-    Member = 'Endpoint/Member'
+  export namespace Endpoint {
+    export const EndpointRunner = 'Endpoint/EndpointRunner';
+    export enum Member {
+      Router = 'Endpoint/Member/Router',
+      Get = 'Endpoint/Member/Get',
+      Create = 'Endpoint/Member/Create'
+    }
+  }
+
+  export namespace Store {
+    export enum Member {
+      Get = 'Store/Member/Get',
+      Insert = 'Store/Member/Insert'
+    }
+    export enum Nick {
+      Pick = 'Store/Nick/Pick'
+    }
+  }
+
+  export namespace Util {
+    export enum Auth {
+      Encrypt = 'Util/Auth/Encrypt',
+      Decrypt = 'Util/Auth/Decrypt'
+    }
   }
 }
