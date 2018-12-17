@@ -1,6 +1,7 @@
 export type RootConfig = {
   http: HttpConfig;
   mysql: MysqlConfig;
+  credential: CredentialConfig;
 };
 export type HttpConfig = {
   port: number;
@@ -12,6 +13,9 @@ export type MysqlConfig = {
   password: string;
   database: string;
   connectionLimit: number;
+};
+export type CredentialConfig = {
+  secret: string;
 };
 export enum Env {
   DEV = 'DEV',

@@ -12,6 +12,9 @@ injectable(Modules.Logger,
     },
     debug(payload: any) {
       if (env === Env.DEV) console.log(prefix(), payload);
+    },
+    error(payload: any) {
+      console.error(prefix(), payload);
     }
   }));
 

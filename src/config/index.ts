@@ -16,6 +16,9 @@ export const emptyConfig: RootConfig = {
     password: null,
     database: null,
     connectionLimit: null
+  },
+  credential: {
+    secret: null
   }
 };
 
@@ -47,6 +50,10 @@ injectable(Modules.Config.MysqlConfig,
   [Modules.Config.RootConfig],
   async (root: RootConfig) => root.mysql);
 
+injectable(Modules.Config.CredentialConfig,
+  [Modules.Config.RootConfig],
+  async (root: RootConfig) => root.credential);
+
 injectable(Modules.Config.Env,
   [Modules.Config.ConfigSource],
   async (src: ConfigSource) => {
@@ -64,5 +71,6 @@ injectable(Modules.Config.ConfigRules, [],
     { key: 'MYSQL_USER', path: ['mysql', 'user'] },
     { key: 'MYSQL_PASSWORD', path: ['mysql', 'password'] },
     { key: 'MYSQL_DATABASE', path: ['mysql', 'database'] },
-    { key: 'MYSQL_CONNECTION_LIMIT', path: ['mysql', 'connectionLimit'], defaultValue: 10 }
+    { key: 'MYSQL_CONNECTION_LIMIT', path: ['mysql', 'connectionLimit'], defaultValue: 10 },
+    { key: 'CREDENTIAL_SECRET', path: ['credential', 'secret'] }
   ]));

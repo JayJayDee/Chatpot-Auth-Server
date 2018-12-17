@@ -4,6 +4,7 @@ export namespace Modules {
     RootConfig = 'Config/RootConfig',
     HttpConfig = 'Config/HttpConfig',
     MysqlConfig = 'Config/MysqlConfig',
+    CredentialConfig = 'Config/CredentialConfig',
     Env = 'Config/Env',
     
     ConfigSource = 'Config/ConfigSource',
@@ -38,6 +39,13 @@ export namespace Modules {
     }
     export enum Nick {
       Pick = 'Store/Nick/Pick'
+    }
+  }
+
+  export namespace Util {
+    export enum Auth {
+      Encrypt = 'Util/Auth/Encrypt',
+      Decrypt = 'Util/Auth/Decrypt'
     }
   }
 }
