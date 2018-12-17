@@ -5,7 +5,6 @@ import { AuthUtil } from '../utils/types';
 
 export const fetchMember = 
   (logger: Logger,
-    decrypt: AuthUtil.DecryptToken,
     fetch: Member.GetMember) =>
     async (token: string): Promise<MemberService.Member> => {
       return {

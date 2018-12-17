@@ -39,9 +39,9 @@ injectable(Modules.Util.Auth.Encrypt,
   [Modules.Config.CredentialConfig],
   async (cfg) => encryptToken(cfg));
 
-injectable(Modules.Util.Auth.Decrypt,
-  [],
-  async () => {});
+// injectable(Modules.Util.Auth.Decrypt,
+//   [Modules.Config.CredentialConfig],
+//   async () => {});
 
 // injectable(Modules.Util.Auth.Decrypt,
 //   [],
