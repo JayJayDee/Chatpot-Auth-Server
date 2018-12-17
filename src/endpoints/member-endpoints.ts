@@ -3,6 +3,8 @@ import { injectable } from 'smart-factory';
 import { Modules } from '../modules';
 import { Router } from 'express';
 import { Member, Nick } from '../stores/types';
+import { Logger } from '../loggers/types';
+import { MemberService } from '../services/types';
 
 export const getMember = 
   (memberGet: Member.GetMember, pickNick: Nick.PickNick): Endpoint => ({
@@ -18,17 +20,18 @@ export const getMember =
   });
 
 export const joinSimple =
-  (pick: Nick.PickNick,
-    insert: Member.InsertMember): Endpoint => ({
+  (log: Logger,
+    create: MemberService.CreateMember): Endpoint => ({
       uri: '/',
       method: EndpointMethod.POST,
       handler: [
         async (req, res, next) => {
-          const resp = await insert({
+          const param = {
             region: 'KR',
             language: 'ko',
             gender: 'M'
-          });
+          };
+          const resp = await create(param);
           res.status(200).json(resp);
         }
       ]
@@ -41,9 +44,9 @@ injectable(Modules.Endpoint.Member.Get,
     getMember(memberGet, pickNick));
 
 injectable(Modules.Endpoint.Member.Create,
-  [Modules.Store.Nick.Pick,
-    Modules.Store.Member.Insert],
-  async (pick, insert) => joinSimple(pick, insert));
+  [Modules.Logger,
+    Modules.Service.Member.Create],
+  async (log, create) => joinSimple(log, create));
 
 injectable(Modules.Endpoint.Member.Router,
   [Modules.Endpoint.Member.Get, Modules.Endpoint.Member.Create],

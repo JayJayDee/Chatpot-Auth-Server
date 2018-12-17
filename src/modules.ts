@@ -14,7 +14,8 @@ export namespace Modules {
 
   export namespace Service {
     export enum Member {
-      Fetch = 'Service/Member/Fetch'
+      Fetch = 'Service/Member/Fetch',
+      Create = 'Service/Member/Create'
     }
   }
 
