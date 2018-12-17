@@ -7,7 +7,16 @@ export namespace Member {
     gender: string;
     reg_date: Date;
   };
+  export type ReqCreateMember = {
+    region: string;
+    language: string;
+    gender: string;
+  };
+  export type ResCreateMember = {
+    member_no: number;
+  };
   export type GetMember = (no: number) => Promise<MemberEntity>;
+  export type InsertMember = (create: ReqCreateMember) => Promise<ResCreateMember>;
 }
 
 export namespace Nick {
