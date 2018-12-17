@@ -8,11 +8,24 @@ export const getMember =
   (memberGet: Member.GetMember, pickNick: Nick.PickNick): Endpoint => ({
     uri: '/:member_no',
     method: EndpointMethod.GET,
-    handler: [async (req, res, next) => {
-      const member = await memberGet(1);
-      const nick = await pickNick();
-      res.status(200).json({ member, nick });
-    }]
+    handler: [
+      async (req, res, next) => {
+        const member = await memberGet(1);
+        const nick = await pickNick();
+        res.status(200).json({ member, nick });
+      }
+    ]
+  });
+
+export const joinSimple =
+  (pickNick: Nick.PickNick): Endpoint => ({
+    uri: '/',
+    method: EndpointMethod.POST,
+    handler: [
+      async (req, res, next) => {
+
+      }
+    ]
   });
 
 injectable(Modules.Endpoint.Member.Get,

@@ -3,19 +3,7 @@ import { Member } from './types';
 import { injectable } from 'smart-factory';
 import { Modules } from '../modules';
 
-type ReqCreateMember = {
-  region: string;
-  language: string;
-  gender: string;
-};
-type ResCreateMember = {
-  member_no: number;
-};
-
-type GetMember = (no: number) => Promise<Member.MemberEntity>;
-export type InsertMember = (param: ReqCreateMember) => Promise<ResCreateMember>;
-
-export const getMember = (mysql: MysqlDriver): GetMember =>
+export const getMember = (mysql: MysqlDriver): Member.GetMember  =>
   async (memberNo: number): Promise<Member.MemberEntity> => {
     const sql = `SELECT * FROM chatpot_member WHERE no=?`;
     const rows: any = await mysql.query(sql, [memberNo]);
@@ -31,8 +19,8 @@ export const getMember = (mysql: MysqlDriver): GetMember =>
     return member;
   };
 
-export const insertMember = (mysql: MysqlDriver): InsertMember =>
-  async (param: ReqCreateMember) => {
+export const insertMember = (mysql: MysqlDriver): Member.InsertMember =>
+  async (param: Member.ReqCreateMember) => {
     const sql = 
     `
       INSERT INTO
