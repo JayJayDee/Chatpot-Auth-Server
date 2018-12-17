@@ -20,7 +20,7 @@ export const getMember = (mysql: MysqlDriver): Member.GetMember  =>
   };
 
 export const insertMember = (mysql: MysqlDriver): Member.InsertMember =>
-  async (param: Member.ReqCreateMember) => {
+  async (param: Member.ReqCreateMember): Promise<Member.ResCreateMember> => {
     const sql = 
     `
       INSERT INTO
@@ -36,8 +36,8 @@ export const insertMember = (mysql: MysqlDriver): Member.InsertMember =>
       param.language,
       param.gender
     ]);
-    console.log(resp);
-    return null;
+    const member_no: number = resp.insertId;
+    return { member_no };
   };
 
 injectable(Modules.Store.Member.Get,
