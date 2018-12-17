@@ -1,7 +1,9 @@
 import { createCipher, createDecipher } from 'crypto';
+import { injectable } from 'smart-factory';
 import { AuthUtil } from './types';
 import { CredentialConfig } from '../config/types';
 import { Logger } from '../loggers/types';
+import { Modules } from '../modules';
 
 export const encryptToken = (cfg: CredentialConfig): AuthUtil.CreateToken =>
   (memberNo: number) => {
@@ -33,11 +35,14 @@ export const decryptToken = (log: Logger, cfg: CredentialConfig): AuthUtil.Decry
 const cipher = (cfg: CredentialConfig) => createCipher('des-ede3-cbc', cfg.secret);
 const decipher = (cfg: CredentialConfig) => createDecipher('des-ede3-cbc', cfg.secret);
 
-// injectable(Modules.Util.Auth.Encrypt,
-//   [Modules.Config.CredentialConfig],
-//   async (cfg) => encryptToken(cfg));
+injectable(Modules.Util.Auth.Encrypt,
+  [Modules.Config.CredentialConfig],
+  async (cfg) => encryptToken(cfg));
+
+injectable(Modules.Util.Auth.Decrypt,
+  [],
+  async () => {});
 
 // injectable(Modules.Util.Auth.Decrypt,
-//   [Modules.Logger,
-//     Modules.Config.CredentialConfig],
+//   [],
 //   async (log, cfg) => decryptToken(log, cfg));
