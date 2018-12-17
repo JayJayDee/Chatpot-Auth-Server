@@ -25,7 +25,8 @@ export namespace Modules {
     export const EndpointRunner = 'Endpoint/EndpointRunner';
     export enum Member {
       Router = 'Endpoint/Member/Router',
-      Get = 'Endpoint/Member/Get'
+      Get = 'Endpoint/Member/Get',
+      Create = 'Endpoint/Member/Create'
     }
   }
 

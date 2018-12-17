@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "CONFIG_FILE=$HOME/chatpot-auth-conf.json TS_NODE_FILES=true nodemon --exec ts-node -- --project ./tsconfig.json ./src/app",
+    "dev": "CONFIG_FILE=$HOME/chatpot-auth-conf.json TS_NODE_FILES=true nodemon --watch ./src -e ts --exec ts-node -- --project ./tsconfig.json ./src/app",
     "test": "jest",
     "test:coverage": "jest --coverage"
   },
