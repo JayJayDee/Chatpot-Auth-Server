@@ -1,15 +1,18 @@
-import { fetch, createMember } from './member-services';
+import { fetchMember, createMember } from './member-services';
 import { Modules } from '../modules';
 import { injectable } from 'smart-factory';
-import { Logger } from '../loggers/types';
 
 injectable(Modules.Service.Member.Fetch,
-  [Modules.Logger],
-  async (logger: Logger) => fetch(logger));
+  [Modules.Logger,
+    Modules.Store.Member.Get,
+    Modules.Util.Auth.Decrypt],
+  async (logger, get, decrypt) => 
+    fetchMember(logger, get, decrypt));
 
 injectable(Modules.Service.Member.Create,
   [ Modules.Logger,
     Modules.Store.Nick.Pick,
-    Modules.Store.Member.Insert ],
-  async (logger, pick, insert) =>
-    createMember(logger, pick, insert));
+    Modules.Store.Member.Insert,
+    Modules.Util.Auth.Encrypt ],
+  async (logger, pick, insert, token) =>
+    createMember(logger, pick, insert, token));
