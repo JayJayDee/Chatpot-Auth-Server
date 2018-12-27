@@ -4,8 +4,7 @@ import { Modules } from './modules';
 
 (async () => {
   await init({
-    includes: [`${__dirname}/**/*.ts`],
-    debug: true
+    includes: [`${__dirname}/**/*.ts`]
   });
   const run = <EndpointRunner>resolve(Modules.Endpoint.EndpointRunner);
   await run();
