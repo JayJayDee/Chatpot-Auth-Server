@@ -1,3 +1,4 @@
+import { flatten } from 'lodash';
 import { MysqlDriver } from '../mysql/types';
 import { Nick } from './types';
 import { injectable } from 'smart-factory';
@@ -32,6 +33,25 @@ export const pickNick = (mysql: MysqlDriver): Nick.PickNick =>
     return merge(adj, noun);
   };
 
+export const insertNick = (mysql: MysqlDriver): Nick.InsertNick =>
+  async (req: Nick.ReqInsertNick) => {
+    const rowDatas = Object.keys(req.nick).map((k) => ({
+      member_no: req.member_no,
+      language: k,
+      nick: (req.nick as {[key: string]: string})[k]
+    }));
+    const valuesClauses = rowDatas.map((r) => '(?,?,?)').join(',');
+    const params = rowDatas.map((r) => [r.member_no, r.language, r.nick]);
+    const query = `
+      INSERT INTO chatpot_member_has_nick 
+        (member_no, language, nick) VALUES ${valuesClauses}`;
+    await mysql.query(query, flatten(params));
+  };
+
 injectable(Modules.Store.Nick.Pick,
   [ Modules.Mysql ],
   async (mysql: MysqlDriver) => pickNick(mysql));
+
+injectable(Modules.Store.Nick.Insert,
+  [ Modules.Mysql ],
+  async (mysql: MysqlDriver) => insertNick(mysql));

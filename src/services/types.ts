@@ -5,6 +5,8 @@ export namespace MemberService {
   };
   export type Nick = {
     en: string;
+    ja: string;
+    ko: string;
   };
   export type ReqCreateMember = {
     region: string;
