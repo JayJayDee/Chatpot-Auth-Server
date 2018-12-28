@@ -5,19 +5,18 @@ import { AuthUtil } from '../utils/types';
 
 export const fetchMember = 
   (logger: Logger,
-    fetch: Member.GetMember,
-    decrypt: AuthUtil.DecryptToken) =>
-    async (token: string): Promise<MemberService.Member> => {
+    getMember: Member.GetMember,
+    getNick: Nick.GetNick,
+    decrypt: AuthUtil.DecryptToken): MemberService.FetchMember =>
+    async (token: string) => {
       const decrypted = decrypt(token);
-      const member = await fetch(decrypted.member_no);
-      console.log(member);
-      return {
-        token: '',
-        nick: {
-          en: '',
-          ja: '',
-          ko: ''
-        }
+      const member = await getMember(decrypted.member_no);
+      const nick = await getNick({ member_no: decrypted.member_no });
+      return { 
+        nick,
+        region: member.region,
+        language: member.language,
+        gender: member.gender
       };
     };
 
