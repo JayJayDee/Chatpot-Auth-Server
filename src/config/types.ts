@@ -1,6 +1,7 @@
 export type RootConfig = {
   http: HttpConfig;
   mysql: MysqlConfig;
+  cache: CacheConfig;
   credential: CredentialConfig;
 };
 export type HttpConfig = {
@@ -17,6 +18,18 @@ export type MysqlConfig = {
 export type CredentialConfig = {
   secret: string;
 };
+export type CacheConfig = {
+  provider: CacheProvider;
+  redis?: RedisConfig;
+};
+export type RedisConfig = {
+  host: string;
+  port: number;
+  password?: string;
+};
+export enum CacheProvider {
+  MEMORY = 'MEMEORY', REDIS = 'REDIS'
+}
 export enum Env {
   DEV = 'DEV',
   PROD = 'PROD'

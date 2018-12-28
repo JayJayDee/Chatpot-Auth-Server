@@ -19,6 +19,9 @@ export const emptyConfig: RootConfig = {
   },
   credential: {
     secret: null
+  },
+  cache: {
+    provider: null
   }
 };
 
@@ -72,5 +75,9 @@ injectable(Modules.Config.ConfigRules, [],
     { key: 'MYSQL_PASSWORD', path: ['mysql', 'password'] },
     { key: 'MYSQL_DATABASE', path: ['mysql', 'database'] },
     { key: 'MYSQL_CONNECTION_LIMIT', path: ['mysql', 'connectionLimit'], defaultValue: 10 },
-    { key: 'CREDENTIAL_SECRET', path: ['credential', 'secret'] }
+    { key: 'CREDENTIAL_SECRET', path: ['credential', 'secret'] },
+    { key: 'CACHE_PROVIDER', path: ['cache', 'provider'], defaultValue: 'MEMORY'},
+    { key: 'CACHE_REDIS_HOST', path: ['cache', 'redis', 'host'], defaultValue: null},
+    { key: 'CACHE_REDIS_PORT', path: ['cache', 'redis', 'port'], defaultValue: null},
+    { key: 'CACHE_REDIS_PASSWORD', path: ['cache', 'redis', 'password'], defaultValue: null},
   ]));
