@@ -20,6 +20,12 @@ export type CredentialConfig = {
 };
 export type CacheConfig = {
   provider: CacheProvider;
+  redis?: RedisConfig;
+};
+export type RedisConfig = {
+  host: string;
+  port: number;
+  password?: string;
 };
 export enum CacheProvider {
   MEMORY = 'MEMEORY', REDIS = 'REDIS'
