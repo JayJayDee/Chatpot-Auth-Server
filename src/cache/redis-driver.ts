@@ -3,11 +3,17 @@ import { Cache } from './types';
 import { RedisConfig } from '../config/types';
 import { RedisConnectionError } from './errors';
 
-export const initRedisDriver = (cfg: RedisConfig) =>
-  async () => {
-    const client = createClient(cfg);
-    await inspectConnection(client);
-  };
+export const initRedisDriver = 
+  (cfg: RedisConfig): Promise<Cache.CacheOperations> =>
+    async () => {
+      const client = createClient(cfg);
+      await inspectConnection(client);
+
+      return {
+        get: redisGet(client),
+        set: redisSet(client)
+      };
+    };
 
 export const inspectConnection = 
   (client: RedisClient): Promise<void> =>
@@ -19,17 +25,25 @@ export const inspectConnection =
     });
 
 export const redisGet = 
-  async (): Promise<Cache.Get> => {
-    return (key: string): Promise<any> =>
+  (client: RedisClient): Cache.Get =>
+    (key: string) =>
       new Promise((resolve, reject) => {
-
+        client.get(key, (err, reply) => {
+          if (err) return reject(err);
+          try {
+            const content = JSON.parse(reply);
+            resolve(content);
+          } catch (ex) {
+            return resolve(reply);
+          }
+        });
       });
-  };
 
 export const redisSet =
-  async (): Promise<Cache.Set> => {
-    return (key: string, value: any, expires?: number) =>
+  (client: RedisClient): Cache.Set =>
+    (key: string, value: any, expires?: number) =>
       new Promise((resolve, reject) => {
+        client.set(key, value, (err, reply) => {
 
+        });
       });
-  };
