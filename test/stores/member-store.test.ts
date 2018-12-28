@@ -8,9 +8,7 @@ describe('getMember() tests', () => {
   beforeAll(() => {
     require('../../src/stores/member-store');
     injectable(Modules.Mysql, [], async () => dummyMysql);
-    init().then(() => {
-      console.log('factory init');
-    });
+    init().then(() => null);
   });
 
   test('when MysqlDriver throws error, the function must throws error', () => {
