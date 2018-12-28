@@ -28,7 +28,7 @@ export type RedisConfig = {
   password?: string;
 };
 export enum CacheProvider {
-  MEMORY = 'MEMEORY', REDIS = 'REDIS'
+  MEMORY = 'MEMORY', REDIS = 'REDIS'
 }
 export enum Env {
   DEV = 'DEV',

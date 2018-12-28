@@ -5,6 +5,7 @@ export namespace Modules {
     HttpConfig = 'Config/HttpConfig',
     MysqlConfig = 'Config/MysqlConfig',
     CredentialConfig = 'Config/CredentialConfig',
+    CacheConfig = 'Config/CacheConfig',
     Env = 'Config/Env',
     
     ConfigSource = 'Config/ConfigSource',
@@ -22,6 +23,12 @@ export namespace Modules {
 
   export const Logger = 'Logger';
   export const Mysql = 'Mysql';
+
+  export namespace Cache {
+    export const Get = 'Cache/Get';
+    export const Set = 'Cache/Set';
+    export const Operations = 'Cache/Operations';
+  }
 
   export namespace Endpoint {
     export const EndpointRunner = 'Endpoint/EndpointRunner';
