@@ -5,6 +5,7 @@ export namespace Modules {
     HttpConfig = 'Config/HttpConfig',
     MysqlConfig = 'Config/MysqlConfig',
     CredentialConfig = 'Config/CredentialConfig',
+    CacheConfig = 'Config/CacheConfig',
     Env = 'Config/Env',
     
     ConfigSource = 'Config/ConfigSource',

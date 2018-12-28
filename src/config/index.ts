@@ -57,6 +57,10 @@ injectable(Modules.Config.CredentialConfig,
   [Modules.Config.RootConfig],
   async (root: RootConfig) => root.credential);
 
+injectable(Modules.Config.CacheConfig,
+  [Modules.Config.RootConfig],
+  async (root: RootConfig) => root.cache);
+
 injectable(Modules.Config.Env,
   [Modules.Config.ConfigSource],
   async (src: ConfigSource) => {
