@@ -5,6 +5,13 @@ import { CredentialConfig } from '../config/types';
 import { Logger } from '../loggers/types';
 import { Modules } from '../modules';
 
+export class InvalidTokenError extends Error {}
+
+export type Decrypted = {
+  member_no: number;
+  timestamp: number;
+};
+
 export const encryptToken = (cfg: CredentialConfig): AuthUtil.CreateToken =>
   (memberNo: number) => {
     const cp = cipher(cfg);
@@ -21,7 +28,7 @@ export const decryptToken = (log: Logger, cfg: CredentialConfig): AuthUtil.Decry
       let decrypted: string = dp.update(token, 'hex', 'utf8');
       decrypted += dp.final('utf8');
       const splited: string[] = decrypted.split('|@|');
-      if (splited.length != 2) throw new Error('');
+      if (splited.length != 2) throw new InvalidTokenError(`invalid token: ${token}`);
       return {
         member_no: parseInt(splited[0]),
         timestamp: parseInt(splited[1])

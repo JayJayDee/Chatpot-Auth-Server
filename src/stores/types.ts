@@ -30,5 +30,12 @@ export namespace Nick {
     en: string;
     ja: string;
   };
+
+  export type ReqInsertNick = {
+    member_no: number;
+    nick: NickEntity;
+  };
+
   export type PickNick = () => Promise<NickEntity>;
+  export type InsertNick = (req: ReqInsertNick) => Promise<void>;
 }
