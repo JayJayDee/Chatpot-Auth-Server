@@ -19,6 +19,9 @@ export const emptyConfig: RootConfig = {
   },
   credential: {
     secret: null
+  },
+  cache: {
+    provider: null
   }
 };
 
