@@ -5,9 +5,10 @@ import { injectable } from 'smart-factory';
 injectable(Modules.Service.Member.Fetch,
   [Modules.Logger,
     Modules.Store.Member.Get,
+    Modules.Store.Nick.Get,
     Modules.Util.Auth.Decrypt],
-  async (logger, get, decrypt) => 
-    fetchMember(logger, get, decrypt));
+  async (logger, getMember, getNick, decrypt) => 
+    fetchMember(logger, getMember, getNick, decrypt));
 
 injectable(Modules.Service.Member.Create,
   [ Modules.Logger,

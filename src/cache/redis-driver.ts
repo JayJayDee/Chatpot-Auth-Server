@@ -8,6 +8,7 @@ const initRedisDriver =
   (cfg: RedisConfig, log: Logger) =>
     async (): Promise<Cache.CacheOperations> => {
       log.info('[cache] establishing redis connection ...');
+      if (!cfg.password) delete cfg.password;
       const client: RedisClient = createClient(cfg);
       await inspectConnection(client);
       log.info('[cache] redis connection established');

@@ -46,7 +46,8 @@ export namespace Modules {
     }
     export enum Nick {
       Pick = 'Store/Nick/Pick',
-      Insert = 'Store/Nick/Insert'
+      Insert = 'Store/Nick/Insert',
+      Get = 'Store/Nick/Get'
     }
   }
 

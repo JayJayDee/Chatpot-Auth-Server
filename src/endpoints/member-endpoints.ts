@@ -2,19 +2,21 @@ import { Endpoint, EndpointMethod, EndpointRouter } from './types';
 import { injectable } from 'smart-factory';
 import { Modules } from '../modules';
 import { Router } from 'express';
-import { Member, Nick } from '../stores/types';
 import { Logger } from '../loggers/types';
 import { MemberService } from '../services/types';
 
 export const getMember = 
-  (memberGet: Member.GetMember, pickNick: Nick.PickNick): Endpoint => ({
-    uri: '/:member_no',
+  (getMember: MemberService.FetchMember): Endpoint => ({
+    uri: '/:token',
     method: EndpointMethod.GET,
     handler: [
       async (req, res, next) => {
-        const member = await memberGet(1);
-        const nick = await pickNick();
-        res.status(200).json({ member, nick });
+        const token: string = req.params['token'];
+        if (token === null) {
+          // TODO: validation.
+        }
+        const member = await getMember(token)
+        res.status(200).json(member);
       }
     ]
   });
@@ -38,10 +40,8 @@ export const joinSimple =
     });
 
 injectable(Modules.Endpoint.Member.Get,
-  [Modules.Store.Member.Get,
-    Modules.Store.Nick.Pick],
-  async (memberGet, pickNick: Nick.PickNick) =>
-    getMember(memberGet, pickNick));
+  [ Modules.Service.Member.Fetch ],
+  async (fetch) => getMember(fetch));
 
 injectable(Modules.Endpoint.Member.Create,
   [Modules.Logger,

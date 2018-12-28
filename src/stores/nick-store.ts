@@ -1,4 +1,4 @@
-import { flatten } from 'lodash';
+import { flatten, set } from 'lodash';
 import { MysqlDriver } from '../mysql/types';
 import { Nick } from './types';
 import { injectable } from 'smart-factory';
@@ -48,6 +48,20 @@ export const insertNick = (mysql: MysqlDriver): Nick.InsertNick =>
     await mysql.query(query, flatten(params));
   };
 
+export const getMemberNick = (mysql: MysqlDriver): Nick.GetNick =>
+  async (req: Nick.ReqGetNick) => {
+    const nick: Nick.NickEntity = { 
+      en: null,
+      ko: null,
+      ja: null
+    };
+    const query = `SELECT * FROM chatpot_member_has_nick WHERE member_no=?`;
+    const params = [req.member_no];
+    const rows: any[] = await mysql.query(query, params) as any[];
+    rows.map((r) => set(nick, [r.language], r.nick));
+    return nick;
+  };
+
 injectable(Modules.Store.Nick.Pick,
   [ Modules.Mysql ],
   async (mysql: MysqlDriver) => pickNick(mysql));
@@ -55,3 +69,7 @@ injectable(Modules.Store.Nick.Pick,
 injectable(Modules.Store.Nick.Insert,
   [ Modules.Mysql ],
   async (mysql: MysqlDriver) => insertNick(mysql));
+
+injectable(Modules.Store.Nick.Get,
+  [ Modules.Mysql ],
+  async (mysql) => getMemberNick(mysql));
