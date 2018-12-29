@@ -19,6 +19,21 @@ export namespace Member {
   export type InsertMember = (create: ReqCreateMember) => Promise<ResCreateMember>;
 }
 
+export namespace Auth {
+  export enum AuthType {
+    SIMPLE = 'SIMPLE', EMAIL = 'EMAIL'
+  }
+  export type ReqInsertAuth = {
+    member_no: number;
+    auth_type: AuthType;
+    login_id: string;
+    token: string;
+    password: string;
+  };
+
+  export type InsertAuth = (param: ReqInsertAuth) => Promise<void>;
+}
+
 export namespace Nick {
   export type NickEntity = {
     ko: string;

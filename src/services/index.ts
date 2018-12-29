@@ -14,7 +14,8 @@ injectable(Modules.Service.Member.Create,
   [ Modules.Logger,
     Modules.Store.Nick.Pick,
     Modules.Store.Nick.Insert,
+    Modules.Store.Auth.Insert,
     Modules.Store.Member.Insert,
     Modules.Util.Auth.Encrypt ],
-  async (logger, pick, insertNick, insert, token) =>
-    createMember(logger, pick, insertNick, insert, token));
+  async (logger, pick, insertNick, insertAuth, insert, token) =>
+    createMember(logger, pick, insertNick, insertAuth, insert, token));
