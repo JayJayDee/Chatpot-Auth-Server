@@ -1,6 +1,6 @@
 import { MemberService } from './types';
 import { Logger } from '../loggers/types';
-import { Nick, Member } from '../stores/types';
+import { Nick, Member, Auth } from '../stores/types';
 import { AuthUtil } from '../utils/types';
 
 export const fetchMember = 
@@ -24,12 +24,14 @@ export const createMember =
   (logger: Logger,
     pick: Nick.PickNick,
     insertNick: Nick.InsertNick,
+    insertAuth: Auth.InsertAuth,
     create: Member.InsertMember,
     token: AuthUtil.CreateToken) =>
       async (param: MemberService.ReqCreateMember) => {
         const created = await create(param);
         const memberNo: number = created.member_no;
         const nick = await pick();
+
         await insertNick({
           member_no: memberNo,
           nick

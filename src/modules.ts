@@ -58,6 +58,9 @@ export namespace Modules {
       Insert = 'Store/Nick/Insert',
       Get = 'Store/Nick/Get'
     }
+    export enum Auth {
+      Insert = 'Store/Auth/Insert'
+    }
   }
 
   export namespace Util {
