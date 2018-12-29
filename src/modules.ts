@@ -1,4 +1,10 @@
 export namespace Modules {
+  export enum Error {
+    BaseInitError = 'Error/BaseInitError',
+    BaseRuntimeError = 'Error/BaseRuntimeError',
+    InvalidParamError = 'Error/InvalidParam'
+  }
+
   export enum Config {
     EmptyConfig = 'Config/EmptyConfig',
     RootConfig = 'Config/RootConfig',
@@ -32,6 +38,9 @@ export namespace Modules {
 
   export namespace Endpoint {
     export const EndpointRunner = 'Endpoint/EndpointRunner';
+    export enum Middleware {
+      Error = 'Endpoint/Middleware/Error'
+    }
     export enum Member {
       Router = 'Endpoint/Member/Router',
       Get = 'Endpoint/Member/Get',
