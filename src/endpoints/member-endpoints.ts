@@ -4,20 +4,20 @@ import { Modules } from '../modules';
 import { Router } from 'express';
 import { Logger } from '../loggers/types';
 import { MemberService } from '../services/types';
+import { InvalidParamError } from './errors';
+import { asyncEndpointWrap } from './wraps';
 
 export const getMember = 
   (getMember: MemberService.FetchMember): Endpoint => ({
     uri: '/:token',
     method: EndpointMethod.GET,
     handler: [
-      async (req, res, next) => {
+      asyncEndpointWrap(async (req, res, next) => {
         const token: string = req.params['token'];
-        if (token === null) {
-          // TODO: validation.
-        }
+        if (!token) throw new InvalidParamError('token');
         const member = await getMember(token)
         res.status(200).json(member);
-      }
+      })
     ]
   });
 
@@ -27,7 +27,7 @@ export const joinSimple =
       uri: '/',
       method: EndpointMethod.POST,
       handler: [
-        async (req, res, next) => {
+        asyncEndpointWrap(async (req, res, next) => {
           const param = {
             region: 'KR',
             language: 'ko',
@@ -35,7 +35,7 @@ export const joinSimple =
           };
           const resp = await create(param);
           res.status(200).json(resp);
-        }
+        })
       ]
     });
 
