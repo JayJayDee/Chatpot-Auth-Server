@@ -1,4 +1,5 @@
 import * as express from 'express';
+import * as bodyParser from 'body-parser';
 import { injectable } from 'smart-factory';
 import { HttpConfig } from '../config/types';
 import { Modules } from '../modules';
@@ -13,6 +14,7 @@ export const endpointRunner =
     errorMid : express.ErrorRequestHandler): EndpointRunner =>
       () => {
         const app = express();
+        app.use(bodyParser.urlencoded({ extended: true }));
         const routers: EndpointRouter[] = [ member ];
         routers.map((r) => app.use(r.uri, r.router));
         app.use(errorMid);

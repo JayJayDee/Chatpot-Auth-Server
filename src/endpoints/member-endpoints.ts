@@ -28,11 +28,14 @@ export const joinSimple =
       method: EndpointMethod.POST,
       handler: [
         asyncEndpointWrap(async (req, res, next) => {
-          const param = {
-            region: 'KR',
-            language: 'ko',
-            gender: 'M'
-          };
+          if (!req.body['region'] || !req.body['language'] || !req.body['gender']) {
+            throw new InvalidParamError('region, language, gender');
+          }
+          const region = req.body['region'];
+          const language = req.body['language'];
+          const gender = req.body['gender'];
+
+          const param = { region, language, gender };
           const resp = await create(param);
           res.status(200).json(resp);
         })
