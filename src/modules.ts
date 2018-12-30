@@ -23,7 +23,8 @@ export namespace Modules {
   export namespace Service {
     export enum Member {
       Fetch = 'Service/Member/Fetch',
-      Create = 'Service/Member/Create'
+      Create = 'Service/Member/Create',
+      Authenticate = 'Service/Member/Authenticate'
     }
   }
 
@@ -46,6 +47,10 @@ export namespace Modules {
       Router = 'Endpoint/Member/Router',
       Get = 'Endpoint/Member/Get',
       Create = 'Endpoint/Member/Create'
+    }
+    export enum Auth {
+      Router = 'Endpoint/Auth/Router',
+      Auth = 'Endpoint/Auth/Auth'
     }
   }
 

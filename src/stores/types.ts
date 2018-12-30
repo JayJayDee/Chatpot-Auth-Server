@@ -35,6 +35,7 @@ export namespace Auth {
     password: string;
   };
   export type ResAuthenticate = {
+    member_no: number;
     auth_type: AuthType;
     success: boolean;
   };

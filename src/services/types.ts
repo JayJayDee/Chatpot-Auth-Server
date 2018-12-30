@@ -20,7 +20,15 @@ export namespace MemberService {
     passphrase: string;
     nick: Nick;
   };
+  export type ReqAuthenticate = {
+    login_id: string;
+    password: string;
+  };
+  export type ResAuthenticate = {
+    session_key: string;
+  };
 
   export type FetchMember = (token: string) => Promise<Member>;
   export type CreateMember = (param: ReqCreateMember) => Promise<ResCreateMember>;
+  export type Authenticate = (param: ReqAuthenticate) => Promise<ResAuthenticate>;  
 }

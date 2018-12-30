@@ -46,10 +46,12 @@ export const authenticate =
       if (rows.length === 0) {
         return {
           success: false,
-          auth_type: null
+          auth_type: null,
+          member_no: null
         };
       }
       const resp: Auth.ResAuthenticate = {
+        member_no: rows[0].member_no,
         auth_type: rows[0].auth_type,
         success: false
       };

@@ -9,15 +9,26 @@ import { BaseRuntimeError } from '../errors';
 class AuthFailError extends BaseRuntimeError {}
 export const authenticateMember = 
   (logger: Logger,
-    auth: Auth.Authenticate) =>
-    async (login_id: string, password: string) => {
-      const result = await auth({ login_id, password });
+    auth: Auth.Authenticate,
+    createSession: AuthUtil.CreateSessionKey): MemberService.Authenticate =>
+    async (param) => {
+      const result = await auth({ 
+        login_id: param.login_id,
+        password: param.password
+      });
       if (result.success === false) {
-        throw new AuthFailError('AUTH_FAILED', `authentication failed for id:${login_id}`);
+        throw new AuthFailError('AUTH_FAILED', `authentication failed for id:${param.login_id}`);
       }
-      // TODO: create session key
+      const sessionKey = createSession(result.member_no);
+      return {
+        session_key: sessionKey
+      };
     };
-// TODO: injectable.
+injectable(Modules.Service.Member.Authenticate,
+  [Modules.Logger,
+    Modules.Store.Auth.Authenticate,
+    Modules.Util.Auth.CreateSesssion],
+  async (log, auth, sess) => authenticateMember(log, auth, sess));
 
 export const fetchMember = 
   (logger: Logger,
