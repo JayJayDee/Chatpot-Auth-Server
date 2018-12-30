@@ -31,6 +31,41 @@ export const createPassphrase =
         .digest('hex');
     };
 
+export const createPassHash =
+  (cfg: CredentialConfig): AuthUtil.CreatePassHash =>
+    (pass: string) => {
+      return createHash('sha256')
+        .update(`${pass}${cfg.secret}`)
+        .digest('hex');
+    };
+
+export const createSessionKey =
+  (cfg: CredentialConfig): AuthUtil.CreateSessionKey =>
+    (memberNo: number) => {
+      const cp = cipher(cfg);
+      let encrypted: string = '';
+      encrypted += cp.update(`${memberNo}|@|${Date.now()}`, 'utf8', 'hex');
+      encrypted += cp.final('hex');
+      return encrypted;
+    };
+
+export const validateSessionKey =
+  (cfg: CredentialConfig): AuthUtil.ValidateSessionKey =>
+    (sessionKey: string) => {
+      const dp = decipher(cfg);
+      try { 
+        let decrypted: string = dp.update(sessionKey, 'hex', 'utf8');
+        decrypted += dp.final('utf8');
+        const splited: string[] = decrypted.split('|@|');
+        if (splited.length != 2) return false;
+        const createdAt = parseInt(splited[1]);
+        if (Date.now() > createdAt + cfg.sessionExpires * 1000) return false;
+        return true;
+      } catch (err) {
+        return false;
+      }
+    };
+
 export const decryptToken = 
   (log: Logger, cfg: CredentialConfig): AuthUtil.DecryptToken =>
     (token: string) => {
@@ -63,3 +98,16 @@ injectable(Modules.Util.Auth.Decrypt,
 injectable(Modules.Util.Auth.Passphrase,
   [Modules.Config.CredentialConfig],
   async (cfg) => createPassphrase(cfg));
+
+injectable(Modules.Util.Auth.PassHash,
+  [Modules.Config.CredentialConfig],
+  async (cfg) => createPassHash(cfg));
+
+injectable(Modules.Util.Auth.CreateSesssion,
+  [Modules.Config.CredentialConfig],
+  async (cfg) => createSessionKey(cfg));
+
+injectable(Modules.Util.Auth.ValidateSession,
+  [Modules.Config.CredentialConfig],
+  async (cfg) => validateSessionKey(cfg));
+  

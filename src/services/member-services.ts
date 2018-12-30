@@ -4,6 +4,20 @@ import { Nick, Member, Auth } from '../stores/types';
 import { AuthUtil } from '../utils/types';
 import { injectable } from 'smart-factory';
 import { Modules } from '../modules';
+import { BaseRuntimeError } from '../errors';
+
+class AuthFailError extends BaseRuntimeError {}
+export const authenticateMember = 
+  (logger: Logger,
+    auth: Auth.Authenticate) =>
+    async (login_id: string, password: string) => {
+      const result = await auth({ login_id, password });
+      if (result.success === false) {
+        throw new AuthFailError('AUTH_FAILED', `authentication failed for id:${login_id}`);
+      }
+      // TODO: create session key
+    };
+// TODO: injectable.
 
 export const fetchMember = 
   (logger: Logger,

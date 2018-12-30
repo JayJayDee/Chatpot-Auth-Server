@@ -30,8 +30,17 @@ export namespace Auth {
     token: string;
     password: string;
   };
+  export type ReqAuthenticate = {
+    login_id: string;
+    password: string;
+  };
+  export type ResAuthenticate = {
+    auth_type: AuthType;
+    success: boolean;
+  };
 
   export type InsertAuth = (param: ReqInsertAuth) => Promise<void>;
+  export type Authenticate = (param: ReqAuthenticate) => Promise<ResAuthenticate>;
 }
 
 export namespace Nick {

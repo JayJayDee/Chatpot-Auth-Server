@@ -60,7 +60,8 @@ export namespace Modules {
       Get = 'Store/Nick/Get'
     }
     export enum Auth {
-      Insert = 'Store/Auth/Insert'
+      Insert = 'Store/Auth/Insert',
+      Authenticate = 'Store/Auth/Authenticate'
     }
   }
 
@@ -68,7 +69,10 @@ export namespace Modules {
     export enum Auth {
       Encrypt = 'Util/Auth/Encrypt',
       Decrypt = 'Util/Auth/Decrypt',
-      Passphrase = 'Util/Auth/Passphrase'
+      Passphrase = 'Util/Auth/Passphrase',
+      PassHash = 'Util/Auth/PassHash',
+      CreateSesssion = 'Util/Auth/CreateSession',
+      ValidateSession = 'Util/Auth/ValidateSession'
     }
   }
 }

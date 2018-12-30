@@ -16,6 +16,7 @@ export type MysqlConfig = {
   connectionLimit: number;
 };
 export type CredentialConfig = {
+  sessionExpires: number;
   secret: string;
 };
 export type CacheConfig = {
