@@ -66,7 +66,8 @@ export namespace Modules {
   export namespace Util {
     export enum Auth {
       Encrypt = 'Util/Auth/Encrypt',
-      Decrypt = 'Util/Auth/Decrypt'
+      Decrypt = 'Util/Auth/Decrypt',
+      Passphrase = 'Util/Auth/Passphrase'
     }
   }
 }

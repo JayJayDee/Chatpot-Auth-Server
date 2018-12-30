@@ -17,6 +17,7 @@ export namespace MemberService {
   };
   export type ResCreateMember = {
     token: string;
+    passphrase: string;
     nick: Nick;
   };
 
