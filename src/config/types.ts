@@ -19,6 +19,7 @@ export type CredentialConfig = {
   secret: string;
 };
 export type CacheConfig = {
+  enabled: boolean;
   provider: CacheProvider;
   redis?: RedisConfig;
 };

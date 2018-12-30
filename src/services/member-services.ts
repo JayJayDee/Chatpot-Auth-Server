@@ -2,6 +2,8 @@ import { MemberService } from './types';
 import { Logger } from '../loggers/types';
 import { Nick, Member, Auth } from '../stores/types';
 import { AuthUtil } from '../utils/types';
+import { injectable } from 'smart-factory';
+import { Modules } from '../modules';
 
 export const fetchMember = 
   (logger: Logger,
@@ -19,6 +21,14 @@ export const fetchMember =
         gender: member.gender
       };
     };
+injectable(Modules.Service.Member.Fetch,
+  [Modules.Logger,
+    Modules.Store.Member.Get,
+    Modules.Store.Nick.Get,
+    Modules.Util.Auth.Decrypt],
+  async (logger, getMember, getNick, decrypt) => 
+    fetchMember(logger, getMember, getNick, decrypt));
+
 
 export const createMember =
   (logger: Logger,
@@ -53,3 +63,14 @@ export const createMember =
           passphrase: pass
         };
       };
+injectable(Modules.Service.Member.Create,
+  [ Modules.Logger,
+    Modules.Store.Nick.Pick,
+    Modules.Store.Nick.Insert,
+    Modules.Store.Auth.Insert,
+    Modules.Store.Member.Insert,
+    Modules.Util.Auth.Encrypt,
+    Modules.Util.Auth.Passphrase ],
+  async (logger, pick, insertNick, insertAuth, insert, token, pass) =>
+    createMember(logger, pick, insertNick, insertAuth, insert, token, pass));
+      
