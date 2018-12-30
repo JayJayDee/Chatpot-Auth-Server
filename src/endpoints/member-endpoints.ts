@@ -1,4 +1,4 @@
-import { Endpoint, EndpointMethod, EndpointRouter } from './types';
+import { Endpoint, EndpointMethod, EndpointRouter, Authenticator } from './types';
 import { injectable } from 'smart-factory';
 import { Modules } from '../modules';
 import { Router } from 'express';
@@ -8,10 +8,12 @@ import { InvalidParamError } from './errors';
 import { asyncEndpointWrap } from './wraps';
 
 export const getMember = 
-  (getMember: MemberService.FetchMember): Endpoint => ({
+  (getMember: MemberService.FetchMember,
+    authenticator: Authenticator): Endpoint => ({
     uri: '/:token',
     method: EndpointMethod.GET,
     handler: [
+      authenticator(),
       asyncEndpointWrap(async (req, res, next) => {
         const token: string = req.params['token'];
         if (!token) throw new InvalidParamError('token');
@@ -21,8 +23,9 @@ export const getMember =
     ]
   });
 injectable(Modules.Endpoint.Member.Get,
-  [ Modules.Service.Member.Fetch ],
-  async (fetch) => getMember(fetch));
+  [Modules.Service.Member.Fetch,
+    Modules.Endpoint.Middleware.Authenticator],
+  async (fetch, auth) => getMember(fetch, auth));
   
 export const joinSimple =
   (log: Logger,
