@@ -53,7 +53,7 @@ export const authenticate =
       const resp: Auth.ResAuthenticate = {
         member_no: rows[0].member_no,
         auth_type: rows[0].auth_type,
-        success: false
+        success: true
       };
       return resp;
     };

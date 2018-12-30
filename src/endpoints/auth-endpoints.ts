@@ -5,6 +5,7 @@ import { injectable } from 'smart-factory';
 import { Logger } from '../loggers/types';
 import { MemberService } from '../services/types';
 import { asyncEndpointWrap } from './wraps';
+import { InvalidParamError } from './errors';
 
 injectable(Modules.Endpoint.Auth.Router,
   [Modules.Endpoint.Auth.Auth],
@@ -24,7 +25,12 @@ const authEndpoint =
       method: EndpointMethod.POST,
       handler: [
         asyncEndpointWrap(async (req, res, next) => {
-          res.status(200).json({});
+          const login_id = req.body['login_id'];
+          const password = req.body['password'];
+          if (!login_id || !password) throw new InvalidParamError('login_id, password');
+
+          const resp = await auth({ login_id, password });
+          res.status(200).json(resp);
         })
       ]
     });
