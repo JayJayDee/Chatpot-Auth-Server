@@ -23,7 +23,8 @@ export namespace Modules {
   export namespace Service {
     export enum Member {
       Fetch = 'Service/Member/Fetch',
-      Create = 'Service/Member/Create'
+      Create = 'Service/Member/Create',
+      Authenticate = 'Service/Member/Authenticate'
     }
   }
 
@@ -34,6 +35,7 @@ export namespace Modules {
     export const Get = 'Cache/Get';
     export const Set = 'Cache/Set';
     export const Operations = 'Cache/Operations';
+    export const Helper = 'Cache/Helper';
   }
 
   export namespace Endpoint {
@@ -45,6 +47,10 @@ export namespace Modules {
       Router = 'Endpoint/Member/Router',
       Get = 'Endpoint/Member/Get',
       Create = 'Endpoint/Member/Create'
+    }
+    export enum Auth {
+      Router = 'Endpoint/Auth/Router',
+      Auth = 'Endpoint/Auth/Auth'
     }
   }
 
@@ -59,7 +65,8 @@ export namespace Modules {
       Get = 'Store/Nick/Get'
     }
     export enum Auth {
-      Insert = 'Store/Auth/Insert'
+      Insert = 'Store/Auth/Insert',
+      Authenticate = 'Store/Auth/Authenticate'
     }
   }
 
@@ -67,7 +74,10 @@ export namespace Modules {
     export enum Auth {
       Encrypt = 'Util/Auth/Encrypt',
       Decrypt = 'Util/Auth/Decrypt',
-      Passphrase = 'Util/Auth/Passphrase'
+      Passphrase = 'Util/Auth/Passphrase',
+      PassHash = 'Util/Auth/PassHash',
+      CreateSesssion = 'Util/Auth/CreateSession',
+      ValidateSession = 'Util/Auth/ValidateSession'
     }
   }
 }

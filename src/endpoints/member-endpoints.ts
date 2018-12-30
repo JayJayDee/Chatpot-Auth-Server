@@ -20,7 +20,10 @@ export const getMember =
       })
     ]
   });
-
+injectable(Modules.Endpoint.Member.Get,
+  [ Modules.Service.Member.Fetch ],
+  async (fetch) => getMember(fetch));
+  
 export const joinSimple =
   (log: Logger,
     create: MemberService.CreateMember): Endpoint => ({
@@ -41,11 +44,6 @@ export const joinSimple =
         })
       ]
     });
-
-injectable(Modules.Endpoint.Member.Get,
-  [ Modules.Service.Member.Fetch ],
-  async (fetch) => getMember(fetch));
-
 injectable(Modules.Endpoint.Member.Create,
   [Modules.Logger,
     Modules.Service.Member.Create],

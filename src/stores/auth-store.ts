@@ -3,9 +3,11 @@ import { Logger } from '../loggers/types';
 import { Auth } from './types';
 import { injectable } from 'smart-factory';
 import { Modules } from '../modules';
+import { AuthUtil } from '../utils/types';
 
 export const insertAuth =
   (mysql: MysqlDriver,
+    passHash: AuthUtil.CreatePassHash,
     log: Logger): Auth.InsertAuth =>
     async (param: Auth.ReqInsertAuth) => {
       const query = `
@@ -22,11 +24,39 @@ export const insertAuth =
       const params = [
         param.member_no, param.auth_type,
         param.login_id, param.token,
-        param.password
+        passHash(param.password)
       ];
       await mysql.query(query, params);
     };
-    
 injectable(Modules.Store.Auth.Insert,
-  [Modules.Mysql, Modules.Logger],
-  async (mysql, log) => insertAuth(mysql, log));
+  [Modules.Mysql, Modules.Util.Auth.PassHash, Modules.Logger],
+  async (mysql, hash, log) => insertAuth(mysql, hash, log));
+
+export const authenticate =
+  (mysql: MysqlDriver,
+    passHash: AuthUtil.CreatePassHash,
+    log: Logger): Auth.Authenticate =>
+    async (param) => {
+      const hashed = passHash(param.password);
+      const query = `
+        SELECT * FROM chatpot_auth WHERE login_id=? AND password=?
+      `;
+      const params: any[] = [ param.login_id, hashed ];
+      const rows: any[] = await mysql.query(query, params) as any[];
+      if (rows.length === 0) {
+        return {
+          success: false,
+          auth_type: null,
+          member_no: null
+        };
+      }
+      const resp: Auth.ResAuthenticate = {
+        member_no: rows[0].member_no,
+        auth_type: rows[0].auth_type,
+        success: false
+      };
+      return resp;
+    };
+injectable(Modules.Store.Auth.Authenticate,
+  [Modules.Mysql, Modules.Util.Auth.PassHash,  Modules.Logger],
+  async (mysql, passHash, log) => authenticate(mysql, passHash, log));
