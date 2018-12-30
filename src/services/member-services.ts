@@ -26,19 +26,30 @@ export const createMember =
     insertNick: Nick.InsertNick,
     insertAuth: Auth.InsertAuth,
     create: Member.InsertMember,
-    token: AuthUtil.CreateToken) =>
+    token: AuthUtil.CreateToken,
+    passphrase: AuthUtil.CreatePassphrase): MemberService.CreateMember =>
       async (param: MemberService.ReqCreateMember) => {
         const created = await create(param);
         const memberNo: number = created.member_no;
+
         const nick = await pick();
+        const memberToken = await token(memberNo);
+        const pass = passphrase(memberNo);
 
         await insertNick({
           member_no: memberNo,
           nick
         });
-        const memberToken = await token(memberNo);
+        await insertAuth({
+          auth_type: Auth.AuthType.SIMPLE,
+          member_no: memberNo,
+          login_id: memberToken,
+          token: memberToken,
+          password: pass
+        });
         return {
           nick,
-          token: memberToken
+          token: memberToken,
+          passphrase: pass
         };
       };

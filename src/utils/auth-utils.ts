@@ -1,4 +1,4 @@
-import { createCipher, createDecipher } from 'crypto';
+import { createCipher, createDecipher, createHash } from 'crypto';
 import { injectable } from 'smart-factory';
 import { AuthUtil } from './types';
 import { CredentialConfig } from '../config/types';
@@ -21,6 +21,15 @@ export const encryptToken = (cfg: CredentialConfig): AuthUtil.CreateToken =>
     encrypted += cp.final('hex');
     return encrypted;
   };
+
+export const createPassphrase = 
+  (cfg: CredentialConfig): AuthUtil.CreatePassphrase =>
+    (memberNo: number) => {
+      const timestamp = Date.now();
+      return createHash('sha256')
+        .update(`${timestamp}${memberNo}${cfg.secret}`)
+        .digest('hex');
+    };
 
 export const decryptToken = 
   (log: Logger, cfg: CredentialConfig): AuthUtil.DecryptToken =>
@@ -50,3 +59,7 @@ injectable(Modules.Util.Auth.Encrypt,
 injectable(Modules.Util.Auth.Decrypt,
   [Modules.Logger, Modules.Config.CredentialConfig],
   async (logger, cfg) => decryptToken(logger, cfg));
+
+injectable(Modules.Util.Auth.Passphrase,
+  [Modules.Config.CredentialConfig],
+  async (cfg) => createPassphrase(cfg));

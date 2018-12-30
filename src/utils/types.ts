@@ -6,4 +6,5 @@ export namespace AuthUtil {
 
   export type CreateToken = (memberNo: number) => string;
   export type DecryptToken = (token: string) => DecryptedPayload;
+  export type CreatePassphrase = (memberNo: number) => string;
 }
