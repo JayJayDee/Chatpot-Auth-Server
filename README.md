@@ -25,7 +25,8 @@ format of the configuration file must be JSON.
 	"MYSQL_PORT": 3306,
 	"MYSQL_USER": "root",
 	"MYSQL_DATABASE": "YOUR_MYSQL_DB_NAME",
-	"MYSQL_PASSWORD": "YOUR_MYSQL_PASSWORD"
+	"MYSQL_PASSWORD": "YOUR_MYSQL_PASSWORD",
+	"CREDENTIAL_SECRET": "APP SECRET KEY"
 }
 ```
 or you can supply values through environment variables.
