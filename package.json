@@ -9,7 +9,7 @@
     "test": "jest -c jest.config.js",
     "test:coverage": "jest -c jest.config.js --coverage",
     "clean": "rimraf coverage dist",
-    "build": "npm run clean && npm run lint && npm run test && tsc -p ./tsconfig.build.json && cp package.json ./dist"
+    "build": "npm run clean && npm run lint && npm run test && tsc -p ./tsconfig.build.json"
   },
   "repository": {
     "type": "git",
