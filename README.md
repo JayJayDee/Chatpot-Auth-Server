@@ -26,7 +26,9 @@ format of the configuration file must be JSON.
 	"MYSQL_USER": "root",
 	"MYSQL_DATABASE": "YOUR_MYSQL_DB_NAME",
 	"MYSQL_PASSWORD": "YOUR_MYSQL_PASSWORD",
-	"CREDENTIAL_SECRET": "APP SECRET KEY"
+	"CREDENTIAL_SECRET": "APP SECRET KEY",
+	"CREDENTIAL_SESSION_EXPIRES": 60, // auth-token expires.
+	"CACHE_ENABLED": true // only development purpose, change this to false
 }
 ```
 or you can supply values through environment variables.
