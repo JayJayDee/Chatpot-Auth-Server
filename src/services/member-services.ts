@@ -7,12 +7,12 @@ import { Modules } from '../modules';
 import { BaseRuntimeError } from '../errors';
 
 class AuthFailError extends BaseRuntimeError {}
-export const authenticateMember = 
+export const authenticateMember =
   (logger: Logger,
     auth: Auth.Authenticate,
     createSession: AuthUtil.CreateSessionKey): MemberService.Authenticate =>
     async (param) => {
-      const result = await auth({ 
+      const result = await auth({
         login_id: param.login_id,
         password: param.password
       });
@@ -30,7 +30,7 @@ injectable(Modules.Service.Member.Authenticate,
     Modules.Util.Auth.CreateSesssion],
   async (log, auth, sess) => authenticateMember(log, auth, sess));
 
-export const fetchMember = 
+export const fetchMember =
   (logger: Logger,
     getMember: Member.GetMember,
     getNick: Nick.GetNick,
@@ -39,7 +39,7 @@ export const fetchMember =
       const decrypted = decrypt(token);
       const member = await getMember(decrypted.member_no);
       const nick = await getNick({ member_no: decrypted.member_no });
-      return { 
+      return {
         nick,
         region: member.region,
         language: member.language,
@@ -51,7 +51,7 @@ injectable(Modules.Service.Member.Fetch,
     Modules.Store.Member.Get,
     Modules.Store.Nick.Get,
     Modules.Util.Auth.Decrypt],
-  async (logger, getMember, getNick, decrypt) => 
+  async (logger, getMember, getNick, decrypt) =>
     fetchMember(logger, getMember, getNick, decrypt));
 
 
@@ -98,4 +98,3 @@ injectable(Modules.Service.Member.Create,
     Modules.Util.Auth.Passphrase ],
   async (logger, pick, insertNick, insertAuth, insert, token, pass) =>
     createMember(logger, pick, insertNick, insertAuth, insert, token, pass));
-      

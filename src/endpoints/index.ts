@@ -7,12 +7,12 @@ import { Logger } from '../loggers/types';
 import { EndpointRouter, EndpointRunner } from './types';
 import { errorMiddleware } from './middlewares';
 
-export const endpointRunner = 
+export const endpointRunner =
   (cfg: HttpConfig,
     log: Logger,
-    member: EndpointRouter, 
+    member: EndpointRouter,
     auth: EndpointRouter,
-    errorMid : express.ErrorRequestHandler): EndpointRunner =>
+    errorMid: express.ErrorRequestHandler): EndpointRunner =>
       () => {
         const app = express();
         app.use(bodyParser.urlencoded({ extended: true }));

@@ -1,4 +1,4 @@
-import { injectable } from "smart-factory";
+import { injectable } from 'smart-factory';
 import { Modules } from '../modules';
 import { MysqlConfig } from '../config/types';
 import initMysql from './default-mysql-driver';

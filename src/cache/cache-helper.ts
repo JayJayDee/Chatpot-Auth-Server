@@ -6,7 +6,7 @@ import { Modules } from '../modules';
 type DataFetcher = () => Promise<any>;
 
 export const doCached =
-  (cfg: CacheConfig, 
+  (cfg: CacheConfig,
     get: Cache.Get,
     set: Cache.Set): Cache.Helper =>
     async (key: string, fetcher: DataFetcher) => {

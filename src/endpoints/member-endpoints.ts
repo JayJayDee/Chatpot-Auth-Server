@@ -7,7 +7,7 @@ import { MemberService } from '../services/types';
 import { InvalidParamError } from './errors';
 import { asyncEndpointWrap } from './wraps';
 
-export const getMember = 
+export const getMember =
   (getMember: MemberService.FetchMember,
     authenticator: Authenticator): Endpoint => ({
     uri: '/:token',
@@ -17,7 +17,7 @@ export const getMember =
       asyncEndpointWrap(async (req, res, next) => {
         const token: string = req.params['token'];
         if (!token) throw new InvalidParamError('token');
-        const member = await getMember(token)
+        const member = await getMember(token);
         res.status(200).json(member);
       })
     ]
@@ -26,7 +26,7 @@ injectable(Modules.Endpoint.Member.Get,
   [Modules.Service.Member.Fetch,
     Modules.Endpoint.Middleware.Authenticator],
   async (fetch, auth) => getMember(fetch, auth));
-  
+
 export const joinSimple =
   (log: Logger,
     create: MemberService.CreateMember): Endpoint => ({

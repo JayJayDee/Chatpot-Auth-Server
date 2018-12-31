@@ -6,7 +6,7 @@ import { CacheConfig, CacheProvider } from '../config/types';
 import { Cache } from './types';
 import { Logger } from '../loggers/types';
 
-export const initCache = 
+export const initCache =
   async (cfg: CacheConfig, logger: Logger): Promise<Cache.CacheOperations> => {
     let cacheOps: Cache.CacheOperations = null;
     const initMemory = memoryCacheFactory();

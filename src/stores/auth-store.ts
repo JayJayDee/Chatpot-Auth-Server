@@ -11,9 +11,9 @@ export const insertAuth =
     log: Logger): Auth.InsertAuth =>
     async (param: Auth.ReqInsertAuth) => {
       const query = `
-        INSERT INTO 
-          chatpot_auth 
-        SET 
+        INSERT INTO
+          chatpot_auth
+        SET
           member_no=?,
           auth_type=?,
           login_id=?,

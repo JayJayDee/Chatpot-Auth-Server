@@ -16,7 +16,7 @@ const initMemoryDriver = () =>
   };
 export default initMemoryDriver;
 
-const memoryGet = 
+const memoryGet =
   (storage: Storage, expset: ExpireSet): Cache.Get =>
     async (key: string) => {
       const value = storage.get(key);
@@ -29,7 +29,7 @@ const memoryGet =
       return value;
     };
 
-const isExpires = 
+const isExpires =
   (expset: ExpireSet, key: string): boolean => {
     if (!expset[key]) return false;
     if (Date.now() < expset[key]) return false;

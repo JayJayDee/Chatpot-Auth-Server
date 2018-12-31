@@ -6,7 +6,11 @@ import { Logger } from '../loggers/types';
 import { Modules } from '../modules';
 import { BaseAuthError } from '../errors';
 
-export class InvalidTokenError extends BaseAuthError {}
+export class InvalidTokenError extends BaseAuthError {
+  constructor(msg: string) {
+    super('UNAUTHORIZED', msg);
+  }
+}
 
 export type Decrypted = {
   member_no: number;
@@ -22,7 +26,7 @@ export const encryptToken = (cfg: CredentialConfig): AuthUtil.CreateToken =>
     return encrypted;
   };
 
-export const createPassphrase = 
+export const createPassphrase =
   (cfg: CredentialConfig): AuthUtil.CreatePassphrase =>
     (memberNo: number) => {
       const timestamp = Date.now();
@@ -58,11 +62,11 @@ export const validateSessionKey =
         expired: false,
         member_no: null
       };
-      try { 
+      try {
         let decrypted: string = dp.update(sessionKey, 'hex', 'utf8');
         decrypted += dp.final('utf8');
         const splited: string[] = decrypted.split('|@|');
-        if (splited.length != 2) return resp;
+        if (splited.length !== 2) return resp;
         const createdAt = parseInt(splited[1]);
         if (Date.now() > createdAt + cfg.sessionExpires * 1000) {
           resp.valid = true;
@@ -77,15 +81,15 @@ export const validateSessionKey =
       }
     };
 
-export const decryptToken = 
+export const decryptToken =
   (log: Logger, cfg: CredentialConfig): AuthUtil.DecryptToken =>
     (token: string) => {
       const dp = decipher(cfg);
-      try { 
+      try {
         let decrypted: string = dp.update(token, 'hex', 'utf8');
         decrypted += dp.final('utf8');
         const splited: string[] = decrypted.split('|@|');
-        if (splited.length != 2) throw new InvalidTokenError(`invalid token: ${token}`);
+        if (splited.length !== 2) throw new InvalidTokenError(`invalid token: ${token}`);
         return {
           member_no: parseInt(splited[0]),
           timestamp: parseInt(splited[1])
@@ -94,7 +98,7 @@ export const decryptToken =
         throw new InvalidTokenError(`invalid token: ${token}`);
       }
     };
-    
+
 const cipher = (cfg: CredentialConfig) => createCipher('des-ede3-cbc', cfg.secret);
 const decipher = (cfg: CredentialConfig) => createDecipher('des-ede3-cbc', cfg.secret);
 
@@ -121,4 +125,3 @@ injectable(Modules.Util.Auth.CreateSesssion,
 injectable(Modules.Util.Auth.ValidateSession,
   [Modules.Config.CredentialConfig],
   async (cfg) => validateSessionKey(cfg));
-  

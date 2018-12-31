@@ -1,4 +1,4 @@
-import { Modules } from "../modules";
+import { Modules } from '../modules';
 import { EndpointRouter, Endpoint, EndpointMethod } from './types';
 import { Router } from 'express';
 import { injectable } from 'smart-factory';

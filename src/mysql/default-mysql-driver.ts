@@ -1,5 +1,5 @@
 import { createPool, Pool, PoolConnection } from 'mysql';
-import { MysqlConfig } from "../config/types";
+import { MysqlConfig } from '../config/types';
 import { MysqlDriver } from './types';
 import { Logger } from '../loggers/types';
 import { MysqlConnectionError } from './errors';
@@ -26,7 +26,7 @@ type PoolCreateOpts = {
 type PoolCreateFunction = (opts: PoolCreateOpts) => Pool;
 type GetConnectionFunction = (pool: Pool) => Promise<PoolConnection>;
 
-export const getConnection = 
+export const getConnection =
   (cfg: MysqlConfig, poolCreateFunc: PoolCreateFunction) =>
     (): Promise<Pool> => new Promise((resolve, reject) => {
       const pool = poolCreateFunc(cfg);

@@ -8,7 +8,7 @@ export const getMember = (mysql: MysqlDriver): Member.GetMember  =>
     const sql = `SELECT * FROM chatpot_member WHERE no=?`;
     const rows: any = await mysql.query(sql, [memberNo]);
     if (rows.length === 0) return null;
-    
+
     const member: Member.MemberEntity = {
       no: rows[0].no,
       region: rows[0].region,
@@ -21,11 +21,11 @@ export const getMember = (mysql: MysqlDriver): Member.GetMember  =>
 
 export const insertMember = (mysql: MysqlDriver): Member.InsertMember =>
   async (param: Member.ReqCreateMember): Promise<Member.ResCreateMember> => {
-    const sql = 
+    const sql =
     `
       INSERT INTO
-        chatpot_member 
-      SET 
+        chatpot_member
+      SET
         region=?,
         language=?,
         gender=?,

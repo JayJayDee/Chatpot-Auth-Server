@@ -18,13 +18,13 @@ export const merge = (adj: Nick.NickBaseEntity, noun: Nick.NickBaseEntity) => ({
 
 export const pickNick = (mysql: MysqlDriver): Nick.PickNick =>
   async () => {
-    const adjQuery = 
+    const adjQuery =
     `SELECT * FROM chatpot_nick_pool_adj ORDER BY RAND() LIMIT 1`;
     let rows: any[] = await mysql.query(adjQuery) as any[];
     if (rows.length === 0) return null;
     const adj = fetch(rows[0]);
 
-    const nounQuery = 
+    const nounQuery =
     `SELECT * FROM chatpot_nick_pool_noun ORDER BY RAND() LIMIT 1`;
     rows = await mysql.query(nounQuery) as any[];
     if (rows.length === 0) return null;
@@ -43,14 +43,14 @@ export const insertNick = (mysql: MysqlDriver): Nick.InsertNick =>
     const valuesClauses = rowDatas.map((r) => '(?,?,?)').join(',');
     const params = rowDatas.map((r) => [r.member_no, r.language, r.nick]);
     const query = `
-      INSERT INTO chatpot_member_has_nick 
+      INSERT INTO chatpot_member_has_nick
         (member_no, language, nick) VALUES ${valuesClauses}`;
     await mysql.query(query, flatten(params));
   };
 
 export const getMemberNick = (mysql: MysqlDriver): Nick.GetNick =>
   async (req: Nick.ReqGetNick) => {
-    const nick: Nick.NickEntity = { 
+    const nick: Nick.NickEntity = {
       en: null,
       ko: null,
       ja: null
