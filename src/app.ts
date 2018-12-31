@@ -1,4 +1,4 @@
-import { init, resolve } from "smart-factory";
+import { init, resolve } from 'smart-factory';
 import { EndpointRunner } from './endpoints';
 import { Modules } from './modules';
 

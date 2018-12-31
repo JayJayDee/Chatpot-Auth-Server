@@ -30,5 +30,5 @@ export namespace MemberService {
 
   export type FetchMember = (token: string) => Promise<Member>;
   export type CreateMember = (param: ReqCreateMember) => Promise<ResCreateMember>;
-  export type Authenticate = (param: ReqAuthenticate) => Promise<ResAuthenticate>;  
+  export type Authenticate = (param: ReqAuthenticate) => Promise<ResAuthenticate>;
 }

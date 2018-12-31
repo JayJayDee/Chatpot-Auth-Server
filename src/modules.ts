@@ -13,7 +13,7 @@ export namespace Modules {
     CredentialConfig = 'Config/CredentialConfig',
     CacheConfig = 'Config/CacheConfig',
     Env = 'Config/Env',
-    
+
     ConfigSource = 'Config/ConfigSource',
     ConfigReader = 'Config/ConfigReader',
     ConfigParser = 'Config/ConfigParser',

@@ -5,8 +5,11 @@
   "main": "index.js",
   "scripts": {
     "dev": "CONFIG_FILE=$HOME/chatpot-auth-conf.json TS_NODE_FILES=true nodemon --watch ./src -e ts --exec ts-node -- --project ./tsconfig.json ./src/app",
-    "test": "jest",
-    "test:coverage": "jest --coverage"
+    "lint": "tslint -t stylish --project ./tsconfig.json",
+    "test": "jest -c jest.config.js",
+    "test:coverage": "jest -c jest.config.js --coverage",
+    "clean": "rimraf coverage dist",
+    "build": "npm run clean && npm run lint && npm run test && tsc -p ./tsconfig.build.json && cp package.json ./dist"
   },
   "repository": {
     "type": "git",
@@ -27,9 +30,11 @@
     "@types/redis": "^2.8.10",
     "jest": "^23.6.0",
     "nodemon": "^1.18.7",
+    "rimraf": "^2.6.2",
     "ts-jest": "^23.10.5",
     "ts-node": "^7.0.1",
     "tslib": "^1.9.3",
+    "tslint": "^5.12.0",
     "typescript": "^3.2.1"
   },
   "dependencies": {

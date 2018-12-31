@@ -1,5 +1,5 @@
 import { readFile } from 'fs';
-import { ConfigSource, ConfigReader } from "./types";
+import { ConfigSource, ConfigReader } from './types';
 import { ConfigurationError } from './errors';
 
 const read = (src: ConfigSource): ConfigReader =>
@@ -19,7 +19,7 @@ export const readFileContent = (path: string) =>
         const content = JSON.parse(data.toString());
         resolve(content);
       } catch (err) {
-        return reject(new ConfigurationError(`invalid config file: ${path}`));        
+        return reject(new ConfigurationError(`invalid config file: ${path}`));
       }
     }));
   });

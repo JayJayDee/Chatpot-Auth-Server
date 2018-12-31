@@ -13,7 +13,7 @@ type ErrorPayload = {
   message: string;
 };
 
-export const errorMiddleware = 
+export const errorMiddleware =
   (log: Logger, env: Env): ErrorRequestHandler =>
     (err, req, res, next) => {
       const resp = errorResponse(log, err);

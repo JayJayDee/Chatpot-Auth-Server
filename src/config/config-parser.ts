@@ -1,5 +1,5 @@
 import { set } from 'lodash';
-import { ConfigSource, ConfigParser, ConfigRule, RootConfig } from "./types";
+import { ConfigSource, ConfigParser, ConfigRule, RootConfig } from './types';
 import { ConfigurationError } from './errors';
 
 const configParser = (emptyConfig: RootConfig): ConfigParser =>
@@ -7,7 +7,7 @@ const configParser = (emptyConfig: RootConfig): ConfigParser =>
     rules.map((rule: ConfigRule) => {
       const value = src[rule.key];
       if (value === undefined && rule.defaultValue === undefined) {
-        throw new ConfigurationError(`configuration not supplied: ${rule.key}`); 
+        throw new ConfigurationError(`configuration not supplied: ${rule.key}`);
       }
 
       if (value === undefined && rule.defaultValue !== undefined) {

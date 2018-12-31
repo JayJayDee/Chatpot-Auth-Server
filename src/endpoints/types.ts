@@ -1,7 +1,7 @@
 import { RequestHandler, Router } from 'express';
 
 export enum EndpointMethod {
-  POST = 'post', GET = 'get' 
+  POST = 'post', GET = 'get'
 }
 export type Endpoint = {
   uri: string;

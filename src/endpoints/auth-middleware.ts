@@ -19,7 +19,7 @@ class SessionExpiredError extends BaseAuthError {
 export const authenticator =
   (validate: AuthUtil.ValidateSessionKey,
     decrypt: AuthUtil.DecryptToken): Authenticator =>
-      (tokenPath: string[]) => 
+      (tokenPath: string[]) =>
         (req, res, next) => {
           const token = get(req, tokenPath);
           if (!token) return next(new NotAuthenticatedError('token not found'));
@@ -29,7 +29,7 @@ export const authenticator =
           } catch (err) {
             return next(err);
           }
-          
+
           const sessionKey = req.query['session_key'];
           if (!sessionKey) return next(new NotAuthenticatedError('session_key not found'));
 

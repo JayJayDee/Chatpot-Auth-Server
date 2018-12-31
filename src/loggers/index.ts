@@ -1,4 +1,4 @@
-import { injectable } from "smart-factory";
+import { injectable } from 'smart-factory';
 import { Modules } from '../modules';
 import { Logger } from './types';
 import { Env } from '../config/types';

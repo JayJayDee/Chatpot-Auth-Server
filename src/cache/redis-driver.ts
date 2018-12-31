@@ -4,7 +4,7 @@ import { RedisConfig } from '../config/types';
 import { RedisConnectionError } from './errors';
 import { Logger } from '../loggers/types';
 
-const initRedisDriver = 
+const initRedisDriver =
   (cfg: RedisConfig, log: Logger) =>
     async (): Promise<Cache.CacheOperations> => {
       log.info('[cache] establishing redis connection ...');
