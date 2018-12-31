@@ -12,5 +12,5 @@ export type EndpointRouter = {
   uri: string;
   router: Router;
 };
-export type Authenticator = () => RequestHandler;
+export type Authenticator = (tokenPath: string[]) => RequestHandler;
 export type EndpointRunner = () => void;

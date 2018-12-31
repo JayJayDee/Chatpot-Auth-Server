@@ -51,18 +51,29 @@ export const createSessionKey =
 
 export const validateSessionKey =
   (cfg: CredentialConfig): AuthUtil.ValidateSessionKey =>
-    (sessionKey: string) => {
+    (token: string, sessionKey: string) => {
       const dp = decipher(cfg);
+      const resp: AuthUtil.DecryptedSessionKey = {
+        valid: false,
+        expired: false,
+        member_no: null
+      };
       try { 
         let decrypted: string = dp.update(sessionKey, 'hex', 'utf8');
         decrypted += dp.final('utf8');
         const splited: string[] = decrypted.split('|@|');
-        if (splited.length != 2) return false;
+        if (splited.length != 2) return resp;
         const createdAt = parseInt(splited[1]);
-        if (Date.now() > createdAt + cfg.sessionExpires * 1000) return false;
-        return true;
+        if (Date.now() > createdAt + cfg.sessionExpires * 1000) {
+          resp.valid = true;
+          resp.expired = true;
+          return resp;
+        }
+        resp.valid = true;
+        resp.member_no = parseInt(splited[0]);
+        return resp;
       } catch (err) {
-        return false;
+        return resp;
       }
     };
 

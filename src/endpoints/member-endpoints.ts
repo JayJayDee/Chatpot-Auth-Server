@@ -13,7 +13,7 @@ export const getMember =
     uri: '/:token',
     method: EndpointMethod.GET,
     handler: [
-      authenticator(),
+      authenticator(['params', 'token']),
       asyncEndpointWrap(async (req, res, next) => {
         const token: string = req.params['token'];
         if (!token) throw new InvalidParamError('token');
