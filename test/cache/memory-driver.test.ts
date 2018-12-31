@@ -13,6 +13,6 @@ describe('initMemoryDriver tests', () => {
     memoryDriverFactory()(dummyLogger)
     .then((ops: Cache.CacheOperations) => {
       expect(dummyLogger.info).toHaveBeenCalledTimes(1);
-    });  
+    });
   });
 });
