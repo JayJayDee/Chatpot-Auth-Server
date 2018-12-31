@@ -5,7 +5,17 @@ import { injectable } from 'smart-factory';
 import { Modules } from '../modules';
 import { Authenticator } from './types';
 
-class NotAuthenticatedError extends BaseAuthError {}
+class NotAuthenticatedError extends BaseAuthError {
+  constructor(msg: string) {
+    super('UNAUTHORIZED', msg);
+  }
+}
+class SessionExpiredError extends BaseAuthError {
+  constructor() {
+    super('SESSION_EXPIRED', 'session expired');
+  }
+}
+
 export const authenticator =
   (validate: AuthUtil.ValidateSessionKey,
     decrypt: AuthUtil.DecryptToken): Authenticator =>
@@ -25,7 +35,7 @@ export const authenticator =
 
           const validated = validate(token, sessionKey);
           if (validated.valid === false) return next(new NotAuthenticatedError('invalid session_key'));
-          if (validated.expired === true) return next(new NotAuthenticatedError('session_key expired'));
+          if (validated.expired === true) return next(new SessionExpiredError());
           if (decrypted.member_no !== validated.member_no) return next(new NotAuthenticatedError('not allowed operation'));
           next();
         };

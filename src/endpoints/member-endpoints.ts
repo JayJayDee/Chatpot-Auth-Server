@@ -17,7 +17,7 @@ export const getMember =
       asyncEndpointWrap(async (req, res, next) => {
         const token: string = req.params['token'];
         if (!token) throw new InvalidParamError('token');
-        const member = await getMember(token)
+        const member = await getMember(token);
         res.status(200).json(member);
       })
     ]
