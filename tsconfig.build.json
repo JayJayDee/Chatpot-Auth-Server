@@ -5,7 +5,7 @@
     "outDir": "dist",
     "importHelpers": false,
     "removeComments": true,
-    "sourceMap": true,
+    "sourceMap": false,
   },
   "include": [
     "src/**/*"
