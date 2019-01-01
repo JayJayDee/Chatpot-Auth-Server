@@ -4,6 +4,7 @@ export namespace MemberService {
     language: string;
     gender: string;
     nick: Nick;
+    token: string;
   };
   export type Nick = {
     en: string;
