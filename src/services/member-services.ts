@@ -43,7 +43,8 @@ export const fetchMember =
         nick,
         region: member.region,
         language: member.language,
-        gender: member.gender
+        gender: member.gender,
+        token
       };
     };
 injectable(Modules.Service.Member.Fetch,
