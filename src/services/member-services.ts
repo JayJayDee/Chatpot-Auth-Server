@@ -1,3 +1,4 @@
+import { find } from 'lodash';
 import { MemberService } from './types';
 import { Logger } from '../loggers/types';
 import { Nick, Member, Auth } from '../stores/types';
@@ -61,11 +62,25 @@ export const fetchMemberMultiple =
     getNicks: Nick.GetNickMultiple,
     decrypt: AuthUtil.DecryptToken): MemberService.FetchMembers =>
     async (tokens: string[]) => {
-      const resp: MemberService.Member[] = [];
-
-      const memberNos: number[] = tokens.map((t) => decrypt(t).member_no);
-      console.log(memberNos);
-
+      const tokenMap = new Map<number, string>();
+      const memberNos: number[] = tokens.map((t) => {
+        const memberNo = decrypt(t).member_no;
+        tokenMap.set(memberNo, t);
+        return memberNo;
+      });
+      const members = await getMembers(memberNos);
+      const nicks: Nick.NickMatchEntity[] = await getNicks(memberNos);
+      const resp: MemberService.Member[] = members.map((m) => ({
+        region: m.region,
+        language: m.language,
+        gender: m.gender,
+        nick: {
+          en: find(nicks, {member_no: m.no}).en,
+          ko: find(nicks, {member_no: m.no}).ko,
+          ja: find(nicks, {member_no: m.no}).ja
+        },
+        token: tokenMap.get(m.no)
+      }));
       return resp;
     };
 injectable(Modules.Service.Member.FetchMultiple,
