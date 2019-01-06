@@ -1,4 +1,4 @@
-import { flatten, set } from 'lodash';
+import { flatten, set, groupBy } from 'lodash';
 import { MysqlDriver } from '../mysql/types';
 import { Nick } from './types';
 import { injectable } from 'smart-factory';
@@ -68,15 +68,27 @@ export const getMemberNickMultiple = (mysql: MysqlDriver): Nick.GetNickMultiple 
     const inClause = memberNos.map((n) => '?').join(',');
     const sql = `
       SELECT
-
+        *
       FROM
         chatpot_member_has_nick
       WHERE
         member_no IN (${inClause})
     `;
     const rows: any[] = await mysql.query(sql, memberNos) as any[];
-    console.log(rows);
-    return [];
+
+    const groupped: {[key: string]: any[]} = groupBy(rows, (r) => r.member_no);
+    const nicks: Nick.NickMatchEntity[] =
+      Object.keys(groupped).map((memberNo) => {
+        const nick: Nick.NickMatchEntity = {
+          member_no: parseInt(memberNo),
+          ko: null,
+          ja: null,
+          en: null
+        };
+        groupped[memberNo].map((r) => set(nick, [r.language], r.nick));
+        return nick;
+      });
+    return nicks;
   };
 
 injectable(Modules.Store.Nick.Pick,
