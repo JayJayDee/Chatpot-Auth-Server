@@ -12,13 +12,14 @@ export const endpointRunner =
     log: Logger,
     member: EndpointRouter,
     auth: EndpointRouter,
+    internal: EndpointRouter,
     errorMid: express.ErrorRequestHandler,
     internalAuth: express.RequestHandler,
     notFound: express.RequestHandler): EndpointRunner =>
       () => {
         const app = express();
         app.use(bodyParser.urlencoded({ extended: true }));
-        const routers: EndpointRouter[] = [ member, auth ];
+        const routers: EndpointRouter[] = [ member, auth, internal ];
         routers.map((r) => {
           log.info(`[endpt] endpoints-router registered: ${r.uri}`);
           app.use(r.uri, r.router);
@@ -35,6 +36,7 @@ injectable(Modules.Endpoint.EndpointRunner,
     Modules.Logger,
     Modules.Endpoint.Member.Router,
     Modules.Endpoint.Auth.Router,
+    Modules.Endpoint.Internal.Router,
     Modules.Endpoint.Middleware.Error,
     Modules.Endpoint.Middleware.InternalAuthenticator,
     Modules.Endpoint.Middleware.NotFound],
@@ -42,10 +44,11 @@ injectable(Modules.Endpoint.EndpointRunner,
     log: Logger,
     member: EndpointRouter,
     auth: EndpointRouter,
+    internal: EndpointRouter,
     errorMid: express.ErrorRequestHandler,
     internalAuth: express.RequestHandler,
     notFound: express.RequestHandler): Promise<EndpointRunner> =>
-      endpointRunner(cfg, log, member, auth, errorMid, internalAuth, notFound));
+      endpointRunner(cfg, log, member, auth, internal, errorMid, internalAuth, notFound));
 
 injectable(Modules.Endpoint.Middleware.Error,
   [Modules.Logger, Modules.Config.Env],

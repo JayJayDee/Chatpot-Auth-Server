@@ -51,6 +51,10 @@ export namespace Modules {
       Get = 'Endpoint/Member/Get',
       Create = 'Endpoint/Member/Create'
     }
+    export enum Internal {
+      Router = 'Endpoint/Internal/Router',
+      Get = 'Endpoint/Internal/Get'
+    }
     export enum Auth {
       Router = 'Endpoint/Auth/Router',
       Auth = 'Endpoint/Auth/Auth'
