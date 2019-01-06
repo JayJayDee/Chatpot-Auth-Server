@@ -42,7 +42,9 @@ export namespace Modules {
     export const EndpointRunner = 'Endpoint/EndpointRunner';
     export enum Middleware {
       Error = 'Endpoint/Middleware/Error',
-      Authenticator = 'Endpoint/Middleware/Authenticator'
+      Authenticator = 'Endpoint/Middleware/Authenticator',
+      InternalAuthenticator = 'Endpoint/Middleware/InternalAuthenticator',
+      NotFound = 'Endpoint/Middleware/NotFound'
     }
     export enum Member {
       Router = 'Endpoint/Member/Router',
