@@ -1,7 +1,10 @@
+import { isArray } from 'util';
 import { injectable } from 'smart-factory';
 import { Modules } from '../modules';
 import { Endpoint, EndpointMethod, EndpointRouter } from './types';
 import { Router } from 'express';
+import { InvalidParamError } from './errors';
+import { MemberService } from '../services/types';
 
 injectable(Modules.Endpoint.Internal.Router,
   [Modules.Endpoint.Internal.Get],
@@ -18,13 +21,19 @@ injectable(Modules.Endpoint.Internal.Router,
   });
 
 injectable(Modules.Endpoint.Internal.Get,
-  [],
-  async (): Promise<Endpoint> => ({
-    uri: '/member',
+  [Modules.Service.Member.FetchMultiple],
+  async (fetchMultiple: MemberService.FetchMembers): Promise<Endpoint> => ({
+    uri: '/members',
     method: EndpointMethod.GET,
     handler: [
-      (req, res, next) => {
-        res.status(200).json({});
+      async (req, res, next) => {
+        const tokens: string[] = req.query.tokens;
+
+        if (!tokens) return next(new InvalidParamError('tokens required'));
+        if (tokens && isArray(tokens) === false) return next(new InvalidParamError('tokens must be array'));
+
+        const members = await fetchMultiple(tokens);
+        res.status(200).json(members);
       }
     ]
   }));

@@ -16,6 +16,7 @@ export namespace Member {
     member_no: number;
   };
   export type GetMember = (no: number) => Promise<MemberEntity>;
+  export type GetMembers = (nos: number[]) => Promise<MemberEntity[]>;
   export type InsertMember = (create: ReqCreateMember) => Promise<ResCreateMember>;
 }
 

@@ -19,6 +19,30 @@ export const getMember = (mysql: MysqlDriver): Member.GetMember  =>
     return member;
   };
 
+export const getMembers = (mysql: MysqlDriver): Member.GetMembers =>
+  async (memberNos: number[]): Promise<Member.MemberEntity[]> => {
+    if (memberNos.length === 0) return [];
+    const inClause = memberNos.map((n) => '?').join(',');
+    const sql = `
+      SELECT
+        *
+      FROM
+        chatpot_member
+      WHERE
+        no IN (${inClause})
+    `;
+    const rows: any[] = await mysql.query(sql, memberNos) as any[];
+    const resp: Member.MemberEntity[] =
+      rows.map((r) => ({
+        no: r.no,
+        region: r.region,
+        language: r.language,
+        gender: r.gender,
+        reg_date: r.reg_date
+      }));
+    return resp;
+  };
+
 export const insertMember = (mysql: MysqlDriver): Member.InsertMember =>
   async (param: Member.ReqCreateMember): Promise<Member.ResCreateMember> => {
     const sql =
@@ -43,6 +67,10 @@ export const insertMember = (mysql: MysqlDriver): Member.InsertMember =>
 injectable(Modules.Store.Member.Get,
   [Modules.Mysql],
   async (mysql: MysqlDriver) => getMember(mysql));
+
+injectable(Modules.Store.Member.GetMultiple,
+  [Modules.Mysql],
+  async (mysql) => getMembers(mysql));
 
 injectable(Modules.Store.Member.Insert,
   [Modules.Mysql],
