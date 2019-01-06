@@ -71,7 +71,8 @@ export namespace Modules {
     export enum Nick {
       Pick = 'Store/Nick/Pick',
       Insert = 'Store/Nick/Insert',
-      Get = 'Store/Nick/Get'
+      Get = 'Store/Nick/Get',
+      GetMultiple = 'Store/Nick/GetMultiple'
     }
     export enum Auth {
       Insert = 'Store/Auth/Insert',

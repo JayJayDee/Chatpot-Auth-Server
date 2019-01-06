@@ -10,7 +10,7 @@ export const fetch = (cols: any) => ({
   ja: cols.ja
 });
 
-export const merge = (adj: Nick.NickBaseEntity, noun: Nick.NickBaseEntity) => ({
+export const merge = (adj: Nick.NickEntity, noun: Nick.NickEntity) => ({
   ko: adj.ko + ' ' + noun.ko,
   en: adj.en + ' ' + noun.en,
   ja: adj.ja + noun.ja
@@ -62,6 +62,23 @@ export const getMemberNick = (mysql: MysqlDriver): Nick.GetNick =>
     return nick;
   };
 
+export const getMemberNickMultiple = (mysql: MysqlDriver): Nick.GetNickMultiple =>
+  async (memberNos: number[]) => {
+    if (memberNos.length === 0) return [];
+    const inClause = memberNos.map((n) => '?').join(',');
+    const sql = `
+      SELECT 
+
+      FROM 
+        chatpot_member_has_nick
+      WHERE
+        member_no IN (${inClause})
+    `;
+    const rows: any[] = await mysql.query(sql, memberNos) as any[];
+    console.log(rows);
+    return [];
+  };
+
 injectable(Modules.Store.Nick.Pick,
   [ Modules.Mysql ],
   async (mysql: MysqlDriver) => pickNick(mysql));
@@ -73,3 +90,7 @@ injectable(Modules.Store.Nick.Insert,
 injectable(Modules.Store.Nick.Get,
   [ Modules.Mysql ],
   async (mysql) => getMemberNick(mysql));
+
+injectable(Modules.Store.Nick.GetMultiple,
+  [ Modules.Mysql ],
+  async (mysql) => getMemberNickMultiple(mysql));
