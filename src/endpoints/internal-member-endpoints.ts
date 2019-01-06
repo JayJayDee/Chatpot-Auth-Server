@@ -5,6 +5,7 @@ import { Endpoint, EndpointMethod, EndpointRouter } from './types';
 import { Router } from 'express';
 import { InvalidParamError } from './errors';
 import { MemberService } from '../services/types';
+import { asyncEndpointWrap } from './wraps';
 
 injectable(Modules.Endpoint.Internal.Router,
   [Modules.Endpoint.Internal.Get],
@@ -26,7 +27,7 @@ injectable(Modules.Endpoint.Internal.Get,
     uri: '/members',
     method: EndpointMethod.GET,
     handler: [
-      async (req, res, next) => {
+      asyncEndpointWrap(async (req, res, next) => {
         const tokens: string[] = req.query.tokens;
 
         if (!tokens) return next(new InvalidParamError('tokens required'));
@@ -34,6 +35,6 @@ injectable(Modules.Endpoint.Internal.Get,
 
         const members = await fetchMultiple(tokens);
         res.status(200).json(members);
-      }
+      })
     ]
   }));

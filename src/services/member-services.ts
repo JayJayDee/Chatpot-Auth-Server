@@ -56,18 +56,22 @@ injectable(Modules.Service.Member.Fetch,
     fetchMember(logger, getMember, getNick, decrypt));
 
 export const fetchMemberMultiple =
-  (logger: Logger,
+(logger: Logger,
     getMembers: Member.GetMembers,
-    getNick: Nick.GetNick,
+    getNicks: Nick.GetNickMultiple,
     decrypt: AuthUtil.DecryptToken): MemberService.FetchMembers =>
     async (tokens: string[]) => {
       const resp: MemberService.Member[] = [];
+    
+      const memberNos: number[] = tokens.map((t) => decrypt(t).member_no);
+      console.log(memberNos);
+
       return resp;
     };
 injectable(Modules.Service.Member.FetchMultiple,
   [Modules.Logger,
     Modules.Store.Member.GetMultiple,
-    Modules.Store.Nick.Get,
+    Modules.Store.Nick.GetMultiple,
     Modules.Util.Auth.Decrypt],
   async (log, getm, ng, dec) => fetchMemberMultiple(log, getm, ng, dec));
 

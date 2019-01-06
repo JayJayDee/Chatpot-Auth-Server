@@ -51,7 +51,8 @@ export namespace Nick {
     en: string;
     ja: string;
   };
-  export type NickBaseEntity = {
+  export type NickMatchEntity = {
+    member_no: number;
     ko: string;
     en: string;
     ja: string;
@@ -67,4 +68,5 @@ export namespace Nick {
   export type PickNick = () => Promise<NickEntity>;
   export type InsertNick = (req: ReqInsertNick) => Promise<void>;
   export type GetNick = (req: ReqGetNick) => Promise<NickEntity>;
+  export type GetNickMultiple = (memberNos: number[]) => Promise<NickMatchEntity[]>;
 }
