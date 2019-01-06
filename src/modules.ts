@@ -23,6 +23,7 @@ export namespace Modules {
   export namespace Service {
     export enum Member {
       Fetch = 'Service/Member/Fetch',
+      FetchMultiple = 'Service/Member/FetchMultiple',
       Create = 'Service/Member/Create',
       Authenticate = 'Service/Member/Authenticate'
     }
@@ -64,6 +65,7 @@ export namespace Modules {
   export namespace Store {
     export enum Member {
       Get = 'Store/Member/Get',
+      GetMultiple = 'Store/Member/GetMultiple',
       Insert = 'Store/Member/Insert'
     }
     export enum Nick {
