@@ -62,7 +62,7 @@ export const fetchMemberMultiple =
     decrypt: AuthUtil.DecryptToken): MemberService.FetchMembers =>
     async (tokens: string[]) => {
       const resp: MemberService.Member[] = [];
-    
+
       const memberNos: number[] = tokens.map((t) => decrypt(t).member_no);
       console.log(memberNos);
 

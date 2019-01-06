@@ -67,9 +67,9 @@ export const getMemberNickMultiple = (mysql: MysqlDriver): Nick.GetNickMultiple 
     if (memberNos.length === 0) return [];
     const inClause = memberNos.map((n) => '?').join(',');
     const sql = `
-      SELECT 
+      SELECT
 
-      FROM 
+      FROM
         chatpot_member_has_nick
       WHERE
         member_no IN (${inClause})
