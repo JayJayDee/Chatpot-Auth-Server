@@ -56,18 +56,34 @@ injectable(Modules.Service.Member.Fetch,
   async (logger, getMember, getNick, decrypt) =>
     fetchMember(logger, getMember, getNick, decrypt));
 
+export const fetchMemberMultipleWithToken =
+  (fetchMembers: MemberService.FetchMembers,
+    decrypt: AuthUtil.DecryptToken): MemberService.FetchMembersWithToken =>
+  async (tokens: string[]) => {
+    const tokenMap = new Map<number, string>();
+    const memberNos: number[] = tokens.map((t) => {
+      const memberNo = decrypt(t).member_no;
+      tokenMap.set(memberNo, t);
+      return memberNo;
+    });
+    const members = await fetchMembers(memberNos);
+    members.map((m) => {
+      m.token = tokenMap.get(m.member_no);
+      delete m.member_no;
+      return m;
+    });
+    return members;
+  };
+injectable(Modules.Service.Member.FetchMultipleToken,
+  [Modules.Service.Member.FetchMultiple,
+    Modules.Util.Auth.Decrypt],
+  async (fetch, decrypt) => fetchMemberMultipleWithToken(fetch, decrypt));
+
 export const fetchMemberMultiple =
 (logger: Logger,
     getMembers: Member.GetMembers,
-    getNicks: Nick.GetNickMultiple,
-    decrypt: AuthUtil.DecryptToken): MemberService.FetchMembers =>
-    async (tokens: string[]) => {
-      const tokenMap = new Map<number, string>();
-      const memberNos: number[] = tokens.map((t) => {
-        const memberNo = decrypt(t).member_no;
-        tokenMap.set(memberNo, t);
-        return memberNo;
-      });
+    getNicks: Nick.GetNickMultiple): MemberService.FetchMembers =>
+    async (memberNos: number[]) => {
       const members = await getMembers(memberNos);
       const nicks: Nick.NickMatchEntity[] = await getNicks(memberNos);
       const resp: MemberService.Member[] = members.map((m) => ({
@@ -79,16 +95,15 @@ export const fetchMemberMultiple =
           ko: find(nicks, {member_no: m.no}).ko,
           ja: find(nicks, {member_no: m.no}).ja
         },
-        token: tokenMap.get(m.no)
+        member_no: m.no
       }));
       return resp;
     };
 injectable(Modules.Service.Member.FetchMultiple,
   [Modules.Logger,
     Modules.Store.Member.GetMultiple,
-    Modules.Store.Nick.GetMultiple,
-    Modules.Util.Auth.Decrypt],
-  async (log, getm, ng, dec) => fetchMemberMultiple(log, getm, ng, dec));
+    Modules.Store.Nick.GetMultiple],
+  async (log, getm, ng) => fetchMemberMultiple(log, getm, ng));
 
 export const createMember =
   (logger: Logger,
