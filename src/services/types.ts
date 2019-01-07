@@ -4,7 +4,8 @@ export namespace MemberService {
     language: string;
     gender: string;
     nick: Nick;
-    token: string;
+    token?: string;
+    member_no?: number;
   };
   export type Nick = {
     en: string;
@@ -30,7 +31,8 @@ export namespace MemberService {
   };
 
   export type FetchMember = (token: string) => Promise<Member>;
-  export type FetchMembers = (tokens: string[]) => Promise<Member[]>;
+  export type FetchMembers = (memberNos: number[]) => Promise<Member[]>;
+  export type FetchMembersWithToken = (tokens: string[]) => Promise<Member[]>;
   export type CreateMember = (param: ReqCreateMember) => Promise<ResCreateMember>;
   export type Authenticate = (param: ReqAuthenticate) => Promise<ResAuthenticate>;
 }
