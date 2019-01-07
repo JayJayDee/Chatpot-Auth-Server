@@ -4,6 +4,8 @@ import { Endpoint, EndpointMethod, EndpointRouter } from './types';
 import { Router } from 'express';
 import { MemberService } from '../services/types';
 import { asyncEndpointWrap } from './wraps';
+import { InvalidParamError } from './errors';
+import { isArray } from 'util';
 
 injectable(Modules.Endpoint.Internal.Router,
   [Modules.Endpoint.Internal.Get],
@@ -28,11 +30,35 @@ injectable(Modules.Endpoint.Internal.Get,
     method: EndpointMethod.GET,
     handler: [
       asyncEndpointWrap(async (req, res, next) => {
-        const tokens: string[] = req.query.tokens;
-        const memberStrNos: string[] = req.query.member_nos;
-        console.log(tokens);
-        console.log(memberStrNos);
-        res.status(200).json([]);
+        const tokens: any = req.query.tokens;
+        const memberStrNos: any = req.query.member_nos;
+        let resp: any = null;
+
+        if (!tokens && !memberStrNos) {
+          throw new InvalidParamError('token or member_nos');
+        }
+
+        if (tokens) {
+          if (isArray(tokens) === true) {
+            resp = await fetchMultipleToken(tokens);
+          } else {
+            resp = await fetchMultipleToken([ tokens ]);
+          }
+        }
+
+        else if (memberStrNos) {
+          try {
+            if (isArray(memberStrNos) === true) {
+              const memberNos: number[] = memberStrNos.map((m: string) => parseInt(m));
+              resp = await fetchMultiple(memberNos);
+            } else {
+              resp = await fetchMultiple([ parseInt(memberStrNos) ]);
+            }
+          } catch (err) {
+            // TODO: array-single conversion.
+          }
+        }
+        res.status(200).json(resp);
       })
     ]
   }));
