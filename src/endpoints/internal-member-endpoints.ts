@@ -28,7 +28,7 @@ injectable(Modules.Endpoint.Internal.Get,
     method: EndpointMethod.GET,
     handler: [
       asyncEndpointWrap(async (req, res, next) => {
-        const memberStrNos: string[] = req.query.member_nos;
+        let memberStrNos: string[] | string = req.query.member_nos;
         const memberNo: string = req.query.member_no;
         let memberNos: number[] = null;
         let multiple = true;
@@ -39,9 +39,9 @@ injectable(Modules.Endpoint.Internal.Get,
 
         if (memberStrNos) {
           multiple = true;
-          if (isArray(memberStrNos) === false) throw new InvalidParamError('member_nos must be array');
+          if (isArray(memberStrNos) === false) memberStrNos = [ memberStrNos as string ];
           try {
-            memberNos = memberStrNos.map((m) => parseInt(m));
+            memberNos = (memberStrNos as string[]).map((m) => parseInt(m));
           } catch (err) {
             throw new InvalidParamError('member_nos array elements must be number');
           }
