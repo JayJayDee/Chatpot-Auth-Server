@@ -22,43 +22,43 @@ injectable(Modules.Endpoint.Internal.Router,
   });
 
 injectable(Modules.Endpoint.Internal.Get,
-  [Modules.Service.Member.FetchMultipleToken,
-    Modules.Service.Member.FetchMultiple],
-  async (fetchMultipleToken: MemberService.FetchMembersWithToken,
-      fetchMultiple: MemberService.FetchMembers): Promise<Endpoint> => ({
-    uri: '/members',
+  [Modules.Service.Member.FetchMultiple],
+  async (fetchMultiple: MemberService.FetchMembers): Promise<Endpoint> => ({
+    uri: '/member',
     method: EndpointMethod.GET,
     handler: [
       asyncEndpointWrap(async (req, res, next) => {
-        const tokens: any = req.query.tokens;
-        const memberStrNos: any = req.query.member_nos;
-        let resp: any = null;
+        const memberStrNos: string[] = req.query.member_nos;
+        const memberNo: string = req.query.member_no;
+        let memberNos: number[] = null;
+        let multiple = true;
 
-        if (!tokens && !memberStrNos) {
-          throw new InvalidParamError('token or member_nos');
+        if (!memberStrNos && !memberNo) {
+          throw new InvalidParamError('member_nos or member_no');
         }
 
-        if (tokens) {
-          if (isArray(tokens) === true) {
-            resp = await fetchMultipleToken(tokens);
-          } else {
-            resp = await fetchMultipleToken([ tokens ]);
-          }
-        }
-
-        else if (memberStrNos) {
+        if (memberStrNos) {
+          multiple = true;
+          if (isArray(memberStrNos) === false) throw new InvalidParamError('member_nos must be array');
           try {
-            if (isArray(memberStrNos) === true) {
-              const memberNos: number[] = memberStrNos.map((m: string) => parseInt(m));
-              resp = await fetchMultiple(memberNos);
-            } else {
-              resp = await fetchMultiple([ parseInt(memberStrNos) ]);
-            }
+            memberNos = memberStrNos.map((m) => parseInt(m));
           } catch (err) {
-            // TODO: array-single conversion.
+            throw new InvalidParamError('member_nos array elements must be number');
           }
         }
-        res.status(200).json(resp);
+
+        if (memberNo) {
+          multiple = false;
+          try {
+            memberNos = [ parseInt(memberNo) ];
+          } catch (err) {
+            throw new InvalidParamError('member_no must be number');
+          }
+        }
+
+        const members = await fetchMultiple(memberNos);
+        if (multiple === true) res.status(200).json(members);
+        else if (multiple === false) res.status(200).json(members[0]);
       })
     ]
   }));
