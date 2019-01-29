@@ -8,10 +8,11 @@ import { asyncEndpointWrap } from './wraps';
 import { InvalidParamError } from './errors';
 
 injectable(Modules.Endpoint.Auth.Router,
-  [Modules.Endpoint.Auth.Auth],
-  async (auth): Promise<EndpointRouter> => {
+  [Modules.Endpoint.Auth.Auth,
+    Modules.Endpoint.Auth.Reauth],
+  async (auth, reauth): Promise<EndpointRouter> => {
     const router = Router();
-    const endpoints = [ auth ];
+    const endpoints = [ auth, reauth ];
     endpoints.map((endpt: Endpoint) => {
       router[endpt.method].apply(router, [endpt.uri, endpt.handler]);
     });
@@ -38,3 +39,16 @@ injectable(Modules.Endpoint.Auth.Auth,
   [Modules.Logger,
     Modules.Service.Member.Authenticate],
   async (log, auth) => authEndpoint(log, auth));
+
+
+injectable(Modules.Endpoint.Auth.Reauth,
+  [Modules.Logger],
+  async (log): Promise<Endpoint> => ({
+    uri: '/reauth',
+    method: EndpointMethod.POST,
+    handler: [
+      asyncEndpointWrap(async (req, res, next) => {
+        res.status(200).json({});
+      })
+    ]
+  }));
