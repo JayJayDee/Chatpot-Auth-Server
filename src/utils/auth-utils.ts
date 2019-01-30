@@ -99,6 +99,32 @@ export const decryptToken =
       }
     };
 
+injectable(Modules.Util.Auth.RevalidateSession,
+  [Modules.Config.CredentialConfig,
+    Modules.Util.Auth.Decrypt,
+    Modules.Util.Auth.ValidateSession,
+    Modules.Logger],
+  async (cfg: CredentialConfig,
+    decrypt: AuthUtil.DecryptToken,
+    validate: AuthUtil.ValidateSessionKey,
+    log: Logger): Promise<AuthUtil.RevalidateSessionKey> =>
+
+      (token, oldSessionKey, inputedRefreshKey, passwordFromDb) => {
+        const validRefreshKey =
+          createHash('sha256')
+            .update(`${token}${oldSessionKey}${passwordFromDb}`)
+            .digest('hex');
+        const decryptedToken = decrypt(token);
+        const decryptedSessionKey = validate(token, oldSessionKey);
+
+        if (decryptedToken.member_no !== decryptedSessionKey.member_no) {
+          throw new InvalidTokenError('unauthorized operation.');
+        }
+        if (validRefreshKey !== inputedRefreshKey) throw new InvalidTokenError('invalid refresh-token');
+        // TODO: generate new session key
+        return '';
+      });
+
 const cipher = (cfg: CredentialConfig) => createCipher('des-ede3-cbc', cfg.secret);
 const decipher = (cfg: CredentialConfig) => createDecipher('des-ede3-cbc', cfg.secret);
 

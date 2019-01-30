@@ -15,4 +15,7 @@ export namespace AuthUtil {
   export type CreatePassHash = (pass: string) => string;
   export type CreateSessionKey = (memberNo: number) => string;
   export type ValidateSessionKey = (token: string, sessionKey: string) => DecryptedSessionKey;
+  export type RevalidateSessionKey =
+    (token: string, oldSessionKey: string,
+      inputedRefreshKey: string, passwordFromDb: string) => string;
 }

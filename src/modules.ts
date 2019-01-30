@@ -89,7 +89,8 @@ export namespace Modules {
       Passphrase = 'Util/Auth/Passphrase',
       PassHash = 'Util/Auth/PassHash',
       CreateSesssion = 'Util/Auth/CreateSession',
-      ValidateSession = 'Util/Auth/ValidateSession'
+      ValidateSession = 'Util/Auth/ValidateSession',
+      RevalidateSession = 'Util/Auth/RevalidateSession'
     }
   }
 }
