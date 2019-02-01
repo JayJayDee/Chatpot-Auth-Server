@@ -6,6 +6,8 @@ import { Logger } from '../loggers/types';
 import { MemberService } from '../services/types';
 import { asyncEndpointWrap } from './wraps';
 import { InvalidParamError } from './errors';
+import { AuthUtil } from '../utils/types';
+import { Auth } from '../stores/types';
 
 injectable(Modules.Endpoint.Auth.Router,
   [Modules.Endpoint.Auth.Auth,
@@ -42,13 +44,34 @@ injectable(Modules.Endpoint.Auth.Auth,
 
 
 injectable(Modules.Endpoint.Auth.Reauth,
-  [Modules.Logger],
-  async (log): Promise<Endpoint> => ({
+  [Modules.Logger,
+    Modules.Util.Auth.Decrypt,
+    Modules.Util.Auth.RevalidateSession,
+    Modules.Store.Auth.GetPassword],
+  async (log: Logger,
+    decrypt: AuthUtil.DecryptToken,
+    revalidate: AuthUtil.RevalidateSessionKey,
+    getPassword: Auth.GetPassword): Promise<Endpoint> => ({
     uri: '/reauth',
     method: EndpointMethod.POST,
     handler: [
       asyncEndpointWrap(async (req, res, next) => {
-        res.status(200).json({});
+        const token = req.body['token'];
+        const oldSessionKey = req.query['session_key'];
+        const refreshKey = req.query['refresh_key'];
+
+        if (!token || !oldSessionKey || !refreshKey) {
+          throw new InvalidParamError('token, session_key, refresh_key');
+        }
+        const member = decrypt(token);
+        if (!member) throw new InvalidParamError('invalid token');
+
+        const storedPassword = await getPassword(member.member_no);
+        const newSessionKey = revalidate(token, oldSessionKey, refreshKey, storedPassword);
+
+        res.status(200).json({
+          session_key: newSessionKey
+        });
       })
     ]
   }));

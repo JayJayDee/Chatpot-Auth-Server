@@ -60,3 +60,21 @@ export const authenticate =
 injectable(Modules.Store.Auth.Authenticate,
   [Modules.Mysql, Modules.Util.Auth.PassHash,  Modules.Logger],
   async (mysql, passHash, log) => authenticate(mysql, passHash, log));
+
+injectable(Modules.Store.Auth.GetPassword,
+  [Modules.Mysql],
+  async (mysql: MysqlDriver): Promise<Auth.GetPassword> =>
+
+    async (memberNo: number) => {
+      const sql = `
+        SELECT
+          password
+        FROM
+          chatpot_auth
+        WHERE
+          member_no=?
+      `;
+      const rows: any[] = await mysql.query(sql, [ memberNo ]) as any[];
+      if (rows.length === 0) return null;
+      return rows[0].password;
+    });
