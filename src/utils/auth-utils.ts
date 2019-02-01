@@ -103,10 +103,12 @@ injectable(Modules.Util.Auth.RevalidateSession,
   [Modules.Config.CredentialConfig,
     Modules.Util.Auth.Decrypt,
     Modules.Util.Auth.ValidateSession,
+    Modules.Util.Auth.CreateSesssion,
     Modules.Logger],
   async (cfg: CredentialConfig,
     decrypt: AuthUtil.DecryptToken,
     validate: AuthUtil.ValidateSessionKey,
+    create: AuthUtil.CreateSessionKey,
     log: Logger): Promise<AuthUtil.RevalidateSessionKey> =>
 
       (token, oldSessionKey, inputedRefreshKey, passwordFromDb) => {
@@ -121,8 +123,7 @@ injectable(Modules.Util.Auth.RevalidateSession,
           throw new InvalidTokenError('unauthorized operation.');
         }
         if (validRefreshKey !== inputedRefreshKey) throw new InvalidTokenError('invalid refresh-token');
-        // TODO: generate new session key
-        return '';
+        return create(decryptedToken.member_no);
       });
 
 const cipher = (cfg: CredentialConfig) => createCipher('des-ede3-cbc', cfg.secret);

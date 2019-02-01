@@ -78,7 +78,8 @@ export namespace Modules {
     }
     export enum Auth {
       Insert = 'Store/Auth/Insert',
-      Authenticate = 'Store/Auth/Authenticate'
+      Authenticate = 'Store/Auth/Authenticate',
+      GetPassword = 'Store/Auth/GetPassword'
     }
   }
 
