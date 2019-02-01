@@ -70,6 +70,7 @@ export const validateSessionKey =
         const createdAt = parseInt(splited[1]);
         if (Date.now() > createdAt + cfg.sessionExpires * 1000) {
           resp.valid = true;
+          resp.member_no = parseInt(splited[0]);
           resp.expired = true;
           return resp;
         }
