@@ -66,6 +66,10 @@ injectable(Modules.Endpoint.Auth.Reauth,
         const member = decrypt(token);
         if (!member) throw new InvalidParamError('invalid token');
 
+        log.debug(`[reauth] gain token = ${token}`);
+        log.debug(`[reauth] gain old_session_key = ${oldSessionKey}`);
+        log.debug(`[reauth] gain refresh_key = ${refreshKey}`);
+
         const storedPassword = await getPassword(member.member_no);
         const newSessionKey = revalidate(token, oldSessionKey, refreshKey, storedPassword);
 
