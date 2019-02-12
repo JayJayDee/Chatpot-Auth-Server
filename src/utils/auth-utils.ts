@@ -120,6 +120,8 @@ injectable(Modules.Util.Auth.RevalidateSession,
         const decryptedToken = decrypt(token);
         const decryptedSessionKey = validate(token, oldSessionKey);
 
+        log.debug(`[auth-util] generated valid refresh_key = ${validRefreshKey}`);
+
         if (decryptedToken.member_no !== decryptedSessionKey.member_no) {
           throw new InvalidTokenError('unauthorized operation.');
         }
