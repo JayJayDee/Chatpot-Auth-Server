@@ -62,8 +62,10 @@ injectable(Modules.Store.Auth.Authenticate,
   async (mysql, passHash, log) => authenticate(mysql, passHash, log));
 
 injectable(Modules.Store.Auth.GetPassword,
-  [Modules.Mysql],
-  async (mysql: MysqlDriver): Promise<Auth.GetPassword> =>
+  [ Modules.Mysql,
+    Modules.Util.Auth.DecryptPassHash ],
+  async (mysql: MysqlDriver,
+    decryptPass: AuthUtil.DecryptPassHash): Promise<Auth.GetPassword> =>
 
     async (memberNo: number) => {
       const sql = `
@@ -76,5 +78,5 @@ injectable(Modules.Store.Auth.GetPassword,
       `;
       const rows: any[] = await mysql.query(sql, [ memberNo ]) as any[];
       if (rows.length === 0) return null;
-      return rows[0].password;
+      return decryptPass(rows[0].password);
     });

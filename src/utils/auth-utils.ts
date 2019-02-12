@@ -38,9 +38,20 @@ export const createPassphrase =
 export const createPassHash =
   (cfg: CredentialConfig): AuthUtil.CreatePassHash =>
     (pass: string) => {
-      return createHash('sha256')
-        .update(`${pass}${cfg.secret}`)
-        .digest('hex');
+      const cp = cipher(cfg);
+      let encrypted: string = '';
+      encrypted += cp.update(`${pass}`, 'utf8', 'hex');
+      encrypted += cp.final('hex');
+      return encrypted;
+    };
+
+export const decryptPassHash =
+  (cfg: CredentialConfig): AuthUtil.DecryptPassHash =>
+    (pass: string) => {
+      const dp = decipher(cfg);
+      let decrypted: string = dp.update(pass, 'hex', 'utf8');
+      decrypted += dp.final('utf8');
+      return decrypted;
     };
 
 export const createSessionKey =
@@ -143,6 +154,10 @@ injectable(Modules.Util.Auth.Decrypt,
 injectable(Modules.Util.Auth.Passphrase,
   [Modules.Config.CredentialConfig],
   async (cfg) => createPassphrase(cfg));
+
+injectable(Modules.Util.Auth.DecryptPassHash,
+  [Modules.Config.CredentialConfig],
+  async (cfg) => decryptPassHash(cfg));
 
 injectable(Modules.Util.Auth.PassHash,
   [Modules.Config.CredentialConfig],
