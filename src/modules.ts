@@ -89,6 +89,7 @@ export namespace Modules {
       Decrypt = 'Util/Auth/Decrypt',
       Passphrase = 'Util/Auth/Passphrase',
       PassHash = 'Util/Auth/PassHash',
+      DecryptPassHash = 'Util/Auth/DecryptPassHash',
       CreateSesssion = 'Util/Auth/CreateSession',
       ValidateSession = 'Util/Auth/ValidateSession',
       RevalidateSession = 'Util/Auth/RevalidateSession'

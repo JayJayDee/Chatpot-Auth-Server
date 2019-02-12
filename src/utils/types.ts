@@ -13,6 +13,7 @@ export namespace AuthUtil {
   export type DecryptToken = (token: string) => DecryptedPayload;
   export type CreatePassphrase = (memberNo: number) => string;
   export type CreatePassHash = (pass: string) => string;
+  export type DecryptPassHash = (hashedPass: string) => string;
   export type CreateSessionKey = (memberNo: number) => string;
   export type ValidateSessionKey = (token: string, sessionKey: string) => DecryptedSessionKey;
   export type RevalidateSessionKey =
