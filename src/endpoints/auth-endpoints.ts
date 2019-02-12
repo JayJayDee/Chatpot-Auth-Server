@@ -71,6 +71,8 @@ injectable(Modules.Endpoint.Auth.Reauth,
         log.debug(`[reauth] gain refresh_key = ${refreshKey}`);
 
         const storedPassword = await getPassword(member.member_no);
+        log.debug(`[reauth] gain password = ${storedPassword}`);
+
         const newSessionKey = revalidate(token, oldSessionKey, refreshKey, storedPassword);
 
         res.status(200).json({
