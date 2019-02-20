@@ -65,7 +65,8 @@ export const createSessionKey =
     };
 
 export const validateSessionKey =
-  (cfg: CredentialConfig): AuthUtil.ValidateSessionKey =>
+  (cfg: CredentialConfig,
+    log: Logger): AuthUtil.ValidateSessionKey =>
     (token: string, sessionKey: string) => {
       const dp = decipher(cfg);
       const resp: AuthUtil.DecryptedSessionKey = {
@@ -74,10 +75,15 @@ export const validateSessionKey =
         member_no: null
       };
       try {
+        log.debug(`[sess-key-validator] before-validate: ${sessionKey}`);
+
         let decrypted: string = dp.update(sessionKey, 'hex', 'utf8');
         decrypted += dp.final('utf8');
         const splited: string[] = decrypted.split('|@|');
-        if (splited.length !== 2) return resp;
+        if (splited.length !== 2) {
+          log.debug(`[sess-key-validator] malformed sesskey`);
+          return resp;
+        }
         const createdAt = parseInt(splited[1]);
         if (Date.now() > createdAt + cfg.sessionExpires * 1000) {
           resp.valid = true;
@@ -89,6 +95,7 @@ export const validateSessionKey =
         resp.member_no = parseInt(splited[0]);
         return resp;
       } catch (err) {
+        log.debug(`[sess-key-validator] sesskey decrypt fail`);
         return resp;
       }
     };
@@ -168,5 +175,6 @@ injectable(Modules.Util.Auth.CreateSesssion,
   async (cfg) => createSessionKey(cfg));
 
 injectable(Modules.Util.Auth.ValidateSession,
-  [Modules.Config.CredentialConfig],
-  async (cfg) => validateSessionKey(cfg));
+  [Modules.Config.CredentialConfig,
+    Modules.Logger],
+  async (cfg, log) => validateSessionKey(cfg, log));
