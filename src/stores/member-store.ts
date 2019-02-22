@@ -5,7 +5,16 @@ import { Modules } from '../modules';
 
 export const getMember = (mysql: MysqlDriver): Member.GetMember  =>
   async (memberNo: number): Promise<Member.MemberEntity> => {
-    const sql = `SELECT * FROM chatpot_member WHERE no=?`;
+    const sql = `
+      SELECT
+        m.*,
+        a.auth_type
+      FROM
+        chatpot_member m
+      INNER JOIN
+        chatpot_auth a ON a.member_no=m.no
+      WHERE
+        m.no=?`;
     const rows: any = await mysql.query(sql, [memberNo]);
     if (rows.length === 0) return null;
 
@@ -13,6 +22,7 @@ export const getMember = (mysql: MysqlDriver): Member.GetMember  =>
       no: rows[0].no,
       region: rows[0].region,
       language: rows[0].language,
+      auth_type: rows[0].auth_type,
       gender: rows[0].gender,
       reg_date: new Date(rows[0].reg_date)
     };
@@ -25,16 +35,20 @@ export const getMembers = (mysql: MysqlDriver): Member.GetMembers =>
     const inClause = memberNos.map((n) => '?').join(',');
     const sql = `
       SELECT
-        *
+        m.*,
+        a.auth_type
       FROM
-        chatpot_member
+        chatpot_member m
+      INNER JOIN
+        chatpot_auth a ON a.member_no=m.no
       WHERE
-        no IN (${inClause})
+        m.no IN (${inClause})
     `;
     const rows: any[] = await mysql.query(sql, memberNos) as any[];
     const resp: Member.MemberEntity[] =
       rows.map((r) => ({
         no: r.no,
+        auth_type: r.auth_type,
         region: r.region,
         language: r.language,
         gender: r.gender,

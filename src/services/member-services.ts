@@ -42,6 +42,7 @@ export const fetchMember =
       const nick = await getNick({ member_no: decrypted.member_no });
       return {
         nick,
+        auth_type: member.auth_type,
         region: member.region,
         language: member.language,
         gender: member.gender,
@@ -88,6 +89,7 @@ export const fetchMemberMultiple =
       const nicks: Nick.NickMatchEntity[] = await getNicks(memberNos);
       const resp: MemberService.Member[] = members.map((m) => ({
         region: m.region,
+        auth_type: m.auth_type,
         language: m.language,
         gender: m.gender,
         nick: {
