@@ -1,8 +1,13 @@
 export namespace MemberService {
+  export enum AuthType {
+    SIMPLE = 'SIMPLE',
+    EMAIL = 'EMAIL'
+  }
   export type Member = {
     region: string;
     language: string;
     gender: string;
+    auth_type: AuthType;
     nick: Nick;
     token?: string;
     member_no?: number;

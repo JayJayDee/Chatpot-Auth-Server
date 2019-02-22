@@ -1,10 +1,15 @@
 
 export namespace Member {
+  export enum AuthType {
+    SIMPLE = 'SIMPLE',
+    EMAIL = 'EMAIL'
+  }
   export type MemberEntity = {
     no: number;
     region: string;
     language: string;
     gender: string;
+    auth_type: AuthType;
     reg_date: Date;
   };
   export type ReqCreateMember = {
