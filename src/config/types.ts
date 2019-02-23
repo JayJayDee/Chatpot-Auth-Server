@@ -2,6 +2,7 @@ export type RootConfig = {
   http: HttpConfig;
   mysql: MysqlConfig;
   cache: CacheConfig;
+  extapi: ExtApiConfig;
   credential: CredentialConfig;
 };
 export type HttpConfig = {
@@ -28,6 +29,9 @@ export type RedisConfig = {
   host: string;
   port: number;
   password?: string;
+};
+export type ExtApiConfig = {
+  assetHost: string;
 };
 export enum CacheProvider {
   MEMORY = 'MEMORY', REDIS = 'REDIS'

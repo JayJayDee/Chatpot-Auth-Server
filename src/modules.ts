@@ -95,4 +95,8 @@ export namespace Modules {
       RevalidateSession = 'Util/Auth/RevalidateSession'
     }
   }
+
+  export namespace Avatar {
+    export const Create = 'Avatar/Create';
+  }
 }
