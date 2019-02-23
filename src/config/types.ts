@@ -4,6 +4,7 @@ export type RootConfig = {
   cache: CacheConfig;
   extapi: ExtApiConfig;
   credential: CredentialConfig;
+  storage: StorageConfig;
 };
 export type HttpConfig = {
   port: number;
@@ -32,6 +33,9 @@ export type RedisConfig = {
 };
 export type ExtApiConfig = {
   assetHost: string;
+};
+export type StorageConfig = {
+  temporaryPath: string;
 };
 export enum CacheProvider {
   MEMORY = 'MEMORY', REDIS = 'REDIS'

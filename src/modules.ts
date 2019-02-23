@@ -81,6 +81,10 @@ export namespace Modules {
       Authenticate = 'Store/Auth/Authenticate',
       GetPassword = 'Store/Auth/GetPassword'
     }
+    export enum AvatarCache {
+      Get = 'Store/AvatarCache/Get',
+      Insert = 'Store/AvatarCache/Insert'
+    }
   }
 
   export namespace Util {
