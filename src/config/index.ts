@@ -29,7 +29,8 @@ export const emptyConfig: RootConfig = {
     assetHost: null
   },
   storage: {
-    temporaryPath: null
+    temporaryPath: null,
+    avatarAssetPath: null
   }
 };
 
@@ -69,6 +70,14 @@ injectable(Modules.Config.CacheConfig,
   [Modules.Config.RootConfig],
   async (root: RootConfig) => root.cache);
 
+injectable(Modules.Config.StorageConfig,
+  [Modules.Config.RootConfig],
+  async (root: RootConfig) => root.storage);
+
+injectable(Modules.Config.ExtApiConfig,
+  [Modules.Config.RootConfig],
+  async (root: RootConfig) => root.extapi);
+
 injectable(Modules.Config.Env,
   [Modules.Config.ConfigSource],
   async (src: ConfigSource) => {
@@ -96,4 +105,5 @@ injectable(Modules.Config.ConfigRules, [],
     { key: 'CACHE_REDIS_PASSWORD', path: ['cache', 'redis', 'password'], defaultValue: null},
     { key: 'EXTAPI_ASSET_HOST', path: ['extapi', 'assetHost'] },
     { key: 'STORAGE_TEMPORARY_PATH', path: ['storage', 'temporaryPath'] },
+    { key: 'STORAGE_AVATAR_ASSET_PATH', path: ['storage', 'avatarAssetPath'] },
   ]));

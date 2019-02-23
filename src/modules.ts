@@ -12,6 +12,8 @@ export namespace Modules {
     MysqlConfig = 'Config/MysqlConfig',
     CredentialConfig = 'Config/CredentialConfig',
     CacheConfig = 'Config/CacheConfig',
+    StorageConfig = 'Config/StorageConfig',
+    ExtApiConfig = 'Config/ExtApiConfig',
     Env = 'Config/Env',
 
     ConfigSource = 'Config/ConfigSource',
@@ -102,5 +104,6 @@ export namespace Modules {
 
   export namespace Avatar {
     export const Create = 'Avatar/Create';
+    export const AvatarExtLib = 'Avatar/AvatarExtLib';
   }
 }
