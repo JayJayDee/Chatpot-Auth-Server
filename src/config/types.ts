@@ -36,7 +36,6 @@ export type ExtApiConfig = {
 };
 export type StorageConfig = {
   temporaryPath: string;
-  avatarAssetPath: string;
 };
 export enum CacheProvider {
   MEMORY = 'MEMORY', REDIS = 'REDIS'

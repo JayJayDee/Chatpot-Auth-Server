@@ -6,7 +6,6 @@ import { AuthUtil } from '../utils/types';
 import { injectable } from 'smart-factory';
 import { Modules } from '../modules';
 import { BaseRuntimeError } from '../errors';
-import { CreateAvatar } from '../avatar/types';
 
 class AuthFailError extends BaseRuntimeError {}
 export const authenticateMember =
@@ -115,8 +114,7 @@ export const createMember =
     insertAuth: Auth.InsertAuth,
     create: Member.InsertMember,
     token: AuthUtil.CreateToken,
-    passphrase: AuthUtil.CreatePassphrase,
-    avatar: CreateAvatar): MemberService.CreateMember =>
+    passphrase: AuthUtil.CreatePassphrase): MemberService.CreateMember =>
       async (param: MemberService.ReqCreateMember) => {
         const created = await create(param);
         const memberNo: number = created.member_no;
@@ -124,9 +122,6 @@ export const createMember =
         const nick = await pick();
         const memberToken = await token(memberNo);
         const pass = passphrase(memberNo);
-
-        const avatarResp = await avatar({ nickEn: nick.en, gender: param.gender });
-        console.log(avatarResp);
 
         await insertNick({
           member_no: memberNo,
@@ -152,7 +147,6 @@ injectable(Modules.Service.Member.Create,
     Modules.Store.Auth.Insert,
     Modules.Store.Member.Insert,
     Modules.Util.Auth.Encrypt,
-    Modules.Util.Auth.Passphrase,
-    Modules.Avatar.Create ],
-  async (logger, pick, insertNick, insertAuth, insert, token, pass, avatar) =>
-    createMember(logger, pick, insertNick, insertAuth, insert, token, pass, avatar));
+    Modules.Util.Auth.Passphrase],
+  async (logger, pick, insertNick, insertAuth, insert, token, pass) =>
+    createMember(logger, pick, insertNick, insertAuth, insert, token, pass));

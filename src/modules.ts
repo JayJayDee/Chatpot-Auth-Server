@@ -83,10 +83,6 @@ export namespace Modules {
       Authenticate = 'Store/Auth/Authenticate',
       GetPassword = 'Store/Auth/GetPassword'
     }
-    export enum AvatarCache {
-      Get = 'Store/AvatarCache/Get',
-      Insert = 'Store/AvatarCache/Insert'
-    }
   }
 
   export namespace Util {
@@ -102,8 +98,11 @@ export namespace Modules {
     }
   }
 
-  export namespace Avatar {
-    export const Create = 'Avatar/Create';
-    export const AvatarExtLib = 'Avatar/AvatarExtLib';
+  export namespace ExtApi {
+    export const Requestor = 'ExtApi/Requestor';
+
+    export enum Asset {
+      GetAvatar = 'ExtApi/Asset/GetAvatar'
+    }
   }
 }

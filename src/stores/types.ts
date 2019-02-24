@@ -76,22 +76,3 @@ export namespace Nick {
   export type GetNick = (req: ReqGetNick) => Promise<NickEntity>;
   export type GetNickMultiple = (memberNos: number[]) => Promise<NickMatchEntity[]>;
 }
-
-export namespace AvatarCache {
-  export type GetParam = {
-    gender: string;
-    nickEn: string;
-  };
-  export type GetRes = {
-    profile_img: string;
-    profile_thumb: string;
-  };
-  export type InsertParam = {
-    gender: string;
-    nickEn: string;
-    profileImg: string;
-    profileThumb: string;
-  };
-  export type Get = (param: GetParam) => Promise<GetRes>;
-  export type Insert = (param: InsertParam) => Promise<void>;
-}
