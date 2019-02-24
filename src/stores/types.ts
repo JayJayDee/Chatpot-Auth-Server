@@ -11,6 +11,8 @@ export namespace Member {
     gender: string;
     auth_type: AuthType;
     reg_date: Date;
+    profile_img: string;
+    profile_thumb: string;
   };
   export type ReqCreateMember = {
     region: string;
@@ -20,9 +22,14 @@ export namespace Member {
   export type ResCreateMember = {
     member_no: number;
   };
+  export type ProfileAvatar = {
+    profile_img: string;
+    profile_thumb: string;
+  };
   export type GetMember = (no: number) => Promise<MemberEntity>;
   export type GetMembers = (nos: number[]) => Promise<MemberEntity[]>;
   export type InsertMember = (create: ReqCreateMember) => Promise<ResCreateMember>;
+  export type UpdateAvatar = (no: number, avatar: ProfileAvatar) => Promise<void>;
 }
 
 export namespace Auth {
@@ -75,23 +82,4 @@ export namespace Nick {
   export type InsertNick = (req: ReqInsertNick) => Promise<void>;
   export type GetNick = (req: ReqGetNick) => Promise<NickEntity>;
   export type GetNickMultiple = (memberNos: number[]) => Promise<NickMatchEntity[]>;
-}
-
-export namespace AvatarCache {
-  export type GetParam = {
-    gender: string;
-    nickEn: string;
-  };
-  export type GetRes = {
-    profile_img: string;
-    profile_thumb: string;
-  };
-  export type InsertParam = {
-    gender: string;
-    nickEn: string;
-    profileImg: string;
-    profileThumb: string;
-  };
-  export type Get = (param: GetParam) => Promise<GetRes>;
-  export type Insert = (param: InsertParam) => Promise<void>;
 }

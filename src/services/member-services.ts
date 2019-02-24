@@ -6,7 +6,7 @@ import { AuthUtil } from '../utils/types';
 import { injectable } from 'smart-factory';
 import { Modules } from '../modules';
 import { BaseRuntimeError } from '../errors';
-import { CreateAvatar } from '../avatar/types';
+import { ExtApiTypes } from '../extapis';
 
 class AuthFailError extends BaseRuntimeError {}
 export const authenticateMember =
@@ -43,11 +43,15 @@ export const fetchMember =
       const nick = await getNick({ member_no: decrypted.member_no });
       return {
         nick,
+        token,
         auth_type: member.auth_type,
         region: member.region,
         language: member.language,
         gender: member.gender,
-        token
+        avatar: {
+          profile_img: member.profile_img,
+          profile_thumb: member.profile_thumb
+        }
       };
     };
 injectable(Modules.Service.Member.Fetch,
@@ -98,7 +102,11 @@ export const fetchMemberMultiple =
           ko: find(nicks, {member_no: m.no}).ko,
           ja: find(nicks, {member_no: m.no}).ja
         },
-        member_no: m.no
+        member_no: m.no,
+        avatar: {
+          profile_img: m.profile_img,
+          profile_thumb: m.profile_thumb
+        }
       }));
       return resp;
     };
@@ -114,9 +122,10 @@ export const createMember =
     insertNick: Nick.InsertNick,
     insertAuth: Auth.InsertAuth,
     create: Member.InsertMember,
+    updateAvt: Member.UpdateAvatar,
     token: AuthUtil.CreateToken,
     passphrase: AuthUtil.CreatePassphrase,
-    avatar: CreateAvatar): MemberService.CreateMember =>
+    requestAvatar: ExtApiTypes.Asset.RequestAvatar): MemberService.CreateMember =>
       async (param: MemberService.ReqCreateMember) => {
         const created = await create(param);
         const memberNo: number = created.member_no;
@@ -125,8 +134,8 @@ export const createMember =
         const memberToken = await token(memberNo);
         const pass = passphrase(memberNo);
 
-        const avatarResp = await avatar({ nickEn: nick.en, gender: param.gender });
-        console.log(avatarResp);
+        const avatar = await requestAvatar(nick.en, param.gender);
+        await updateAvt(memberNo, avatar);
 
         await insertNick({
           member_no: memberNo,
@@ -139,10 +148,14 @@ export const createMember =
           token: memberToken,
           password: pass
         });
+
+        // TODO: update avatar path.
+
         return {
           nick,
           token: memberToken,
-          passphrase: pass
+          passphrase: pass,
+          avatar
         };
       };
 injectable(Modules.Service.Member.Create,
@@ -151,8 +164,9 @@ injectable(Modules.Service.Member.Create,
     Modules.Store.Nick.Insert,
     Modules.Store.Auth.Insert,
     Modules.Store.Member.Insert,
+    Modules.Store.Member.UpdateAvatar,
     Modules.Util.Auth.Encrypt,
     Modules.Util.Auth.Passphrase,
-    Modules.Avatar.Create ],
-  async (logger, pick, insertNick, insertAuth, insert, token, pass, avatar) =>
-    createMember(logger, pick, insertNick, insertAuth, insert, token, pass, avatar));
+    Modules.ExtApi.Asset.GetAvatar],
+  async (logger, pick, insertNick, insertAuth, insert, updateAvt, token, pass, avatar) =>
+    createMember(logger, pick, insertNick, insertAuth, insert, updateAvt, token, pass, avatar));

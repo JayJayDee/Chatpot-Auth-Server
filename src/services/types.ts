@@ -9,6 +9,7 @@ export namespace MemberService {
     gender: string;
     auth_type: AuthType;
     nick: Nick;
+    avatar: Avatar;
     token?: string;
     member_no?: number;
   };
@@ -16,6 +17,10 @@ export namespace MemberService {
     en: string;
     ja: string;
     ko: string;
+  };
+  export type Avatar = {
+    profile_img: string;
+    profile_thumb: string;
   };
   export type ReqCreateMember = {
     region: string;
@@ -26,6 +31,7 @@ export namespace MemberService {
     token: string;
     passphrase: string;
     nick: Nick;
+    avatar: Avatar;
   };
   export type ReqAuthenticate = {
     login_id: string;

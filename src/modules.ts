@@ -12,6 +12,8 @@ export namespace Modules {
     MysqlConfig = 'Config/MysqlConfig',
     CredentialConfig = 'Config/CredentialConfig',
     CacheConfig = 'Config/CacheConfig',
+    StorageConfig = 'Config/StorageConfig',
+    ExtApiConfig = 'Config/ExtApiConfig',
     Env = 'Config/Env',
 
     ConfigSource = 'Config/ConfigSource',
@@ -68,7 +70,8 @@ export namespace Modules {
     export enum Member {
       Get = 'Store/Member/Get',
       GetMultiple = 'Store/Member/GetMultiple',
-      Insert = 'Store/Member/Insert'
+      Insert = 'Store/Member/Insert',
+      UpdateAvatar = 'Store/Member/UpdateAvatar'
     }
     export enum Nick {
       Pick = 'Store/Nick/Pick',
@@ -80,10 +83,6 @@ export namespace Modules {
       Insert = 'Store/Auth/Insert',
       Authenticate = 'Store/Auth/Authenticate',
       GetPassword = 'Store/Auth/GetPassword'
-    }
-    export enum AvatarCache {
-      Get = 'Store/AvatarCache/Get',
-      Insert = 'Store/AvatarCache/Insert'
     }
   }
 
@@ -100,7 +99,11 @@ export namespace Modules {
     }
   }
 
-  export namespace Avatar {
-    export const Create = 'Avatar/Create';
+  export namespace ExtApi {
+    export const Requestor = 'ExtApi/Requestor';
+
+    export enum Asset {
+      GetAvatar = 'ExtApi/Asset/GetAvatar'
+    }
   }
 }
