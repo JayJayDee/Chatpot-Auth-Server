@@ -11,6 +11,8 @@ export namespace Member {
     gender: string;
     auth_type: AuthType;
     reg_date: Date;
+    profile_img: string;
+    profile_thumb: string;
   };
   export type ReqCreateMember = {
     region: string;

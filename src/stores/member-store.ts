@@ -24,7 +24,9 @@ export const getMember = (mysql: MysqlDriver): Member.GetMember  =>
       language: rows[0].language,
       auth_type: rows[0].auth_type,
       gender: rows[0].gender,
-      reg_date: new Date(rows[0].reg_date)
+      reg_date: new Date(rows[0].reg_date),
+      profile_img: rows[0].profile_img,
+      profile_thumb: rows[0].profile_thumb
     };
     return member;
   };
@@ -52,7 +54,9 @@ export const getMembers = (mysql: MysqlDriver): Member.GetMembers =>
         region: r.region,
         language: r.language,
         gender: r.gender,
-        reg_date: r.reg_date
+        reg_date: r.reg_date,
+        profile_img: r.profile_img,
+        profile_thumb: r.profile_thumb
       }));
     return resp;
   };

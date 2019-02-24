@@ -43,11 +43,15 @@ export const fetchMember =
       const nick = await getNick({ member_no: decrypted.member_no });
       return {
         nick,
+        token,
         auth_type: member.auth_type,
         region: member.region,
         language: member.language,
         gender: member.gender,
-        token
+        avatar: {
+          profile_img: member.profile_img,
+          profile_thumb: member.profile_thumb
+        }
       };
     };
 injectable(Modules.Service.Member.Fetch,
@@ -98,7 +102,11 @@ export const fetchMemberMultiple =
           ko: find(nicks, {member_no: m.no}).ko,
           ja: find(nicks, {member_no: m.no}).ja
         },
-        member_no: m.no
+        member_no: m.no,
+        avatar: {
+          profile_img: m.profile_img,
+          profile_thumb: m.profile_thumb
+        }
       }));
       return resp;
     };
