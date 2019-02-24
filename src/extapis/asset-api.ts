@@ -10,5 +10,17 @@ injectable(Modules.ExtApi.Asset.GetAvatar,
     cfg: ExtApiConfig): Promise<ExtApiTypes.Asset.RequestAvatar> =>
 
     async (nickEn, gender) => {
-      return null;
+      const url = `${cfg.assetHost}/avatar`;
+      const resp: any = await request({
+        uri: url,
+        method: ExtApiTypes.RequestMethod.GET,
+        qs: {
+          nick: nickEn,
+          gender
+        }
+      });
+      return {
+        profile_img: resp.profile_img,
+        profile_thumb: resp.profile_thumb
+      };
     });

@@ -6,6 +6,7 @@ import { AuthUtil } from '../utils/types';
 import { injectable } from 'smart-factory';
 import { Modules } from '../modules';
 import { BaseRuntimeError } from '../errors';
+import { ExtApiTypes } from '../extapis';
 
 class AuthFailError extends BaseRuntimeError {}
 export const authenticateMember =
@@ -113,8 +114,10 @@ export const createMember =
     insertNick: Nick.InsertNick,
     insertAuth: Auth.InsertAuth,
     create: Member.InsertMember,
+    updateAvt: Member.UpdateAvatar,
     token: AuthUtil.CreateToken,
-    passphrase: AuthUtil.CreatePassphrase): MemberService.CreateMember =>
+    passphrase: AuthUtil.CreatePassphrase,
+    requestAvatar: ExtApiTypes.Asset.RequestAvatar): MemberService.CreateMember =>
       async (param: MemberService.ReqCreateMember) => {
         const created = await create(param);
         const memberNo: number = created.member_no;
@@ -122,6 +125,9 @@ export const createMember =
         const nick = await pick();
         const memberToken = await token(memberNo);
         const pass = passphrase(memberNo);
+
+        const avatar = await requestAvatar(nick.en, param.gender);
+        await updateAvt(memberNo, avatar);
 
         await insertNick({
           member_no: memberNo,
@@ -134,10 +140,14 @@ export const createMember =
           token: memberToken,
           password: pass
         });
+
+        // TODO: update avatar path.
+
         return {
           nick,
           token: memberToken,
-          passphrase: pass
+          passphrase: pass,
+          avatar
         };
       };
 injectable(Modules.Service.Member.Create,
@@ -146,7 +156,9 @@ injectable(Modules.Service.Member.Create,
     Modules.Store.Nick.Insert,
     Modules.Store.Auth.Insert,
     Modules.Store.Member.Insert,
+    Modules.Store.Member.UpdateAvatar,
     Modules.Util.Auth.Encrypt,
-    Modules.Util.Auth.Passphrase],
-  async (logger, pick, insertNick, insertAuth, insert, token, pass) =>
-    createMember(logger, pick, insertNick, insertAuth, insert, token, pass));
+    Modules.Util.Auth.Passphrase,
+    Modules.ExtApi.Asset.GetAvatar],
+  async (logger, pick, insertNick, insertAuth, insert, updateAvt, token, pass, avatar) =>
+    createMember(logger, pick, insertNick, insertAuth, insert, updateAvt, token, pass, avatar));

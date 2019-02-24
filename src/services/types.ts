@@ -17,6 +17,10 @@ export namespace MemberService {
     ja: string;
     ko: string;
   };
+  export type Avatar = {
+    profile_img: string;
+    profile_thumb: string;
+  };
   export type ReqCreateMember = {
     region: string;
     language: string;
@@ -26,6 +30,7 @@ export namespace MemberService {
     token: string;
     passphrase: string;
     nick: Nick;
+    avatar: Avatar;
   };
   export type ReqAuthenticate = {
     login_id: string;

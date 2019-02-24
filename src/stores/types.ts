@@ -20,9 +20,14 @@ export namespace Member {
   export type ResCreateMember = {
     member_no: number;
   };
+  export type ProfileAvatar = {
+    profile_img: string;
+    profile_thumb: string;
+  };
   export type GetMember = (no: number) => Promise<MemberEntity>;
   export type GetMembers = (nos: number[]) => Promise<MemberEntity[]>;
   export type InsertMember = (create: ReqCreateMember) => Promise<ResCreateMember>;
+  export type UpdateAvatar = (no: number, avatar: ProfileAvatar) => Promise<void>;
 }
 
 export namespace Auth {

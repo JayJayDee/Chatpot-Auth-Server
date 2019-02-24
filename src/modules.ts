@@ -70,7 +70,8 @@ export namespace Modules {
     export enum Member {
       Get = 'Store/Member/Get',
       GetMultiple = 'Store/Member/GetMultiple',
-      Insert = 'Store/Member/Insert'
+      Insert = 'Store/Member/Insert',
+      UpdateAvatar = 'Store/Member/UpdateAvatar'
     }
     export enum Nick {
       Pick = 'Store/Nick/Pick',

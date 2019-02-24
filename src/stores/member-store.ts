@@ -78,6 +78,23 @@ export const insertMember = (mysql: MysqlDriver): Member.InsertMember =>
     return { member_no };
   };
 
+injectable(Modules.Store.Member.UpdateAvatar,
+  [ Modules.Mysql ],
+  async (mysql: MysqlDriver): Promise<Member.UpdateAvatar> =>
+    async (memberNo, avatar) => {
+      const sql = `
+        UPDATE
+          chatpot_member
+        SET
+          profile_img=?,
+          profile_thumb=?
+        WHERE
+          no=?
+      `;
+      const params = [ avatar.profile_img, avatar.profile_thumb, memberNo ];
+      await mysql.query(sql, params);
+    });
+
 injectable(Modules.Store.Member.Get,
   [Modules.Mysql],
   async (mysql: MysqlDriver) => getMember(mysql));
