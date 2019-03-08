@@ -26,7 +26,6 @@ export namespace Modules {
     export enum Member {
       Fetch = 'Service/Member/Fetch',
       FetchMultiple = 'Service/Member/FetchMultiple',
-      FetchMultipleToken = 'Service/Member/FetchMultipleToken',
       Create = 'Service/Member/Create',
       Authenticate = 'Service/Member/Authenticate'
     }
