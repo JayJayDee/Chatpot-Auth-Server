@@ -8,7 +8,8 @@ export const getMember = (mysql: MysqlDriver): Member.GetMember  =>
     const sql = `
       SELECT
         m.*,
-        a.auth_type
+        a.auth_type,
+        a.token
       FROM
         chatpot_member m
       INNER JOIN
@@ -20,6 +21,7 @@ export const getMember = (mysql: MysqlDriver): Member.GetMember  =>
 
     const member: Member.MemberEntity = {
       no: rows[0].no,
+      token: rows[0].token,
       region: rows[0].region,
       language: rows[0].language,
       auth_type: rows[0].auth_type,
@@ -38,7 +40,8 @@ export const getMembers = (mysql: MysqlDriver): Member.GetMembers =>
     const sql = `
       SELECT
         m.*,
-        a.auth_type
+        a.auth_type,
+        a.token
       FROM
         chatpot_member m
       INNER JOIN
@@ -50,6 +53,7 @@ export const getMembers = (mysql: MysqlDriver): Member.GetMembers =>
     const resp: Member.MemberEntity[] =
       rows.map((r) => ({
         no: r.no,
+        token: r.token,
         auth_type: r.auth_type,
         region: r.region,
         language: r.language,

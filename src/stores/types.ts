@@ -6,6 +6,7 @@ export namespace Member {
   }
   export type MemberEntity = {
     no: number;
+    token: string;
     region: string;
     language: string;
     gender: string;

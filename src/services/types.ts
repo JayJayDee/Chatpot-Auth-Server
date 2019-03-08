@@ -10,7 +10,7 @@ export namespace MemberService {
     auth_type: AuthType;
     nick: Nick;
     avatar: Avatar;
-    token?: string;
+    token: string;
     member_no?: number;
   };
   export type Nick = {
