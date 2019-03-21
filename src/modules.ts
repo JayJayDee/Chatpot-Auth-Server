@@ -61,7 +61,8 @@ export namespace Modules {
     export enum Auth {
       Router = 'Endpoint/Auth/Router',
       Auth = 'Endpoint/Auth/Auth',
-      Reauth = 'Endpoint/Auth/Reauth'
+      Reauth = 'Endpoint/Auth/Reauth',
+      EmailLogin = 'Endpoint/Member/EmailLogin'
     }
   }
 
