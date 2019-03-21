@@ -38,10 +38,14 @@ export const authenticate =
     log: Logger): Auth.Authenticate =>
     async (param) => {
       const hashed = passHash(param.password);
-      const query = `
-        SELECT * FROM chatpot_auth WHERE login_id=? AND password=?
-      `;
+      let additionalQuery = '';
+      if (param.auth_type) additionalQuery = 'AND auth_type=?';
+
       const params: any[] = [ param.login_id, hashed ];
+      if (param.auth_type) params.push(param.auth_type);
+      const query = `
+        SELECT * FROM chatpot_auth WHERE login_id=? AND password=? ${additionalQuery}
+      `;
       const rows: any[] = await mysql.query(query, params) as any[];
       if (rows.length === 0) {
         return {

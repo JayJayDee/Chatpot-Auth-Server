@@ -47,6 +47,7 @@ export namespace Auth {
   export type ReqAuthenticate = {
     login_id: string;
     password: string;
+    auth_type?: AuthType;
   };
   export type ResAuthenticate = {
     member_no: number;
