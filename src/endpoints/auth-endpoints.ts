@@ -24,15 +24,24 @@ injectable(Modules.Endpoint.Auth.Router,
 
 
 injectable(Modules.Endpoint.Auth.EmailLogin,
-  [],
-  async (): Promise<Endpoint> =>
+  [ Modules.Logger,
+    Modules.Service.Member.Authenticate ],
+  async (log: Logger,
+    auth: MemberService.Authenticate): Promise<Endpoint> =>
 
   ({
     uri: '/email',
     method: EndpointMethod.POST,
     handler: [
       asyncEndpointWrap(async (req, res, next) => {
-        res.status(200).json({});
+        const login_id = req.body['login_id'];
+        const password = req.body['password'];
+        const auth_type = Auth.AuthType.EMAIL;
+
+        if (!login_id || !password) throw new InvalidParamError('login_id, password');
+
+        const resp = await auth({ login_id, password, auth_type });
+        res.status(200).json(resp);
       })
     ]
   }));

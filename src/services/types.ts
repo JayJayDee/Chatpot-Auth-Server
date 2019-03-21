@@ -36,6 +36,7 @@ export namespace MemberService {
   export type ReqAuthenticate = {
     login_id: string;
     password: string;
+    auth_type?: AuthType;
   };
   export type ResAuthenticate = {
     session_key: string;

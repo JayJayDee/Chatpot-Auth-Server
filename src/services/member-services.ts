@@ -16,7 +16,8 @@ export const authenticateMember =
     async (param) => {
       const result = await auth({
         login_id: param.login_id,
-        password: param.password
+        password: param.password,
+        auth_type: param.auth_type
       });
       if (result.success === false) {
         throw new AuthFailError('AUTH_FAILED', `authentication failed for id:${param.login_id}`);
