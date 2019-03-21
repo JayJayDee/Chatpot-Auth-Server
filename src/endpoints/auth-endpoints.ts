@@ -11,15 +11,32 @@ import { Auth } from '../stores/types';
 
 injectable(Modules.Endpoint.Auth.Router,
   [Modules.Endpoint.Auth.Auth,
-    Modules.Endpoint.Auth.Reauth],
-  async (auth, reauth): Promise<EndpointRouter> => {
+    Modules.Endpoint.Auth.Reauth,
+    Modules.Endpoint.Auth.EmailLogin],
+  async (auth, reauth, email): Promise<EndpointRouter> => {
     const router = Router();
-    const endpoints = [ auth, reauth ];
+    const endpoints = [ auth, reauth, email ];
     endpoints.map((endpt: Endpoint) => {
       router[endpt.method].apply(router, [endpt.uri, endpt.handler]);
     });
     return { router, uri: '/auth' };
   });
+
+
+injectable(Modules.Endpoint.Auth.EmailLogin,
+  [],
+  async (): Promise<Endpoint> =>
+
+  ({
+    uri: '/email',
+    method: EndpointMethod.POST,
+    handler: [
+      asyncEndpointWrap(async (req, res, next) => {
+        res.status(200).json({});
+      })
+    ]
+  }));
+
 
 const authEndpoint =
   (log: Logger,
