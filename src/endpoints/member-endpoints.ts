@@ -7,6 +7,20 @@ import { MemberService } from '../services/types';
 import { InvalidParamError } from './errors';
 import { asyncEndpointWrap } from './wraps';
 
+injectable(Modules.Endpoint.Member.CreateEmail,
+  [],
+  async (): Promise<Endpoint> =>
+
+  ({
+    uri: '/email',
+    method: EndpointMethod.POST,
+    handler: [
+      asyncEndpointWrap(async (req, res, next) => {
+        res.status(200).json({});
+      })
+    ]
+  }));
+
 export const getMember =
   (getMember: MemberService.FetchMember,
     authenticator: Authenticator): Endpoint => ({
@@ -53,12 +67,14 @@ injectable(Modules.Endpoint.Member.Create,
   async (log, create) => joinSimple(log, create));
 
 injectable(Modules.Endpoint.Member.Router,
-  [Modules.Endpoint.Member.Get, Modules.Endpoint.Member.Create],
-  async (get: Endpoint, create: Endpoint): Promise<EndpointRouter> => {
+  [ Modules.Endpoint.Member.Get,
+    Modules.Endpoint.Member.Create,
+    Modules.Endpoint.Member.CreateEmail ],
+  async (get: Endpoint, create: Endpoint, email): Promise<EndpointRouter> => {
     const router = Router();
     const endpoints = [ get, create ];
     endpoints.map((endpt: Endpoint) => {
-      router[endpt.method].apply(router, [endpt.uri, endpt.handler]);
+      router[endpt.method].apply(router, [endpt.uri, endpt.handler, email.handler]);
     });
     return { router, uri: '/member' };
   });

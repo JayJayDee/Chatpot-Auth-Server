@@ -52,7 +52,8 @@ export namespace Modules {
     export enum Member {
       Router = 'Endpoint/Member/Router',
       Get = 'Endpoint/Member/Get',
-      Create = 'Endpoint/Member/Create'
+      Create = 'Endpoint/Member/Create',
+      CreateEmail = 'Endpoint/Member/CreateEmail'
     }
     export enum Internal {
       Router = 'Endpoint/Internal/Router',
