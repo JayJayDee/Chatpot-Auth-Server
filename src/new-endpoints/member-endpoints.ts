@@ -6,15 +6,29 @@ import { InvalidParamError } from '../errors';
 import { MiddlewareModules, MiddlewareTypes } from '../middlewares';
 
 injectable(EndpointModules.Member.CreateSimple,
-  [ EndpointModules.Utils.WrapAync ],
-  async (wrapAsync: EndpointTypes.Utils.WrapAsync): Promise<EndpointTypes.Endpoint> =>
+  [ EndpointModules.Utils.WrapAync,
+    ServiceModules.Member.Create ],
+  async (wrapAsync: EndpointTypes.Utils.WrapAsync,
+    createMember: ServiceTypes.CreateMember): Promise<EndpointTypes.Endpoint> =>
 
   ({
     uri: '/member',
     method: EndpointTypes.EndpointMethod.POST,
     handler: [
       wrapAsync(async (req, res, next) => {
-        res.status(200).json({});
+        if (!req.body['region'] || !req.body['language'] || !req.body['gender']) {
+          throw new InvalidParamError('region, language, gender');
+        }
+        const region = req.body['region'];
+        const language = req.body['language'];
+        const gender = req.body['gender'];
+        const auth = {
+          auth_type: ServiceTypes.AuthType.SIMPLE
+        };
+
+        const param = { region, language, gender, auth };
+        const resp = await createMember(param);
+        res.status(200).json(resp);
       })
     ]
   }));
