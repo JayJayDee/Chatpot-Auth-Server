@@ -111,7 +111,17 @@ export const createMember =
 
         const nick = await pick();
         const memberToken = await token(memberNo);
-        const pass = passphrase(memberNo);
+
+        let login_id = null;
+        let password = null;
+
+        if (param.auth.auth_type === MemberService.AuthType.EMAIL) {
+          login_id = param.auth.login_id;
+          password = param.auth.password;
+        } else if (param.auth.auth_type === MemberService.AuthType.SIMPLE) {
+          login_id = memberToken;
+          password = passphrase(memberNo);
+        }
 
         const avatar = await requestAvatar(nick.en, param.gender);
         await updateAvt(memberNo, avatar);
@@ -121,21 +131,25 @@ export const createMember =
           nick
         });
         await insertAuth({
-          auth_type: Auth.AuthType.SIMPLE,
+          login_id,
+          password,
+          auth_type: param.auth.auth_type,
           member_no: memberNo,
-          login_id: memberToken,
           token: memberToken,
-          password: pass
         });
 
         // TODO: update avatar path.
 
-        return {
+        const ret: MemberService.ResCreateMember = {
           nick,
           token: memberToken,
-          passphrase: pass,
           avatar
         };
+
+        if (param.auth.auth_type === MemberService.AuthType.SIMPLE) {
+          ret.passphrase = password;
+        }
+        return ret;
       };
 injectable(Modules.Service.Member.Create,
   [ Modules.Logger,

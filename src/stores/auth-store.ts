@@ -1,15 +1,20 @@
+import { injectable } from 'smart-factory';
 import { MysqlDriver } from '../mysql/types';
 import { Logger } from '../loggers/types';
 import { Auth } from './types';
-import { injectable } from 'smart-factory';
 import { Modules } from '../modules';
 import { AuthUtil } from '../utils/types';
 
-export const insertAuth =
-  (mysql: MysqlDriver,
+injectable(Modules.Store.Auth.Insert,
+  [ Modules.Mysql,
+    Modules.Util.Auth.PassHash,
+    Modules.Logger ],
+  async (mysql: MysqlDriver,
     passHash: AuthUtil.CreatePassHash,
-    log: Logger): Auth.InsertAuth =>
-    async (param: Auth.ReqInsertAuth) => {
+    log: Logger): Promise<Auth.InsertAuth> =>
+
+    async (param) => {
+      const hashedPassword = passHash(param.password);
       const query = `
         INSERT INTO
           chatpot_auth
@@ -24,20 +29,23 @@ export const insertAuth =
       const params = [
         param.member_no, param.auth_type,
         param.login_id, param.token,
-        passHash(param.password)
+        hashedPassword
       ];
       await mysql.query(query, params);
-    };
-injectable(Modules.Store.Auth.Insert,
-  [Modules.Mysql, Modules.Util.Auth.PassHash, Modules.Logger],
-  async (mysql, hash, log) => insertAuth(mysql, hash, log));
+    });
 
-export const authenticate =
-  (mysql: MysqlDriver,
+
+injectable(Modules.Store.Auth.Authenticate,
+  [ Modules.Mysql,
+    Modules.Util.Auth.PassHash,
+    Modules.Logger ],
+  async (mysql: MysqlDriver,
     passHash: AuthUtil.CreatePassHash,
-    log: Logger): Auth.Authenticate =>
+    log: Logger): Promise<Auth.Authenticate> =>
+
     async (param) => {
       const hashed = passHash(param.password);
+      console.log(hashed);
       let additionalQuery = '';
       if (param.auth_type) additionalQuery = 'AND auth_type=?';
 
@@ -60,10 +68,8 @@ export const authenticate =
         success: true
       };
       return resp;
-    };
-injectable(Modules.Store.Auth.Authenticate,
-  [Modules.Mysql, Modules.Util.Auth.PassHash,  Modules.Logger],
-  async (mysql, passHash, log) => authenticate(mysql, passHash, log));
+    });
+
 
 injectable(Modules.Store.Auth.GetPassword,
   [ Modules.Mysql,

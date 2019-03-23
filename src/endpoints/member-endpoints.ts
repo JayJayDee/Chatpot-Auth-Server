@@ -8,15 +8,33 @@ import { InvalidParamError } from './errors';
 import { asyncEndpointWrap } from './wraps';
 
 injectable(Modules.Endpoint.Member.CreateEmail,
-  [],
-  async (): Promise<Endpoint> =>
+  [ Modules.Service.Member.Create ],
+  async (create: MemberService.CreateMember): Promise<Endpoint> =>
 
   ({
     uri: '/email',
     method: EndpointMethod.POST,
     handler: [
       asyncEndpointWrap(async (req, res, next) => {
-        res.status(200).json({});
+        const email = req.body['email'];
+        const password = req.body['password'];
+        const region = req.body['region'];
+        const language = req.body['language'];
+        const gender = req.body['gender'];
+
+        if (!email || !password || !region || !language || !gender) {
+          throw new InvalidParamError('email, password, region, language, gender required');
+        }
+
+        const auth = {
+          auth_type: MemberService.AuthType.EMAIL,
+          login_id: email,
+          password
+        };
+
+        const param = { region, language, gender, auth };
+        const resp = await create(param);
+        res.status(200).json(resp);
       })
     ]
   }));
@@ -54,8 +72,11 @@ export const joinSimple =
           const region = req.body['region'];
           const language = req.body['language'];
           const gender = req.body['gender'];
+          const auth = {
+            auth_type: MemberService.AuthType.SIMPLE
+          };
 
-          const param = { region, language, gender };
+          const param = { region, language, gender, auth };
           const resp = await create(param);
           res.status(200).json(resp);
         })
@@ -70,11 +91,11 @@ injectable(Modules.Endpoint.Member.Router,
   [ Modules.Endpoint.Member.Get,
     Modules.Endpoint.Member.Create,
     Modules.Endpoint.Member.CreateEmail ],
-  async (get: Endpoint, create: Endpoint, email): Promise<EndpointRouter> => {
+  async (get: Endpoint, create: Endpoint, email: Endpoint): Promise<EndpointRouter> => {
     const router = Router();
-    const endpoints = [ get, create ];
+    const endpoints = [ get, create, email ];
     endpoints.map((endpt: Endpoint) => {
-      router[endpt.method].apply(router, [endpt.uri, endpt.handler, email.handler]);
+      router[endpt.method].apply(router, [endpt.uri, endpt.handler]);
     });
     return { router, uri: '/member' };
   });
