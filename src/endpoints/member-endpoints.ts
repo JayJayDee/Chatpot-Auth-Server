@@ -3,13 +3,13 @@ import { injectable } from 'smart-factory';
 import { Modules } from '../modules';
 import { Router } from 'express';
 import { Logger } from '../loggers/types';
-import { MemberService } from '../services/types';
+import { ServiceTypes } from '../services/types';
 import { InvalidParamError } from './errors';
 import { asyncEndpointWrap } from './wraps';
 
 injectable(Modules.Endpoint.Member.CreateEmail,
   [ Modules.Service.Member.Create ],
-  async (create: MemberService.CreateMember): Promise<Endpoint> =>
+  async (create: ServiceTypes.CreateMember): Promise<Endpoint> =>
 
   ({
     uri: '/email',
@@ -27,7 +27,7 @@ injectable(Modules.Endpoint.Member.CreateEmail,
         }
 
         const auth = {
-          auth_type: MemberService.AuthType.EMAIL,
+          auth_type: ServiceTypes.AuthType.EMAIL,
           login_id: email,
           password
         };
@@ -40,7 +40,7 @@ injectable(Modules.Endpoint.Member.CreateEmail,
   }));
 
 export const getMember =
-  (getMember: MemberService.FetchMember,
+  (getMember: ServiceTypes.FetchMember,
     authenticator: Authenticator): Endpoint => ({
     uri: '/:token',
     method: EndpointMethod.GET,
@@ -61,7 +61,7 @@ injectable(Modules.Endpoint.Member.Get,
 
 export const joinSimple =
   (log: Logger,
-    create: MemberService.CreateMember): Endpoint => ({
+    create: ServiceTypes.CreateMember): Endpoint => ({
       uri: '/',
       method: EndpointMethod.POST,
       handler: [
@@ -73,7 +73,7 @@ export const joinSimple =
           const language = req.body['language'];
           const gender = req.body['gender'];
           const auth = {
-            auth_type: MemberService.AuthType.SIMPLE
+            auth_type: ServiceTypes.AuthType.SIMPLE
           };
 
           const param = { region, language, gender, auth };

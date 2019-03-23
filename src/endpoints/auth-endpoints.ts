@@ -3,7 +3,7 @@ import { EndpointRouter, Endpoint, EndpointMethod } from './types';
 import { Router } from 'express';
 import { injectable } from 'smart-factory';
 import { Logger } from '../loggers/types';
-import { MemberService } from '../services/types';
+import { ServiceTypes } from '../services/types';
 import { asyncEndpointWrap } from './wraps';
 import { InvalidParamError } from './errors';
 import { AuthUtil } from '../utils/types';
@@ -27,7 +27,7 @@ injectable(Modules.Endpoint.Auth.EmailLogin,
   [ Modules.Logger,
     Modules.Service.Member.Authenticate ],
   async (log: Logger,
-    auth: MemberService.Authenticate): Promise<Endpoint> =>
+    auth: ServiceTypes.Authenticate): Promise<Endpoint> =>
 
   ({
     uri: '/email',
@@ -49,7 +49,7 @@ injectable(Modules.Endpoint.Auth.EmailLogin,
 
 const authEndpoint =
   (log: Logger,
-    auth: MemberService.Authenticate): Endpoint => ({
+    auth: ServiceTypes.Authenticate): Endpoint => ({
       uri: '/',
       method: EndpointMethod.POST,
       handler: [
