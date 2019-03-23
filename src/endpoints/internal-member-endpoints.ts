@@ -6,6 +6,7 @@ import { ServiceTypes } from '../services/types';
 import { asyncEndpointWrap } from './wraps';
 import { InvalidParamError } from './errors';
 import { isArray } from 'util';
+import { ServiceModules } from '../services';
 
 injectable(Modules.Endpoint.Internal.Router,
   [Modules.Endpoint.Internal.Get],
@@ -22,7 +23,7 @@ injectable(Modules.Endpoint.Internal.Router,
   });
 
 injectable(Modules.Endpoint.Internal.Get,
-  [Modules.Service.Member.FetchMultiple],
+  [ServiceModules.Member.FetchMultiple],
   async (fetchMultiple: ServiceTypes.FetchMembers): Promise<Endpoint> => ({
     uri: '/member',
     method: EndpointMethod.GET,

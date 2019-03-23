@@ -22,15 +22,6 @@ export namespace Modules {
     ConfigRules = 'Config/ConfigRules'
   }
 
-  export namespace Service {
-    export enum Member {
-      Fetch = 'Service/Member/Fetch',
-      FetchMultiple = 'Service/Member/FetchMultiple',
-      Create = 'Service/Member/Create',
-      Authenticate = 'Service/Member/Authenticate'
-    }
-  }
-
   export const Logger = 'Logger';
   export const Mysql = 'Mysql';
 

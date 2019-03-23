@@ -65,7 +65,7 @@ injectable(ServiceModules.Member.Fetch,
     });
 
 
-injectable(Modules.Service.Member.FetchMultiple,
+injectable(ServiceModules.Member.FetchMultiple,
   [ Modules.Logger,
     Modules.Store.Member.GetMultiple,
     Modules.Store.Nick.GetMultiple ],
