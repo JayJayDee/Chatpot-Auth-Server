@@ -26,10 +26,16 @@ export namespace MemberService {
     region: string;
     language: string;
     gender: string;
+    auth: ReqAuthParam;
+  };
+  export type ReqAuthParam = {
+    login_id?: string;
+    password?: string;
+    auth_type: AuthType;
   };
   export type ResCreateMember = {
     token: string;
-    passphrase: string;
+    passphrase?: string;
     nick: Nick;
     avatar: Avatar;
   };
