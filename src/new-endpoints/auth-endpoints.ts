@@ -1,17 +1,28 @@
 import { injectable } from 'smart-factory';
 import { EndpointModules } from './modules';
 import { EndpointTypes } from './types';
+import { ServiceModules, ServiceTypes } from '../services';
+import { InvalidParamError } from '../errors';
 
 injectable(EndpointModules.Auth.AuthEmail,
-  [ EndpointModules.Utils.WrapAync ],
-  async (wrapAsync: EndpointTypes.Utils.WrapAsync): Promise<EndpointTypes.Endpoint> =>
+  [ EndpointModules.Utils.WrapAync,
+    ServiceModules.Member.Authenticate ],
+  async (wrapAsync: EndpointTypes.Utils.WrapAsync,
+    authenticate: ServiceTypes.Authenticate): Promise<EndpointTypes.Endpoint> =>
 
   ({
     uri: '/auth/email',
     method: EndpointTypes.EndpointMethod.POST,
     handler: [
-      wrapAsync((req, res, next) => {
-        res.status(200).json({});
+      wrapAsync(async (req, res, next) => {
+        const login_id = req.body['login_id'];
+        const password = req.body['password'];
+        const auth_type = ServiceTypes.AuthType.EMAIL;
+
+        if (!login_id || !password) throw new InvalidParamError('login_id, password');
+
+        const resp = await authenticate({ login_id, password, auth_type });
+        res.status(200).json(resp);
       })
     ]
   }));
