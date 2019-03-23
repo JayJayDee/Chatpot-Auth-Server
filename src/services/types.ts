@@ -1,4 +1,4 @@
-export namespace MemberService {
+export namespace ServiceTypes {
   export enum AuthType {
     SIMPLE = 'SIMPLE',
     EMAIL = 'EMAIL'

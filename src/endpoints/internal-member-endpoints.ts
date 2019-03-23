@@ -2,7 +2,7 @@ import { injectable } from 'smart-factory';
 import { Modules } from '../modules';
 import { Endpoint, EndpointMethod, EndpointRouter } from './types';
 import { Router } from 'express';
-import { MemberService } from '../services/types';
+import { ServiceTypes } from '../services/types';
 import { asyncEndpointWrap } from './wraps';
 import { InvalidParamError } from './errors';
 import { isArray } from 'util';
@@ -23,7 +23,7 @@ injectable(Modules.Endpoint.Internal.Router,
 
 injectable(Modules.Endpoint.Internal.Get,
   [Modules.Service.Member.FetchMultiple],
-  async (fetchMultiple: MemberService.FetchMembers): Promise<Endpoint> => ({
+  async (fetchMultiple: ServiceTypes.FetchMembers): Promise<Endpoint> => ({
     uri: '/member',
     method: EndpointMethod.GET,
     handler: [
