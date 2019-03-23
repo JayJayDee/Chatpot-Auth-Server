@@ -3,6 +3,7 @@ import { EndpointModules } from './modules';
 import { EndpointTypes } from './types';
 import { ServiceModules, ServiceTypes } from '../services';
 import { InvalidParamError } from '../errors';
+import { MiddlewareModules, MiddlewareTypes } from '../middlewares';
 
 injectable(EndpointModules.Member.CreateSimple,
   [ EndpointModules.Utils.WrapAync ],
@@ -12,7 +13,7 @@ injectable(EndpointModules.Member.CreateSimple,
     uri: '/member',
     method: EndpointTypes.EndpointMethod.POST,
     handler: [
-      wrapAsync((req, res, next) => {
+      wrapAsync(async (req, res, next) => {
         res.status(200).json({});
       })
     ]
@@ -55,15 +56,23 @@ injectable(EndpointModules.Member.CreateEmail,
 
 
 injectable(EndpointModules.Member.Get,
-  [ EndpointModules.Utils.WrapAync ],
-  async (wrapAsync: EndpointTypes.Utils.WrapAsync): Promise<EndpointTypes.Endpoint> =>
+  [ EndpointModules.Utils.WrapAync,
+    MiddlewareModules.Authorization,
+    ServiceModules.Member.Fetch ],
+  async (wrapAsync: EndpointTypes.Utils.WrapAsync,
+    authorize: MiddlewareTypes.Authorization,
+    fetchMember: ServiceTypes.FetchMember): Promise<EndpointTypes.Endpoint> =>
 
   ({
     uri: '/member/:member_token',
     method: EndpointTypes.EndpointMethod.GET,
     handler: [
-      wrapAsync((req, res, next) => {
-        res.status(200).json({});
+      authorize(['params', 'member_token']),
+      wrapAsync(async (req, res, next) => {
+        const token: string = req.params['member_token'];
+        if (!token) throw new InvalidParamError('member_token required');
+        const member = await fetchMember(token);
+        res.status(200).json(member);
       })
     ]
   }));
