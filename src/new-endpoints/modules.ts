@@ -8,6 +8,7 @@ export namespace EndpointModules {
 
   export enum Member {
     CreateSimple = 'Endpoint/Member/CreateSimple',
-    CreateEmail = 'Endpoint/Member/CreateEmail'
+    CreateEmail = 'Endpoint/Member/CreateEmail',
+    Get = 'Endpoint/Member/Get'
   }
 }

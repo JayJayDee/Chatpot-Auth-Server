@@ -4,13 +4,16 @@ import { EndpointTypes } from './types';
 
 injectable(EndpointModules.Endpoints,
   [ EndpointModules.Member.CreateSimple,
-    EndpointModules.Member.CreateEmail ],
+    EndpointModules.Member.CreateEmail,
+    EndpointModules.Member.Get ],
   async (mcreates,
-    mcreateem): Promise<EndpointTypes.Endpoint[]> =>
+    mcreateem,
+    mget): Promise<EndpointTypes.Endpoint[]> =>
 
   ([
     mcreates,
-    mcreateem
+    mcreateem,
+    mget
   ]));
 
 export { EndpointModules } from './modules';

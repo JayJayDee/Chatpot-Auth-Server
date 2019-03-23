@@ -30,3 +30,18 @@ injectable(EndpointModules.Member.CreateEmail,
       })
     ]
   }));
+
+
+injectable(EndpointModules.Member.Get,
+  [ EndpointModules.Utils.WrapAync ],
+  async (wrapAsync: EndpointTypes.Utils.WrapAsync): Promise<EndpointTypes.Endpoint> =>
+
+  ({
+    uri: '/member/:member_token',
+    method: EndpointTypes.EndpointMethod.GET,
+    handler: [
+      wrapAsync((req, res, next) => {
+        res.status(200).json({});
+      })
+    ]
+  }));
