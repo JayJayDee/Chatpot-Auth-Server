@@ -11,4 +11,14 @@ export namespace EndpointModules {
     CreateEmail = 'Endpoint/Member/CreateEmail',
     Get = 'Endpoint/Member/Get'
   }
+
+  export enum Auth {
+    AuthSimple = 'Endpoint/Auth/AuthSimple',
+    AuthEmail = 'Endpoint/Auth/AuthEmail',
+    Reauth = 'Endpoint/Auth/Reauth'
+  }
+
+  export enum Internal {
+    GetMultiple = 'Endpoint/Internal/GetMultiple'
+  }
 }
