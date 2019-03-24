@@ -2,7 +2,7 @@ import { get } from 'lodash';
 import { injectable } from 'smart-factory';
 import { MiddlewareModules } from './modules';
 import { MiddlewareTypes } from './types';
-import { UtilModules, UtilTypes } from '../new-utils';
+import { UtilModules, UtilTypes } from '../utils';
 import { BaseSecurityError, SecurityExpireError } from '../errors';
 
 import { Modules } from '../modules';

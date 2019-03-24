@@ -1,109 +1,99 @@
-import { Modules } from '../modules';
-import { EndpointRouter, Endpoint, EndpointMethod } from './types';
-import { Router } from 'express';
 import { injectable } from 'smart-factory';
-import { Logger } from '../loggers/types';
-import { ServiceTypes } from '../services/types';
-import { asyncEndpointWrap } from './wraps';
-import { InvalidParamError } from './errors';
-import { AuthUtil } from '../utils/types';
+import { EndpointModules } from './modules';
+import { EndpointTypes } from './types';
+import { ServiceModules, ServiceTypes } from '../services';
+import { InvalidParamError } from '../errors';
+import { UtilModules, UtilTypes } from '../utils';
+import { Modules } from '../modules';
 import { Auth } from '../stores/types';
-import { ServiceModules } from '../services';
+import { Logger } from '../loggers/types';
 
-injectable(Modules.Endpoint.Auth.Router,
-  [Modules.Endpoint.Auth.Auth,
-    Modules.Endpoint.Auth.Reauth,
-    Modules.Endpoint.Auth.EmailLogin],
-  async (auth, reauth, email): Promise<EndpointRouter> => {
-    const router = Router();
-    const endpoints = [ auth, reauth, email ];
-    endpoints.map((endpt: Endpoint) => {
-      router[endpt.method].apply(router, [endpt.uri, endpt.handler]);
-    });
-    return { router, uri: '/auth' };
-  });
-
-
-injectable(Modules.Endpoint.Auth.EmailLogin,
-  [ Modules.Logger,
+injectable(EndpointModules.Auth.AuthEmail,
+  [ EndpointModules.Utils.WrapAync,
     ServiceModules.Member.Authenticate ],
-  async (log: Logger,
-    auth: ServiceTypes.Authenticate): Promise<Endpoint> =>
+  async (wrapAsync: EndpointTypes.Utils.WrapAsync,
+    authenticate: ServiceTypes.Authenticate): Promise<EndpointTypes.Endpoint> =>
 
   ({
-    uri: '/email',
-    method: EndpointMethod.POST,
+    uri: '/auth/email',
+    method: EndpointTypes.EndpointMethod.POST,
     handler: [
-      asyncEndpointWrap(async (req, res, next) => {
+      wrapAsync(async (req, res, next) => {
         const login_id = req.body['login_id'];
         const password = req.body['password'];
-        const auth_type = Auth.AuthType.EMAIL;
+        const auth_type = ServiceTypes.AuthType.EMAIL;
 
         if (!login_id || !password) throw new InvalidParamError('login_id, password');
 
-        const resp = await auth({ login_id, password, auth_type });
+        const resp = await authenticate({ login_id, password, auth_type });
         res.status(200).json(resp);
       })
     ]
   }));
 
 
-const authEndpoint =
-  (log: Logger,
-    auth: ServiceTypes.Authenticate): Endpoint => ({
-      uri: '/',
-      method: EndpointMethod.POST,
-      handler: [
-        asyncEndpointWrap(async (req, res, next) => {
-          const login_id = req.body['login_id'];
+injectable(EndpointModules.Auth.AuthSimple,
+  [ EndpointModules.Utils.WrapAync,
+    ServiceModules.Member.Authenticate ],
+  async (wrapAsync: EndpointTypes.Utils.WrapAsync,
+    authenticate: ServiceTypes.Authenticate): Promise<EndpointTypes.Endpoint> =>
+
+  ({
+    uri: '/auth',
+    method: EndpointTypes.EndpointMethod.POST,
+    handler: [
+      wrapAsync(async (req, res, next) => {
+        const login_id = req.body['login_id'];
           const password = req.body['password'];
           if (!login_id || !password) throw new InvalidParamError('login_id, password');
+          const auth_type = ServiceTypes.AuthType.SIMPLE;
 
-          const resp = await auth({ login_id, password });
+          const resp = await authenticate({ login_id, password, auth_type });
           res.status(200).json(resp);
-        })
-      ]
-    });
-injectable(Modules.Endpoint.Auth.Auth,
-  [Modules.Logger,
-    ServiceModules.Member.Authenticate],
-  async (log, auth) => authEndpoint(log, auth));
+      })
+    ]
+  }));
 
 
-injectable(Modules.Endpoint.Auth.Reauth,
-  [Modules.Logger,
-    Modules.Util.Auth.Decrypt,
-    Modules.Util.Auth.RevalidateSession,
-    Modules.Store.Auth.GetPassword],
+injectable(EndpointModules.Auth.Reauth,
+  [ Modules.Logger,
+    EndpointModules.Utils.WrapAync,
+    UtilModules.Auth.DecryptMemberToken,
+    Modules.Store.Auth.GetPassword,
+    UtilModules.Auth.RevalidateSessionKey ],
   async (log: Logger,
-    decrypt: AuthUtil.DecryptToken,
-    revalidate: AuthUtil.RevalidateSessionKey,
-    getPassword: Auth.GetPassword): Promise<Endpoint> => ({
-    uri: '/reauth',
-    method: EndpointMethod.POST,
+    wrapAsync: EndpointTypes.Utils.WrapAsync,
+    decryptMemberToken: UtilTypes.Auth.DecryptMemberToken,
+    getPassword: Auth.GetPassword,
+    revalidate: UtilTypes.Auth.RevalidateSessionKey): Promise<EndpointTypes.Endpoint> =>
+
+  ({
+    uri: '/auth/reauth',
+    method: EndpointTypes.EndpointMethod.POST,
     handler: [
-      asyncEndpointWrap(async (req, res, next) => {
+      wrapAsync(async (req, res, next) => {
         const token = req.body['token'];
         const oldSessionKey = req.query['session_key'];
-        const refreshKey = req.query['refresh_key'];
+        const inputedRefreshKey = req.query['refresh_key'];
 
-        if (!token || !oldSessionKey || !refreshKey) {
+        if (!token || !oldSessionKey || !inputedRefreshKey) {
           throw new InvalidParamError('token, session_key, refresh_key');
         }
-        const member = decrypt(token);
-        if (!member) throw new InvalidParamError('invalid token');
+
+        const member = decryptMemberToken(token);
+        if (!member) throw new InvalidParamError('invalid member token');
 
         log.debug(`[reauth] gain token = ${token}`);
         log.debug(`[reauth] gain old_session_key = ${oldSessionKey}`);
-        log.debug(`[reauth] gain refresh_key = ${refreshKey}`);
+        log.debug(`[reauth] gain refresh_key = ${inputedRefreshKey}`);
 
-        const storedPassword = await getPassword(member.member_no);
-        log.debug(`[reauth] gain password = ${storedPassword}`);
+        const passwordFromDb = await getPassword(member.member_no);
+        log.debug(`[reauth] gain password = ${passwordFromDb}`);
 
-        const newSessionKey = revalidate(token, oldSessionKey, refreshKey, storedPassword);
+        const revalidated = revalidate({ token, oldSessionKey, passwordFromDb, inputedRefreshKey });
 
         res.status(200).json({
-          session_key: newSessionKey
+          session_key: revalidated.newSessionKey
         });
       })
     ]

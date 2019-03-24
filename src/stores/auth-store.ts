@@ -3,16 +3,16 @@ import { MysqlDriver } from '../mysql/types';
 import { Logger } from '../loggers/types';
 import { Auth } from './types';
 import { Modules } from '../modules';
-import { AuthUtil } from '../utils/types';
+import { UtilModules, UtilTypes } from '../utils';
 
 class SqlException extends Error {}
 
 injectable(Modules.Store.Auth.Insert,
   [ Modules.Mysql,
-    Modules.Util.Auth.PassHash,
+    UtilModules.Auth.CreatePassHash,
     Modules.Logger ],
   async (mysql: MysqlDriver,
-    passHash: AuthUtil.CreatePassHash,
+    passHash: UtilTypes.Auth.CreatePassHash,
     log: Logger): Promise<Auth.InsertAuth> =>
 
     async (param) => {
@@ -43,10 +43,10 @@ injectable(Modules.Store.Auth.Insert,
 
 injectable(Modules.Store.Auth.Authenticate,
   [ Modules.Mysql,
-    Modules.Util.Auth.PassHash,
+    UtilModules.Auth.CreatePassHash,
     Modules.Logger ],
   async (mysql: MysqlDriver,
-    passHash: AuthUtil.CreatePassHash,
+    passHash: UtilTypes.Auth.CreatePassHash,
     log: Logger): Promise<Auth.Authenticate> =>
 
     async (param) => {
@@ -79,9 +79,9 @@ injectable(Modules.Store.Auth.Authenticate,
 
 injectable(Modules.Store.Auth.GetPassword,
   [ Modules.Mysql,
-    Modules.Util.Auth.DecryptPassHash ],
+    UtilModules.Auth.DecryptPassHash ],
   async (mysql: MysqlDriver,
-    decryptPass: AuthUtil.DecryptPassHash): Promise<Auth.GetPassword> =>
+    decryptPass: UtilTypes.Auth.DecryptPassHash): Promise<Auth.GetPassword> =>
 
     async (memberNo: number) => {
       const sql = `

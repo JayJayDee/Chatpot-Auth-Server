@@ -1,21 +1,50 @@
-import { Endpoint, EndpointMethod, EndpointRouter, Authenticator } from './types';
 import { injectable } from 'smart-factory';
-import { Modules } from '../modules';
-import { Router } from 'express';
-import { Logger } from '../loggers/types';
-import { InvalidParamError } from './errors';
-import { asyncEndpointWrap } from './wraps';
+import { EndpointModules } from './modules';
+import { EndpointTypes } from './types';
 import { ServiceModules, ServiceTypes } from '../services';
+import { InvalidParamError } from '../errors';
+import { MiddlewareModules, MiddlewareTypes } from '../middlewares';
 
-injectable(Modules.Endpoint.Member.CreateEmail,
-  [ ServiceModules.Member.Create ],
-  async (create: ServiceTypes.CreateMember): Promise<Endpoint> =>
+injectable(EndpointModules.Member.CreateSimple,
+  [ EndpointModules.Utils.WrapAync,
+    ServiceModules.Member.Create ],
+  async (wrapAsync: EndpointTypes.Utils.WrapAsync,
+    createMember: ServiceTypes.CreateMember): Promise<EndpointTypes.Endpoint> =>
 
   ({
-    uri: '/email',
-    method: EndpointMethod.POST,
+    uri: '/member',
+    method: EndpointTypes.EndpointMethod.POST,
     handler: [
-      asyncEndpointWrap(async (req, res, next) => {
+      wrapAsync(async (req, res, next) => {
+        if (!req.body['region'] || !req.body['language'] || !req.body['gender']) {
+          throw new InvalidParamError('region, language, gender');
+        }
+        const region = req.body['region'];
+        const language = req.body['language'];
+        const gender = req.body['gender'];
+        const auth = {
+          auth_type: ServiceTypes.AuthType.SIMPLE
+        };
+
+        const param = { region, language, gender, auth };
+        const resp = await createMember(param);
+        res.status(200).json(resp);
+      })
+    ]
+  }));
+
+
+injectable(EndpointModules.Member.CreateEmail,
+  [ EndpointModules.Utils.WrapAync,
+    ServiceModules.Member.Create ],
+  async (wrapAsync: EndpointTypes.Utils.WrapAsync,
+    create: ServiceTypes.CreateMember): Promise<EndpointTypes.Endpoint> =>
+
+  ({
+    uri: '/member/email',
+    method: EndpointTypes.EndpointMethod.POST,
+    handler: [
+      wrapAsync(async (req, res, next) => {
         const email = req.body['email'];
         const password = req.body['password'];
         const region = req.body['region'];
@@ -39,63 +68,25 @@ injectable(Modules.Endpoint.Member.CreateEmail,
     ]
   }));
 
-export const getMember =
-  (getMember: ServiceTypes.FetchMember,
-    authenticator: Authenticator): Endpoint => ({
-    uri: '/:token',
-    method: EndpointMethod.GET,
+
+injectable(EndpointModules.Member.Get,
+  [ EndpointModules.Utils.WrapAync,
+    MiddlewareModules.Authorization,
+    ServiceModules.Member.Fetch ],
+  async (wrapAsync: EndpointTypes.Utils.WrapAsync,
+    authorize: MiddlewareTypes.Authorization,
+    fetchMember: ServiceTypes.FetchMember): Promise<EndpointTypes.Endpoint> =>
+
+  ({
+    uri: '/member/:member_token',
+    method: EndpointTypes.EndpointMethod.GET,
     handler: [
-      authenticator(['params', 'token']),
-      asyncEndpointWrap(async (req, res, next) => {
-        const token: string = req.params['token'];
-        if (!token) throw new InvalidParamError('token');
-        const member = await getMember(token);
+      authorize(['params', 'member_token']),
+      wrapAsync(async (req, res, next) => {
+        const token: string = req.params['member_token'];
+        if (!token) throw new InvalidParamError('member_token required');
+        const member = await fetchMember(token);
         res.status(200).json(member);
       })
     ]
-  });
-injectable(Modules.Endpoint.Member.Get,
-  [ServiceModules.Member.Fetch,
-    Modules.Endpoint.Middleware.Authenticator],
-  async (fetch, auth) => getMember(fetch, auth));
-
-export const joinSimple =
-  (log: Logger,
-    create: ServiceTypes.CreateMember): Endpoint => ({
-      uri: '/',
-      method: EndpointMethod.POST,
-      handler: [
-        asyncEndpointWrap(async (req, res, next) => {
-          if (!req.body['region'] || !req.body['language'] || !req.body['gender']) {
-            throw new InvalidParamError('region, language, gender');
-          }
-          const region = req.body['region'];
-          const language = req.body['language'];
-          const gender = req.body['gender'];
-          const auth = {
-            auth_type: ServiceTypes.AuthType.SIMPLE
-          };
-
-          const param = { region, language, gender, auth };
-          const resp = await create(param);
-          res.status(200).json(resp);
-        })
-      ]
-    });
-injectable(Modules.Endpoint.Member.Create,
-  [ Modules.Logger,
-    ServiceModules.Member.Create ],
-  async (log, create) => joinSimple(log, create));
-
-injectable(Modules.Endpoint.Member.Router,
-  [ Modules.Endpoint.Member.Get,
-    Modules.Endpoint.Member.Create,
-    Modules.Endpoint.Member.CreateEmail ],
-  async (get: Endpoint, create: Endpoint, email: Endpoint): Promise<EndpointRouter> => {
-    const router = Router();
-    const endpoints = [ get, create, email ];
-    endpoints.map((endpt: Endpoint) => {
-      router[endpt.method].apply(router, [endpt.uri, endpt.handler]);
-    });
-    return { router, uri: '/member' };
-  });
+  }));

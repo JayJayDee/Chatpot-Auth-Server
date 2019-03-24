@@ -1,5 +1,9 @@
-export namespace AuthUtil {
-  export type DecryptedPayload = {
+export namespace UtilTypes {
+  export type RoomPayload = {
+    room_no: number;
+    timestamp: number;
+  };
+  export type MemberPayload = {
     member_no: number;
     timestamp: number;
   };
@@ -9,14 +13,26 @@ export namespace AuthUtil {
     member_no: number;
   };
 
-  export type CreateToken = (memberNo: number) => string;
-  export type DecryptToken = (token: string) => DecryptedPayload;
-  export type CreatePassphrase = (memberNo: number) => string;
-  export type CreatePassHash = (pass: string) => string;
-  export type DecryptPassHash = (hashedPass: string) => string;
-  export type CreateSessionKey = (memberNo: number) => string;
-  export type ValidateSessionKey = (token: string, sessionKey: string) => DecryptedSessionKey;
-  export type RevalidateSessionKey =
-    (token: string, oldSessionKey: string,
-      inputedRefreshKey: string, passwordFromDb: string) => string;
+  export type ReqRevalidate = {
+    token: string;
+    oldSessionKey: string;
+    inputedRefreshKey: string;
+    passwordFromDb: string;
+  };
+  export type ResRevalidate = {
+    newSessionKey: string;
+  };
+
+  export namespace Auth {
+    export type CreateMemberToken = (memberNo: number) => string;
+    export type DecryptMemberToken = (memberToken: string) => MemberPayload;
+    export type CreateRoomToken = (roomNo: number) => string;
+    export type DecryptRoomToken = (roomToken: string) => RoomPayload;
+    export type ValidateSessionKey = (sessionKey: string) => DecryptedSessionKey;
+    export type RevalidateSessionKey = (param: ReqRevalidate) => ResRevalidate;
+    export type CreateSessionKey = (memberNo: number) => string;
+    export type CreatePassHash = (rawPassword: string) => string;
+    export type DecryptPassHash = (encrypted: string) => string;
+    export type CreatePassphrase = (memberNo: number) => string;
+  }
 }

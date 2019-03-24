@@ -32,32 +32,6 @@ export namespace Modules {
     export const Helper = 'Cache/HelperOld';
   }
 
-  export namespace Endpoint {
-    export const EndpointRunner = 'Endpoint/EndpointRunnerOld';
-    export enum Middleware {
-      Error = 'Endpoint/Middleware/Error',
-      Authenticator = 'Endpoint/Middleware/Authenticator',
-      InternalAuthenticator = 'Endpoint/Middleware/InternalAuthenticator',
-      NotFound = 'Endpoint/Middleware/NotFound'
-    }
-    export enum Member {
-      Router = 'Endpoint/Member/RouterOld',
-      Get = 'Endpoint/Member/GetOld',
-      Create = 'Endpoint/Member/CreateOld',
-      CreateEmail = 'Endpoint/Member/CreateEmailOld'
-    }
-    export enum Internal {
-      Router = 'Endpoint/Internal/RouterOld',
-      Get = 'Endpoint/Internal/GetOld'
-    }
-    export enum Auth {
-      Router = 'Endpoint/Auth/RouterOld',
-      Auth = 'Endpoint/Auth/AuthOld',
-      Reauth = 'Endpoint/Auth/ReauthOld',
-      EmailLogin = 'Endpoint/Member/EmailLoginOld'
-    }
-  }
-
   export namespace Store {
     export enum Member {
       Get = 'Store/Member/GetOld',
@@ -75,19 +49,6 @@ export namespace Modules {
       Insert = 'Store/Auth/InsertOld',
       Authenticate = 'Store/Auth/AuthenticateOld',
       GetPassword = 'Store/Auth/GetPasswordOld'
-    }
-  }
-
-  export namespace Util {
-    export enum Auth {
-      Encrypt = 'Util/Auth/EncryptOld',
-      Decrypt = 'Util/Auth/DecryptOld',
-      Passphrase = 'Util/Auth/PassphraseOld',
-      PassHash = 'Util/Auth/PassHashOld',
-      DecryptPassHash = 'Util/Auth/DecryptPassHashOld',
-      CreateSesssion = 'Util/Auth/CreateSessionOld',
-      ValidateSession = 'Util/Auth/ValidateSessionOld',
-      RevalidateSession = 'Util/Auth/RevalidateSessionOld'
     }
   }
 
