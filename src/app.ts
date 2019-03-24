@@ -1,5 +1,5 @@
 import { init, resolve } from 'smart-factory';
-import { EndpointTypes, EndpointModules } from './new-endpoints';
+import { EndpointTypes, EndpointModules } from './endpoints';
 
 (async () => {
   await init({

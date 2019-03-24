@@ -2,12 +2,12 @@ import { find } from 'lodash';
 import { ServiceTypes } from './types';
 import { Logger } from '../loggers/types';
 import { Nick, Member, Auth } from '../stores/types';
-import { AuthUtil } from '../utils/types';
 import { injectable } from 'smart-factory';
 import { BaseLogicError } from '../errors';
 import { ExtApiTypes } from '../extapis';
 import { ServiceModules } from './modules';
 import { Modules } from '../modules';
+import { UtilModules, UtilTypes } from '../utils';
 
 class AuthFailError extends BaseLogicError {}
 class AuthDuplicationError extends BaseLogicError {}
@@ -16,10 +16,10 @@ class AuthDuplicationError extends BaseLogicError {}
 injectable(ServiceModules.Member.Authenticate,
   [Modules.Logger,
     Modules.Store.Auth.Authenticate,
-    Modules.Util.Auth.CreateSesssion],
+    UtilModules.Auth.CreateSessionKey],
   async (logger: Logger,
     auth: Auth.Authenticate,
-    createSession: AuthUtil.CreateSessionKey): Promise<ServiceTypes.Authenticate> =>
+    createSession: UtilTypes.Auth.CreateSessionKey): Promise<ServiceTypes.Authenticate> =>
 
     async (param) => {
       const result = await auth({
@@ -41,11 +41,11 @@ injectable(ServiceModules.Member.Fetch,
   [ Modules.Logger,
     Modules.Store.Member.Get,
     Modules.Store.Nick.Get,
-    Modules.Util.Auth.Decrypt ],
+    UtilModules.Auth.DecryptMemberToken ],
   async (logger: Logger,
     getMember: Member.GetMember,
     getNick: Nick.GetNick,
-    decrypt: AuthUtil.DecryptToken): Promise<ServiceTypes.FetchMember> =>
+    decrypt: UtilTypes.Auth.DecryptMemberToken): Promise<ServiceTypes.FetchMember> =>
 
     async (token: string) => {
       const decrypted = decrypt(token);
@@ -105,8 +105,8 @@ injectable(ServiceModules.Member.Create,
     Modules.Store.Auth.Insert,
     Modules.Store.Member.Insert,
     Modules.Store.Member.UpdateAvatar,
-    Modules.Util.Auth.Encrypt,
-    Modules.Util.Auth.Passphrase,
+    UtilModules.Auth.CreateMemberToken,
+    UtilModules.Auth.CreatePassphrase,
     Modules.ExtApi.Asset.GetAvatar ],
   async (logger: Logger,
     pick: Nick.PickNick,
@@ -114,8 +114,8 @@ injectable(ServiceModules.Member.Create,
     insertAuth: Auth.InsertAuth,
     create: Member.InsertMember,
     updateAvt: Member.UpdateAvatar,
-    token: AuthUtil.CreateToken,
-    passphrase: AuthUtil.CreatePassphrase,
+    token: UtilTypes.Auth.CreateMemberToken,
+    passphrase: UtilTypes.Auth.CreatePassphrase,
     requestAvatar: ExtApiTypes.Asset.RequestAvatar): Promise<ServiceTypes.CreateMember> =>
 
     async (param: ServiceTypes.ReqCreateMember) => {

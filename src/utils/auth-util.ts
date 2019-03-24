@@ -133,3 +133,34 @@ injectable(UtilModules.Auth.RevalidateSessionKey,
       const newSessionKey = createSession(decryptedToken.member_no);
       return { newSessionKey };
     });
+
+injectable(UtilModules.Auth.CreatePassHash,
+  [ Modules.Config.CredentialConfig ],
+  async (cfg: CredentialConfig): Promise<UtilTypes.Auth.CreatePassHash> =>
+    (rawPassword) => {
+      const cp = cipher(cfg.secret);
+      let encrypted: string = '';
+      encrypted += cp.update(`${rawPassword}`, 'utf8', 'hex');
+      encrypted += cp.final('hex');
+      return encrypted;
+    });
+
+injectable(UtilModules.Auth.DecryptPassHash,
+  [ Modules.Config.CredentialConfig ],
+  async (cfg: CredentialConfig): Promise<UtilTypes.Auth.DecryptPassHash> =>
+    (encryptedPassword) => {
+      const dp = decipher(cfg.secret);
+      let decrypted: string = dp.update(encryptedPassword, 'hex', 'utf8');
+      decrypted += dp.final('utf8');
+      return decrypted;
+    });
+
+injectable(UtilModules.Auth.CreatePassphrase,
+  [ Modules.Config.CredentialConfig ],
+  async (cfg: CredentialConfig): Promise<UtilTypes.Auth.CreatePassphrase> =>
+    (memberNo) => {
+      const timestamp = Date.now();
+      return createHash('sha256')
+        .update(`${timestamp}${memberNo}${cfg.secret}`)
+        .digest('hex');
+    });

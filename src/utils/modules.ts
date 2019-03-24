@@ -6,6 +6,9 @@ export namespace UtilModules {
     DecryptRoomToken = 'Util/Auth/DecryptRoomToken',
     ValidateSessionKey = 'Util/Auth/ValidateSessionkey',
     RevalidateSessionKey = 'Util/Auth/RevalidateSessionKey',
-    CreateSessionKey = 'Util/Auth/CreateSessionKey'
+    CreateSessionKey = 'Util/Auth/CreateSessionKey',
+    CreatePassHash = 'Util/Auth/CreatePassHash',
+    DecryptPassHash = 'Util/Auth/DecryptPassHash',
+    CreatePassphrase = 'Util/Auth/CreatePassphrase'
   }
 }
