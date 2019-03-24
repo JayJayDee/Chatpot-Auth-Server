@@ -3,6 +3,10 @@ import { EndpointModules } from './modules';
 import { EndpointTypes } from './types';
 import { ServiceModules, ServiceTypes } from '../services';
 import { InvalidParamError } from '../errors';
+import { UtilModules, UtilTypes } from '../new-utils';
+import { Modules } from '../modules';
+import { Auth } from '../stores/types';
+import { Logger } from '../loggers/types';
 
 injectable(EndpointModules.Auth.AuthEmail,
   [ EndpointModules.Utils.WrapAync,
@@ -52,15 +56,45 @@ injectable(EndpointModules.Auth.AuthSimple,
 
 
 injectable(EndpointModules.Auth.Reauth,
-  [ EndpointModules.Utils.WrapAync ],
-  async (wrapAsync: EndpointTypes.Utils.WrapAsync): Promise<EndpointTypes.Endpoint> =>
+  [ Modules.Logger,
+    EndpointModules.Utils.WrapAync,
+    UtilModules.Auth.DecryptMemberToken,
+    Modules.Store.Auth.GetPassword,
+    UtilModules.Auth.RevalidateSessionKey ],
+  async (log: Logger,
+    wrapAsync: EndpointTypes.Utils.WrapAsync,
+    decryptMemberToken: UtilTypes.Auth.DecryptMemberToken,
+    getPassword: Auth.GetPassword,
+    revalidate: UtilTypes.Auth.RevalidateSessionKey): Promise<EndpointTypes.Endpoint> =>
 
   ({
     uri: '/auth/reauth',
     method: EndpointTypes.EndpointMethod.POST,
     handler: [
-      wrapAsync((req, res, next) => {
-        res.status(200).json({});
+      wrapAsync(async (req, res, next) => {
+        const token = req.body['token'];
+        const oldSessionKey = req.query['session_key'];
+        const inputedRefreshKey = req.query['refresh_key'];
+
+        if (!token || !oldSessionKey || !inputedRefreshKey) {
+          throw new InvalidParamError('token, session_key, refresh_key');
+        }
+
+        const member = decryptMemberToken(token);
+        if (!member) throw new InvalidParamError('invalid member token');
+
+        log.debug(`[reauth] gain token = ${token}`);
+        log.debug(`[reauth] gain old_session_key = ${oldSessionKey}`);
+        log.debug(`[reauth] gain refresh_key = ${inputedRefreshKey}`);
+
+        const passwordFromDb = await getPassword(member.member_no);
+        log.debug(`[reauth] gain password = ${passwordFromDb}`);
+
+        const revalidated = revalidate({ token, oldSessionKey, passwordFromDb, inputedRefreshKey });
+
+        res.status(200).json({
+          session_key: revalidated.newSessionKey
+        });
       })
     ]
   }));
