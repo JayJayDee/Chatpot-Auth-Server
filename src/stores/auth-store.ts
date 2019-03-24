@@ -5,6 +5,8 @@ import { Auth } from './types';
 import { Modules } from '../modules';
 import { AuthUtil } from '../utils/types';
 
+class SqlException extends Error {}
+
 injectable(Modules.Store.Auth.Insert,
   [ Modules.Mysql,
     Modules.Util.Auth.PassHash,
@@ -31,7 +33,11 @@ injectable(Modules.Store.Auth.Insert,
         param.login_id, param.token,
         hashedPassword
       ];
-      await mysql.query(query, params);
+      try {
+        await mysql.query(query, params);
+      } catch (err) {
+        throw new SqlException(err.message);
+      }
     });
 
 

@@ -4,12 +4,13 @@ import { Logger } from '../loggers/types';
 import { Nick, Member, Auth } from '../stores/types';
 import { AuthUtil } from '../utils/types';
 import { injectable } from 'smart-factory';
-import { BaseRuntimeError } from '../errors';
+import { BaseLogicError } from '../errors';
 import { ExtApiTypes } from '../extapis';
 import { ServiceModules } from './modules';
 import { Modules } from '../modules';
 
-class AuthFailError extends BaseRuntimeError {}
+class AuthFailError extends BaseLogicError {}
+class AuthDuplicationError extends BaseLogicError {}
 
 
 injectable(ServiceModules.Member.Authenticate,
@@ -65,7 +66,7 @@ injectable(ServiceModules.Member.Fetch,
     });
 
 
-injectable(Modules.Service.Member.FetchMultiple,
+injectable(ServiceModules.Member.FetchMultiple,
   [ Modules.Logger,
     Modules.Store.Member.GetMultiple,
     Modules.Store.Nick.GetMultiple ],
@@ -135,19 +136,27 @@ injectable(ServiceModules.Member.Create,
         password = passphrase(memberNo);
       }
 
+      try {
+        await insertAuth({
+          login_id,
+          password,
+          auth_type: param.auth.auth_type,
+          member_no: memberNo,
+          token: memberToken,
+        });
+      } catch (err) {
+        logger.error(`[member-create-serv] error: ${err.message}`);
+        if (err.message.includes('ER_DUP_ENTRY') === true) {
+          throw new AuthDuplicationError('DUPLICATED_ENTRY', `login_id: ${login_id} has a duplication`);
+        }
+      }
+
       const avatar = await requestAvatar(nick.en, param.gender);
       await updateAvt(memberNo, avatar);
 
       await insertNick({
         member_no: memberNo,
         nick
-      });
-      await insertAuth({
-        login_id,
-        password,
-        auth_type: param.auth.auth_type,
-        member_no: memberNo,
-        token: memberToken,
       });
 
       // TODO: update avatar path.

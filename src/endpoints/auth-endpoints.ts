@@ -8,6 +8,7 @@ import { asyncEndpointWrap } from './wraps';
 import { InvalidParamError } from './errors';
 import { AuthUtil } from '../utils/types';
 import { Auth } from '../stores/types';
+import { ServiceModules } from '../services';
 
 injectable(Modules.Endpoint.Auth.Router,
   [Modules.Endpoint.Auth.Auth,
@@ -25,7 +26,7 @@ injectable(Modules.Endpoint.Auth.Router,
 
 injectable(Modules.Endpoint.Auth.EmailLogin,
   [ Modules.Logger,
-    Modules.Service.Member.Authenticate ],
+    ServiceModules.Member.Authenticate ],
   async (log: Logger,
     auth: ServiceTypes.Authenticate): Promise<Endpoint> =>
 
@@ -65,7 +66,7 @@ const authEndpoint =
     });
 injectable(Modules.Endpoint.Auth.Auth,
   [Modules.Logger,
-    Modules.Service.Member.Authenticate],
+    ServiceModules.Member.Authenticate],
   async (log, auth) => authEndpoint(log, auth));
 
 

@@ -1,11 +1,13 @@
 import { init, resolve } from 'smart-factory';
-import { EndpointRunner } from './endpoints';
-import { Modules } from './modules';
+import { EndpointTypes, EndpointModules } from './new-endpoints';
 
 (async () => {
   await init({
     includes: [`${__dirname}/**/*.ts`, `${__dirname}/**/*.js`]
   });
-  const run = <EndpointRunner>resolve(Modules.Endpoint.EndpointRunner);
-  await run();
+
+  const run =
+    resolve<EndpointTypes.EndpointRunner>
+      (EndpointModules.EndpointRunner);
+  run();
 })();

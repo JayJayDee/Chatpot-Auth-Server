@@ -1,34 +1,21 @@
 import { injectable } from 'smart-factory';
-import { Modules } from '../modules';
-import { Endpoint, EndpointMethod, EndpointRouter } from './types';
-import { Router } from 'express';
-import { ServiceTypes } from '../services/types';
-import { asyncEndpointWrap } from './wraps';
-import { InvalidParamError } from './errors';
 import { isArray } from 'util';
-import { ServiceModules } from '../services';
+import { EndpointModules } from './modules';
+import { EndpointTypes } from './types';
+import { ServiceModules, ServiceTypes } from '../services';
+import { InvalidParamError } from '../errors';
 
-injectable(Modules.Endpoint.Internal.Router,
-  [Modules.Endpoint.Internal.Get],
-  async (get: Endpoint): Promise<EndpointRouter> => {
-    const router = Router();
-    const endpoints = [ get ];
-    endpoints.map((e) => {
-      router[e.method].apply(router, [e.uri, e.handler]);
-    });
-    return {
-      uri: '/internal',
-      router
-    };
-  });
+injectable(EndpointModules.Internal.GetMultiple,
+  [ EndpointModules.Utils.WrapAync,
+    ServiceModules.Member.FetchMultiple ],
+  async (wrapAsync: EndpointTypes.Utils.WrapAsync,
+    fetchMultiple: ServiceTypes.FetchMembers): Promise<EndpointTypes.Endpoint> =>
 
-injectable(Modules.Endpoint.Internal.Get,
-  [ServiceModules.Member.FetchMultiple],
-  async (fetchMultiple: ServiceTypes.FetchMembers): Promise<Endpoint> => ({
-    uri: '/member',
-    method: EndpointMethod.GET,
+  ({
+    uri: '/internal/member',
+    method: EndpointTypes.EndpointMethod.GET,
     handler: [
-      asyncEndpointWrap(async (req, res, next) => {
+      wrapAsync(async (req, res, next) => {
         let memberStrNos: string[] | string = req.query.member_nos;
         const memberNo: string = req.query.member_no;
         let memberNos: number[] = null;

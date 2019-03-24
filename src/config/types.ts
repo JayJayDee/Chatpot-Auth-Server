@@ -18,6 +18,7 @@ export type MysqlConfig = {
   connectionLimit: number;
 };
 export type CredentialConfig = {
+  authEnabled: boolean;
   sessionExpires: number;
   secret: string;
 };

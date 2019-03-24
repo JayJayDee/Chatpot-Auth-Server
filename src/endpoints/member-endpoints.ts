@@ -3,12 +3,12 @@ import { injectable } from 'smart-factory';
 import { Modules } from '../modules';
 import { Router } from 'express';
 import { Logger } from '../loggers/types';
-import { ServiceTypes } from '../services/types';
 import { InvalidParamError } from './errors';
 import { asyncEndpointWrap } from './wraps';
+import { ServiceModules, ServiceTypes } from '../services';
 
 injectable(Modules.Endpoint.Member.CreateEmail,
-  [ Modules.Service.Member.Create ],
+  [ ServiceModules.Member.Create ],
   async (create: ServiceTypes.CreateMember): Promise<Endpoint> =>
 
   ({
@@ -55,7 +55,7 @@ export const getMember =
     ]
   });
 injectable(Modules.Endpoint.Member.Get,
-  [Modules.Service.Member.Fetch,
+  [ServiceModules.Member.Fetch,
     Modules.Endpoint.Middleware.Authenticator],
   async (fetch, auth) => getMember(fetch, auth));
 
@@ -83,8 +83,8 @@ export const joinSimple =
       ]
     });
 injectable(Modules.Endpoint.Member.Create,
-  [Modules.Logger,
-    Modules.Service.Member.Create],
+  [ Modules.Logger,
+    ServiceModules.Member.Create ],
   async (log, create) => joinSimple(log, create));
 
 injectable(Modules.Endpoint.Member.Router,
