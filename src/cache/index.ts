@@ -1,5 +1,5 @@
 import { injectable } from 'smart-factory';
-import { LoggerTypes, LoggerModules } from '../loggers-new';
+import { LoggerTypes, LoggerModules } from '../loggers';
 import { CacheTypes } from './types';
 import { CacheModules } from './modules';
 import { ConfigModules, ConfigTypes } from '../config';

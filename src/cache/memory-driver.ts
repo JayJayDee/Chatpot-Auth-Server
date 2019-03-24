@@ -1,5 +1,5 @@
 import { CacheTypes } from './types';
-import { LoggerTypes } from '../loggers-new';
+import { LoggerTypes } from '../loggers';
 
 type Storage = {[key: string]: any};
 type ExpireSet = {[key: string]: number};

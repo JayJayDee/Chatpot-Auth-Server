@@ -1,6 +1,6 @@
 import { ExtApiTypes } from './types';
 import * as rp from 'request-promise-native';
-import { LoggerTypes } from '../loggers-new';
+import { LoggerTypes } from '../loggers';
 
 const requestor =
   (log: LoggerTypes.Logger): ExtApiTypes.Request =>

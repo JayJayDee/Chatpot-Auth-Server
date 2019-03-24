@@ -1,6 +1,6 @@
 import { injectable } from 'smart-factory';
 import { UtilModules, UtilTypes } from '../utils';
-import { LoggerModules, LoggerTypes } from '../loggers-new';
+import { LoggerModules, LoggerTypes } from '../loggers';
 import { MysqlModules, MysqlTypes } from '../mysql';
 import { StoreModules } from './modules';
 import { StoreTypes } from './types';

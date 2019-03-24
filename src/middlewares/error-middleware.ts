@@ -2,7 +2,7 @@ import { injectable } from 'smart-factory';
 import { MiddlewareModules } from './modules';
 import { MiddlewareTypes } from './types';
 import { BaseLogicError, BaseSecurityError, SecurityExpireError } from '../errors';
-import { LoggerModules, LoggerTypes } from '../loggers-new';
+import { LoggerModules, LoggerTypes } from '../loggers';
 
 injectable(MiddlewareModules.Error,
   [ LoggerModules.Logger ],
