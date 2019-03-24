@@ -4,9 +4,8 @@ import { EndpointTypes } from './types';
 import { ServiceModules, ServiceTypes } from '../services';
 import { InvalidParamError } from '../errors';
 import { UtilModules, UtilTypes } from '../utils';
-import { Modules } from '../modules';
-import { Auth } from '../stores/types';
 import { LoggerModules, LoggerTypes } from '../loggers-new';
+import { StoreModules, StoreTypes } from '../stores';
 
 injectable(EndpointModules.Auth.AuthEmail,
   [ EndpointModules.Utils.WrapAync,
@@ -59,12 +58,12 @@ injectable(EndpointModules.Auth.Reauth,
   [ LoggerModules.Logger,
     EndpointModules.Utils.WrapAync,
     UtilModules.Auth.DecryptMemberToken,
-    Modules.Store.Auth.GetPassword,
+    StoreModules.Auth.GetPassword,
     UtilModules.Auth.RevalidateSessionKey ],
   async (log: LoggerTypes.Logger,
     wrapAsync: EndpointTypes.Utils.WrapAsync,
     decryptMemberToken: UtilTypes.Auth.DecryptMemberToken,
-    getPassword: Auth.GetPassword,
+    getPassword: StoreTypes.Auth.GetPassword,
     revalidate: UtilTypes.Auth.RevalidateSessionKey): Promise<EndpointTypes.Endpoint> =>
 
   ({
