@@ -1,23 +1,23 @@
 import { find } from 'lodash';
 import { ServiceTypes } from './types';
-import { Nick, Member, Auth } from '../stores/types';
 import { injectable } from 'smart-factory';
 import { BaseLogicError } from '../errors';
 import { ExtApiTypes, ExtApiModules } from '../extapis';
 import { ServiceModules } from './modules';
-import { Modules } from '../modules';
 import { UtilModules, UtilTypes } from '../utils';
 import { LoggerModules, LoggerTypes } from '../loggers-new';
+import { StoreModules, StoreTypes } from '../stores';
 
 class AuthFailError extends BaseLogicError {}
 class AuthDuplicationError extends BaseLogicError {}
 
+
 injectable(ServiceModules.Member.Authenticate,
   [LoggerModules.Logger,
-    Modules.Store.Auth.Authenticate,
+    StoreModules.Auth.InsertAuth,
     UtilModules.Auth.CreateSessionKey],
   async (logger: LoggerTypes.Logger,
-    auth: Auth.Authenticate,
+    auth: StoreTypes.Auth.Authenticate,
     createSession: UtilTypes.Auth.CreateSessionKey): Promise<ServiceTypes.Authenticate> =>
 
     async (param) => {
@@ -38,12 +38,12 @@ injectable(ServiceModules.Member.Authenticate,
 
 injectable(ServiceModules.Member.Fetch,
   [ LoggerModules.Logger,
-    Modules.Store.Member.Get,
-    Modules.Store.Nick.Get,
+    StoreModules.Member.GetMember,
+    StoreModules.Nick.GetNick,
     UtilModules.Auth.DecryptMemberToken ],
   async (logger: LoggerTypes.Logger,
-    getMember: Member.GetMember,
-    getNick: Nick.GetNick,
+    getMember: StoreTypes.Member.GetMember,
+    getNick: StoreTypes.Nick.GetNick,
     decrypt: UtilTypes.Auth.DecryptMemberToken): Promise<ServiceTypes.FetchMember> =>
 
     async (token: string) => {
@@ -67,15 +67,15 @@ injectable(ServiceModules.Member.Fetch,
 
 injectable(ServiceModules.Member.FetchMultiple,
   [ LoggerModules.Logger,
-    Modules.Store.Member.GetMultiple,
-    Modules.Store.Nick.GetMultiple ],
+    StoreModules.Member.GetMembers,
+    StoreModules.Nick.GetNickMultiple ],
   async (logger: LoggerTypes.Logger,
-    getMembers: Member.GetMembers,
-    getNicks: Nick.GetNickMultiple): Promise<ServiceTypes.FetchMembers> =>
+    getMembers: StoreTypes.Member.GetMembers,
+    getNicks: StoreTypes.Nick.GetNickMultiple): Promise<ServiceTypes.FetchMembers> =>
 
     async (memberNos: number[]) => {
       const members = await getMembers(memberNos);
-      const nicks: Nick.NickMatchEntity[] = await getNicks(memberNos);
+      const nicks: StoreTypes.Nick.NickMatchEntity[] = await getNicks(memberNos);
       const resp: ServiceTypes.Member[] = members.map((m) => ({
         token: m.token,
         region: m.region,
@@ -99,20 +99,20 @@ injectable(ServiceModules.Member.FetchMultiple,
 
 injectable(ServiceModules.Member.Create,
   [ LoggerModules.Logger,
-    Modules.Store.Nick.Pick,
-    Modules.Store.Nick.Insert,
-    Modules.Store.Auth.Insert,
-    Modules.Store.Member.Insert,
-    Modules.Store.Member.UpdateAvatar,
+    StoreModules.Nick.PickNick,
+    StoreModules.Nick.InsertNick,
+    StoreModules.Auth.InsertAuth,
+    StoreModules.Member.InsertMember,
+    StoreModules.Member.UpdateAvatar,
     UtilModules.Auth.CreateMemberToken,
     UtilModules.Auth.CreatePassphrase,
     ExtApiModules.Asset.RequestAvatar ],
   async (logger: LoggerTypes.Logger,
-    pick: Nick.PickNick,
-    insertNick: Nick.InsertNick,
-    insertAuth: Auth.InsertAuth,
-    create: Member.InsertMember,
-    updateAvt: Member.UpdateAvatar,
+    pick: StoreTypes.Nick.PickNick,
+    insertNick: StoreTypes.Nick.InsertNick,
+    insertAuth: StoreTypes.Auth.InsertAuth,
+    create: StoreTypes.Member.InsertMember,
+    updateAvt: StoreTypes.Member.UpdateAvatar,
     token: UtilTypes.Auth.CreateMemberToken,
     passphrase: UtilTypes.Auth.CreatePassphrase,
     requestAvatar: ExtApiTypes.Asset.RequestAvatar): Promise<ServiceTypes.CreateMember> =>

@@ -1,19 +1,19 @@
 import { injectable } from 'smart-factory';
-import { Auth } from './types';
-import { Modules } from '../modules';
 import { UtilModules, UtilTypes } from '../utils';
 import { LoggerModules, LoggerTypes } from '../loggers-new';
 import { MysqlModules, MysqlTypes } from '../mysql';
+import { StoreModules } from './modules';
+import { StoreTypes } from './types';
 
 class SqlException extends Error {}
 
-injectable(Modules.Store.Auth.Insert,
+injectable(StoreModules.Auth.InsertAuth,
   [ MysqlModules.MysqlDriver,
     UtilModules.Auth.CreatePassHash,
     LoggerModules.Logger ],
   async (mysql: MysqlTypes.MysqlDriver,
     passHash: UtilTypes.Auth.CreatePassHash,
-    log: LoggerTypes.Logger): Promise<Auth.InsertAuth> =>
+    log: LoggerTypes.Logger): Promise<StoreTypes.Auth.InsertAuth> =>
 
     async (param) => {
       const hashedPassword = passHash(param.password);
@@ -41,13 +41,13 @@ injectable(Modules.Store.Auth.Insert,
     });
 
 
-injectable(Modules.Store.Auth.Authenticate,
+injectable(StoreModules.Auth.Authenticate,
   [ MysqlModules.MysqlDriver,
     UtilModules.Auth.CreatePassHash,
     LoggerModules.Logger ],
   async (mysql: MysqlTypes.MysqlDriver,
     passHash: UtilTypes.Auth.CreatePassHash,
-    log: LoggerTypes.Logger): Promise<Auth.Authenticate> =>
+    log: LoggerTypes.Logger): Promise<StoreTypes.Auth.Authenticate> =>
 
     async (param) => {
       const hashed = passHash(param.password);
@@ -68,7 +68,7 @@ injectable(Modules.Store.Auth.Authenticate,
           member_no: null
         };
       }
-      const resp: Auth.ResAuthenticate = {
+      const resp: StoreTypes.Auth.ResAuthenticate = {
         member_no: rows[0].member_no,
         auth_type: rows[0].auth_type,
         success: true
@@ -77,11 +77,11 @@ injectable(Modules.Store.Auth.Authenticate,
     });
 
 
-injectable(Modules.Store.Auth.GetPassword,
+injectable(StoreModules.Auth.GetPassword,
   [ MysqlModules.MysqlDriver,
     UtilModules.Auth.DecryptPassHash ],
   async (mysql: MysqlTypes.MysqlDriver,
-    decryptPass: UtilTypes.Auth.DecryptPassHash): Promise<Auth.GetPassword> =>
+    decryptPass: UtilTypes.Auth.DecryptPassHash): Promise<StoreTypes.Auth.GetPassword> =>
 
     async (memberNo: number) => {
       const sql = `
