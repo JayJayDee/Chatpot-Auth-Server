@@ -4,11 +4,11 @@ import * as moment from 'moment';
 
 import { Modules } from '../modules';
 import { Env } from '../config/types';
-import { Logger } from '../loggers/types';
+import { LoggerTypes } from './types';
 
 injectable(LoggerModules.Logger,
   [ Modules.Config.Env ],
-  async (env: Env): Promise<Logger> => ({
+  async (env: Env): Promise<LoggerTypes.Logger> => ({
     info(payload: any) {
       console.log(prefix(), payload);
     },

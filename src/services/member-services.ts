@@ -1,6 +1,5 @@
 import { find } from 'lodash';
 import { ServiceTypes } from './types';
-import { Logger } from '../loggers/types';
 import { Nick, Member, Auth } from '../stores/types';
 import { injectable } from 'smart-factory';
 import { BaseLogicError } from '../errors';
@@ -8,16 +7,16 @@ import { ExtApiTypes, ExtApiModules } from '../extapis';
 import { ServiceModules } from './modules';
 import { Modules } from '../modules';
 import { UtilModules, UtilTypes } from '../utils';
+import { LoggerModules, LoggerTypes } from '../loggers-new';
 
 class AuthFailError extends BaseLogicError {}
 class AuthDuplicationError extends BaseLogicError {}
 
-
 injectable(ServiceModules.Member.Authenticate,
-  [Modules.Logger,
+  [LoggerModules.Logger,
     Modules.Store.Auth.Authenticate,
     UtilModules.Auth.CreateSessionKey],
-  async (logger: Logger,
+  async (logger: LoggerTypes.Logger,
     auth: Auth.Authenticate,
     createSession: UtilTypes.Auth.CreateSessionKey): Promise<ServiceTypes.Authenticate> =>
 
@@ -38,11 +37,11 @@ injectable(ServiceModules.Member.Authenticate,
 
 
 injectable(ServiceModules.Member.Fetch,
-  [ Modules.Logger,
+  [ LoggerModules.Logger,
     Modules.Store.Member.Get,
     Modules.Store.Nick.Get,
     UtilModules.Auth.DecryptMemberToken ],
-  async (logger: Logger,
+  async (logger: LoggerTypes.Logger,
     getMember: Member.GetMember,
     getNick: Nick.GetNick,
     decrypt: UtilTypes.Auth.DecryptMemberToken): Promise<ServiceTypes.FetchMember> =>
@@ -67,10 +66,10 @@ injectable(ServiceModules.Member.Fetch,
 
 
 injectable(ServiceModules.Member.FetchMultiple,
-  [ Modules.Logger,
+  [ LoggerModules.Logger,
     Modules.Store.Member.GetMultiple,
     Modules.Store.Nick.GetMultiple ],
-  async (logger: Logger,
+  async (logger: LoggerTypes.Logger,
     getMembers: Member.GetMembers,
     getNicks: Nick.GetNickMultiple): Promise<ServiceTypes.FetchMembers> =>
 
@@ -99,7 +98,7 @@ injectable(ServiceModules.Member.FetchMultiple,
 
 
 injectable(ServiceModules.Member.Create,
-  [ Modules.Logger,
+  [ LoggerModules.Logger,
     Modules.Store.Nick.Pick,
     Modules.Store.Nick.Insert,
     Modules.Store.Auth.Insert,
@@ -108,7 +107,7 @@ injectable(ServiceModules.Member.Create,
     UtilModules.Auth.CreateMemberToken,
     UtilModules.Auth.CreatePassphrase,
     ExtApiModules.Asset.RequestAvatar ],
-  async (logger: Logger,
+  async (logger: LoggerTypes.Logger,
     pick: Nick.PickNick,
     insertNick: Nick.InsertNick,
     insertAuth: Auth.InsertAuth,

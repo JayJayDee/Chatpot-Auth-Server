@@ -1,9 +1,9 @@
 import { ExtApiTypes } from './types';
 import * as rp from 'request-promise-native';
-import { Logger } from '../loggers/types';
+import { LoggerTypes } from '../loggers-new';
 
 const requestor =
-  (log: Logger): ExtApiTypes.Request =>
+  (log: LoggerTypes.Logger): ExtApiTypes.Request =>
     async (param: ExtApiTypes.RequestParam): Promise<any> => {
       log.debug(`[extapi] request created: ${param.method} ${param.uri}`);
       return await rp(param.uri, {

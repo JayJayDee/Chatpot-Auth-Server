@@ -1,19 +1,24 @@
 import { createPool, Pool, PoolConnection } from 'mysql';
-import { MysqlConfig } from '../config/types';
-import { MysqlDriver } from './types';
-import { Logger } from '../loggers/types';
+import { LoggerTypes, LoggerModules } from '../loggers-new';
+import { MysqlTypes } from './types';
 import { MysqlConnectionError } from './errors';
+import { injectable } from 'smart-factory';
+import { MysqlModules } from './modules';
 
-const initMysql = (cfg: MysqlConfig, log: Logger) =>
-  async (): Promise<MysqlDriver> => {
+import { Modules } from '../modules';
+import { MysqlConfig } from '../config/types';
+
+injectable(MysqlModules.MysqlDriver,
+  [ Modules.Config.MysqlConfig,
+    LoggerModules.Logger ],
+  async (cfg: MysqlConfig, log: LoggerTypes.Logger) => {
     log.info('[mysql] establishing MySQL connection...');
     const connector = getConnection(cfg, createPool);
     const pool = await connector();
     log.info('[mysql] MySQL connection established');
     const driver = buildMySQLDriver(pool, getConnectionAsync);
     return driver();
-  };
-export default initMysql;
+  });
 
 type PoolCreateOpts = {
   host: string;
@@ -30,15 +35,35 @@ export const getConnection =
   (cfg: MysqlConfig, poolCreateFunc: PoolCreateFunction) =>
     (): Promise<Pool> => new Promise((resolve, reject) => {
       const pool = poolCreateFunc(cfg);
-      pool.query('SELECT 1', (err, data) => {
+      pool.query('SELECT 1', (err: Error, data: any) => {
         if (err) return reject(new MysqlConnectionError(err.message));
         resolve(pool);
       });
     });
 
+const transaction =
+  (con: PoolConnection): MysqlTypes.MysqlTransaction => ({
+    query(sql, params) {
+      return new Promise((resolve, reject) => {
+        con.query(sql, params, (err, results) => {
+          if (err) {
+            return reject(err);
+          }
+          resolve(results);
+        });
+      });
+    },
+    rollback() {
+      return new Promise((resolve, reject) => {
+        con.rollback();
+        return resolve();
+      });
+    }
+  });
+
 export const buildMySQLDriver =
   (pool: Pool, getConFunc: GetConnectionFunction) =>
-    (): MysqlDriver => ({
+    (): MysqlTypes.MysqlDriver => ({
       query(query: string, param?: any[]) {
         return new Promise((resolve, reject) => {
           getConFunc(pool).then((con) => {
@@ -52,6 +77,31 @@ export const buildMySQLDriver =
             });
           })
           .catch(reject);
+        });
+      },
+
+      transaction(executor) {
+        return new Promise((resolve, reject) => {
+          getConFunc(pool).then((con) => {
+            con.beginTransaction((err) => {
+              if (err) {
+                con.rollback();
+                con.release();
+                return reject(err);
+              }
+              const tx = transaction(con);
+              executor(tx).then((resp) => {
+                con.commit();
+                con.release();
+                return resolve(resp);
+              })
+              .catch((err) => {
+                con.rollback();
+                con.release();
+                return reject(err);
+              });
+            });
+          });
         });
       }
     });

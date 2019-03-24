@@ -3,10 +3,10 @@ import { injectable } from 'smart-factory';
 import { MiddlewareModules } from './modules';
 import { MiddlewareTypes } from './types';
 import { UtilModules, UtilTypes } from '../utils';
+import { LoggerModules, LoggerTypes } from '../loggers-new';
 import { BaseSecurityError, SecurityExpireError } from '../errors';
 
 import { Modules } from '../modules';
-import { Logger } from '../loggers/types';
 import { CredentialConfig } from '../config/types';
 
 class AuthenticationFailError extends BaseSecurityError {}
@@ -14,10 +14,10 @@ class AuthorizationFailError extends BaseSecurityError {}
 
 injectable(MiddlewareModules.Authentication,
   [ Modules.Config.CredentialConfig,
-    Modules.Logger,
+    LoggerModules.Logger,
     UtilModules.Auth.ValidateSessionKey ],
   async (cfg: CredentialConfig,
-    log: Logger,
+    log: LoggerTypes.Logger,
     validateSessionKey: UtilTypes.Auth.ValidateSessionKey): Promise<MiddlewareTypes.Authentication> =>
 
       (req, res, next) => {
@@ -40,11 +40,11 @@ injectable(MiddlewareModules.Authentication,
 
 injectable(MiddlewareModules.Authorization,
   [ Modules.Config.CredentialConfig,
-    Modules.Logger,
+    LoggerModules.Logger,
     UtilModules.Auth.DecryptMemberToken,
     UtilModules.Auth.ValidateSessionKey ],
   async (cfg: CredentialConfig,
-    log: Logger,
+    log: LoggerTypes.Logger,
     decryptMemberToken: UtilTypes.Auth.DecryptMemberToken,
     validateSessionKey: UtilTypes.Auth.ValidateSessionKey): Promise<MiddlewareTypes.Authorization> =>
 

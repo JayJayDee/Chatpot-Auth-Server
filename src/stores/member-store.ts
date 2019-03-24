@@ -1,9 +1,10 @@
-import { MysqlDriver } from '../mysql/types';
 import { Member } from './types';
 import { injectable } from 'smart-factory';
 import { Modules } from '../modules';
 
-export const getMember = (mysql: MysqlDriver): Member.GetMember  =>
+import { MysqlTypes, MysqlModules } from '../mysql';
+
+export const getMember = (mysql: MysqlTypes.MysqlDriver): Member.GetMember  =>
   async (memberNo: number): Promise<Member.MemberEntity> => {
     const sql = `
       SELECT
@@ -33,7 +34,7 @@ export const getMember = (mysql: MysqlDriver): Member.GetMember  =>
     return member;
   };
 
-export const getMembers = (mysql: MysqlDriver): Member.GetMembers =>
+export const getMembers = (mysql: MysqlTypes.MysqlDriver): Member.GetMembers =>
   async (memberNos: number[]): Promise<Member.MemberEntity[]> => {
     if (memberNos.length === 0) return [];
     const inClause = memberNos.map((n) => '?').join(',');
@@ -65,7 +66,7 @@ export const getMembers = (mysql: MysqlDriver): Member.GetMembers =>
     return resp;
   };
 
-export const insertMember = (mysql: MysqlDriver): Member.InsertMember =>
+export const insertMember = (mysql: MysqlTypes.MysqlDriver): Member.InsertMember =>
   async (param: Member.ReqCreateMember): Promise<Member.ResCreateMember> => {
     const sql =
     `
@@ -87,8 +88,8 @@ export const insertMember = (mysql: MysqlDriver): Member.InsertMember =>
   };
 
 injectable(Modules.Store.Member.UpdateAvatar,
-  [ Modules.Mysql ],
-  async (mysql: MysqlDriver): Promise<Member.UpdateAvatar> =>
+  [ MysqlModules.MysqlDriver ],
+  async (mysql: MysqlTypes.MysqlDriver): Promise<Member.UpdateAvatar> =>
     async (memberNo, avatar) => {
       const sql = `
         UPDATE
@@ -104,13 +105,13 @@ injectable(Modules.Store.Member.UpdateAvatar,
     });
 
 injectable(Modules.Store.Member.Get,
-  [Modules.Mysql],
-  async (mysql: MysqlDriver) => getMember(mysql));
+  [ MysqlModules.MysqlDriver ],
+  async (mysql) => getMember(mysql));
 
 injectable(Modules.Store.Member.GetMultiple,
-  [Modules.Mysql],
+  [ MysqlModules.MysqlDriver ],
   async (mysql) => getMembers(mysql));
 
 injectable(Modules.Store.Member.Insert,
-  [Modules.Mysql],
-  async (mysql: MysqlDriver) => insertMember(mysql));
+  [ MysqlModules.MysqlDriver ],
+  async (mysql) => insertMember(mysql));
