@@ -6,7 +6,7 @@ import { Application } from 'express';
 import { EndpointModules } from './modules';
 import { EndpointTypes } from './types';
 import { MiddlewareModules, MiddlewareTypes } from '../middlewares';
-import { LoggerTypes, LoggerModules } from '../loggers-new';
+import { LoggerTypes, LoggerModules } from '../loggers';
 import { ConfigModules, ConfigTypes } from '../config';
 
 injectable(EndpointModules.EndpointRunner,

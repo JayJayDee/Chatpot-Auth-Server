@@ -4,7 +4,7 @@ import { EndpointTypes } from './types';
 import { ServiceModules, ServiceTypes } from '../services';
 import { InvalidParamError } from '../errors';
 import { UtilModules, UtilTypes } from '../utils';
-import { LoggerModules, LoggerTypes } from '../loggers-new';
+import { LoggerModules, LoggerTypes } from '../loggers';
 import { StoreModules, StoreTypes } from '../stores';
 
 injectable(EndpointModules.Auth.AuthEmail,

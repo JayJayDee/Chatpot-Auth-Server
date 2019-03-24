@@ -1,7 +1,7 @@
 import { injectable } from 'smart-factory';
 import { createCipher, createDecipher, createHash } from 'crypto';
 import { ConfigModules, ConfigTypes } from '../config';
-import { LoggerModules, LoggerTypes } from '../loggers-new';
+import { LoggerModules, LoggerTypes } from '../loggers';
 import { UtilModules } from './modules';
 import { UtilTypes } from './types';
 import { BaseLogicError } from '../errors';

@@ -5,7 +5,7 @@ import { BaseLogicError } from '../errors';
 import { ExtApiTypes, ExtApiModules } from '../extapis';
 import { ServiceModules } from './modules';
 import { UtilModules, UtilTypes } from '../utils';
-import { LoggerModules, LoggerTypes } from '../loggers-new';
+import { LoggerModules, LoggerTypes } from '../loggers';
 import { StoreModules, StoreTypes } from '../stores';
 
 class AuthFailError extends BaseLogicError {}

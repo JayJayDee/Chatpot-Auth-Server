@@ -3,7 +3,7 @@ import { ExtApiTypes } from './types';
 import { ExtApiModules } from './modules';
 
 import defaultRequestor from './default-requestor';
-import { LoggerModules, LoggerTypes } from '../loggers-new';
+import { LoggerModules, LoggerTypes } from '../loggers';
 
 // use default http requestor and register to container.
 injectable(ExtApiModules.Requestor,

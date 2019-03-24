@@ -3,7 +3,7 @@ import { injectable } from 'smart-factory';
 import { MiddlewareModules } from './modules';
 import { MiddlewareTypes } from './types';
 import { UtilModules, UtilTypes } from '../utils';
-import { LoggerModules, LoggerTypes } from '../loggers-new';
+import { LoggerModules, LoggerTypes } from '../loggers';
 import { BaseSecurityError, SecurityExpireError } from '../errors';
 import { ConfigTypes, ConfigModules } from '../config';
 

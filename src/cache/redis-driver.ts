@@ -1,7 +1,7 @@
 import { createClient, RedisClient } from 'redis';
 import { CacheTypes } from './types';
 import { RedisConnectionError } from './errors';
-import { LoggerTypes } from '../loggers-new';
+import { LoggerTypes } from '../loggers';
 import { ConfigTypes } from '../config';
 
 const initRedisDriver =

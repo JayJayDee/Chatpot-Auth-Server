@@ -1,5 +1,5 @@
 import { createPool, Pool, PoolConnection } from 'mysql';
-import { LoggerTypes, LoggerModules } from '../loggers-new';
+import { LoggerTypes, LoggerModules } from '../loggers';
 import { MysqlTypes } from './types';
 import { MysqlConnectionError } from './errors';
 import { injectable } from 'smart-factory';
