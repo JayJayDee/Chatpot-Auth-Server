@@ -1,10 +1,11 @@
 import { injectable } from 'smart-factory';
 import { Modules } from '../modules';
-import { ExtApiTypes } from './types';
 import { ExtApiConfig } from '../config/types';
+import { ExtApiTypes } from './types';
+import { ExtApiModules } from './modules';
 
-injectable(Modules.ExtApi.Asset.GetAvatar,
-  [ Modules.ExtApi.Requestor,
+injectable(ExtApiModules.Asset.RequestAvatar,
+  [ ExtApiModules.Requestor,
     Modules.Config.ExtApiConfig ],
   async (request: ExtApiTypes.Request,
     cfg: ExtApiConfig): Promise<ExtApiTypes.Asset.RequestAvatar> =>

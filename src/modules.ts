@@ -51,12 +51,4 @@ export namespace Modules {
       GetPassword = 'Store/Auth/GetPasswordOld'
     }
   }
-
-  export namespace ExtApi {
-    export const Requestor = 'ExtApi/RequestorOld';
-
-    export enum Asset {
-      GetAvatar = 'ExtApi/Asset/GetAvatarOld'
-    }
-  }
 }

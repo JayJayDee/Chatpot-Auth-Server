@@ -1,14 +1,16 @@
 import { injectable } from 'smart-factory';
 import { ExtApiTypes } from './types';
+import { ExtApiModules } from './modules';
 
 import defaultRequestor from './default-requestor';
 import { Modules } from '../modules';
 import { Logger } from '../loggers/types';
 
 // use default http requestor and register to container.
-injectable(Modules.ExtApi.Requestor,
+injectable(ExtApiModules.Requestor,
   [ Modules.Logger ],
   async (log: Logger): Promise<ExtApiTypes.Request> =>
     defaultRequestor(log));
 
 export { ExtApiTypes } from './types';
+export { ExtApiModules } from './modules';
