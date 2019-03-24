@@ -1,11 +1,11 @@
 import { createClient, RedisClient } from 'redis';
 import { CacheTypes } from './types';
-import { RedisConfig } from '../config/types';
 import { RedisConnectionError } from './errors';
 import { LoggerTypes } from '../loggers-new';
+import { ConfigTypes } from '../config';
 
 const initRedisDriver =
-  (cfg: RedisConfig, log: LoggerTypes.Logger) =>
+  (cfg: ConfigTypes.RedisConfig, log: LoggerTypes.Logger) =>
     async (): Promise<CacheTypes.CacheOperations> => {
       log.info('[cache] establishing redis connection ...');
       if (!cfg.password) delete cfg.password;

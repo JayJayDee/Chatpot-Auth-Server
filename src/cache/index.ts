@@ -1,29 +1,28 @@
 import { injectable } from 'smart-factory';
-import { Modules } from '../modules';
-import { CacheConfig, CacheProvider } from '../config/types';
 import { LoggerTypes, LoggerModules } from '../loggers-new';
 import { CacheTypes } from './types';
 import { CacheModules } from './modules';
+import { ConfigModules, ConfigTypes } from '../config';
 
 import memoryCacheFactory from './memory-driver';
 import redisCacheFactory from './redis-driver';
 
 export const initCache =
-  async (cfg: CacheConfig, logger: LoggerTypes.Logger): Promise<CacheTypes.CacheOperations> => {
+  async (cfg: ConfigTypes.CacheConfig, logger: LoggerTypes.Logger): Promise<CacheTypes.CacheOperations> => {
     let cacheOps: CacheTypes.CacheOperations = null;
     const initMemory = memoryCacheFactory();
     const initRedis = redisCacheFactory(cfg.redis, logger);
 
-    if (cfg.provider === CacheProvider.MEMORY) {
+    if (cfg.provider === ConfigTypes.CacheProvider.MEMORY) {
       cacheOps = await initMemory(logger);
-    } else if (cfg.provider === CacheProvider.REDIS) {
+    } else if (cfg.provider === ConfigTypes.CacheProvider.REDIS) {
       cacheOps = await initRedis();
     }
     return cacheOps;
   };
 
 injectable(CacheModules.Operations,
-  [ Modules.Config.CacheConfig, LoggerModules.Logger ],
+  [ ConfigModules.CacheConfig, LoggerModules.Logger ],
   initCache);
 
 injectable(CacheModules.Get,

@@ -6,19 +6,18 @@ import { Application } from 'express';
 import { EndpointModules } from './modules';
 import { EndpointTypes } from './types';
 import { MiddlewareModules, MiddlewareTypes } from '../middlewares';
-import { Modules } from '../modules';
-import { HttpConfig } from '../config/types';
 import { LoggerTypes, LoggerModules } from '../loggers-new';
+import { ConfigModules, ConfigTypes } from '../config';
 
 injectable(EndpointModules.EndpointRunner,
 
-  [Modules.Config.HttpConfig,
+  [ ConfigModules.HttpConfig,
     LoggerModules.Logger,
     EndpointModules.Endpoints,
     MiddlewareModules.Error,
     MiddlewareModules.NotFound],
 
-  async (cfg: HttpConfig,
+  async (cfg: ConfigTypes.HttpConfig,
     log: LoggerTypes.Logger,
     endpoints: EndpointTypes.Endpoint[],
     error: MiddlewareTypes.Error,
