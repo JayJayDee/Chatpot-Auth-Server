@@ -1,28 +1,25 @@
 import { CacheConfig } from '../config/types';
-import { Cache } from './types';
+import { CacheTypes } from './types';
 import { injectable } from 'smart-factory';
 import { Modules } from '../modules';
+import { CacheModules } from './modules';
 
 type DataFetcher = () => Promise<any>;
 
-export const doCached =
-  (cfg: CacheConfig,
-    get: Cache.Get,
-    set: Cache.Set): Cache.Helper =>
+injectable(CacheModules.Helper,
+  [ Modules.Config.CacheConfig,
+    CacheModules.Get,
+    CacheModules.Set ],
+  async (cfg: CacheConfig,
+    get: CacheTypes.Get,
+    set: CacheTypes.Set): Promise<CacheTypes.Helper> =>
+
     async (key: string, fetcher: DataFetcher) => {
-      if (cfg.enabled === false) {
-        return await fetcher();
-      }
+      if (cfg.enabled === false) return await fetcher();
       let cached = await get(key);
       if (cached === null) {
         cached = await fetcher();
         await set(key, cached);
       }
       return cached;
-    };
-
-injectable(Modules.Cache.Helper,
-  [Modules.Config.CacheConfig,
-    Modules.Cache.Get,
-    Modules.Cache.Set],
-  async (cfg, get, set) => doCached(cfg, get, set));
+    });

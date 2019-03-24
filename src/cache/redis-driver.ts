@@ -1,12 +1,12 @@
 import { createClient, RedisClient } from 'redis';
-import { Cache } from './types';
+import { CacheTypes } from './types';
 import { RedisConfig } from '../config/types';
 import { RedisConnectionError } from './errors';
-import { Logger } from '../loggers/types';
+import { LoggerTypes } from '../loggers-new';
 
 const initRedisDriver =
-  (cfg: RedisConfig, log: Logger) =>
-    async (): Promise<Cache.CacheOperations> => {
+  (cfg: RedisConfig, log: LoggerTypes.Logger) =>
+    async (): Promise<CacheTypes.CacheOperations> => {
       log.info('[cache] establishing redis connection ...');
       if (!cfg.password) delete cfg.password;
       const client: RedisClient = createClient(cfg);
@@ -27,7 +27,7 @@ const inspectConnection = (client: RedisClient): Promise<void> =>
     });
   });
 
-const redisGet = (client: RedisClient): Cache.Get =>
+const redisGet = (client: RedisClient): CacheTypes.Get =>
   (key: string) =>
     new Promise((resolve, reject) => {
       client.get(key, (err: Error, reply: string) => {
@@ -42,7 +42,7 @@ const redisGet = (client: RedisClient): Cache.Get =>
       });
     });
 
-const redisSet = (client: RedisClient): Cache.Set =>
+const redisSet = (client: RedisClient): CacheTypes.Set =>
   (key: string, value: any, expires?: number) =>
     new Promise((resolve, reject) => {
       client.set(key, value, (err: Error, reply: string) => {

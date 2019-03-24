@@ -25,13 +25,6 @@ export namespace Modules {
   export const Logger = 'LoggerOld';
   export const Mysql = 'MysqlOld';
 
-  export namespace Cache {
-    export const Get = 'Cache/GetOld';
-    export const Set = 'Cache/SetOld';
-    export const Operations = 'Cache/OperationsOld';
-    export const Helper = 'Cache/HelperOld';
-  }
-
   export namespace Store {
     export enum Member {
       Get = 'Store/Member/GetOld',

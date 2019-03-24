@@ -1,11 +1,11 @@
-import { Cache } from './types';
-import { Logger } from '../loggers/types';
+import { CacheTypes } from './types';
+import { LoggerTypes } from '../loggers-new';
 
 type Storage = {[key: string]: any};
 type ExpireSet = {[key: string]: number};
 
 const initMemoryDriver = () =>
-  async (log: Logger): Promise<Cache.CacheOperations> => {
+  async (log: LoggerTypes.Logger): Promise<CacheTypes.CacheOperations> => {
     const storage: Storage = {};
     const expset: ExpireSet = {};
     log.info('[cache] using in-memory cache..');
@@ -17,7 +17,7 @@ const initMemoryDriver = () =>
 export default initMemoryDriver;
 
 const memoryGet =
-  (storage: Storage, expset: ExpireSet): Cache.Get =>
+  (storage: Storage, expset: ExpireSet): CacheTypes.Get =>
     async (key: string) => {
       const value = storage.get(key);
       if (!value) return null;
@@ -37,7 +37,7 @@ const isExpires =
   };
 
 const memorySet =
-  (storage: Storage, expset: ExpireSet): Cache.Set =>
+  (storage: Storage, expset: ExpireSet): CacheTypes.Set =>
     async (key: string, value: any, expires?: number) => {
       storage[key] = value;
       delete expset[key];
