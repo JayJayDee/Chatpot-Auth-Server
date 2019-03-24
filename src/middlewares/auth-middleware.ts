@@ -5,18 +5,16 @@ import { MiddlewareTypes } from './types';
 import { UtilModules, UtilTypes } from '../utils';
 import { LoggerModules, LoggerTypes } from '../loggers-new';
 import { BaseSecurityError, SecurityExpireError } from '../errors';
-
-import { Modules } from '../modules';
-import { CredentialConfig } from '../config/types';
+import { ConfigTypes, ConfigModules } from '../config';
 
 class AuthenticationFailError extends BaseSecurityError {}
 class AuthorizationFailError extends BaseSecurityError {}
 
 injectable(MiddlewareModules.Authentication,
-  [ Modules.Config.CredentialConfig,
+  [ ConfigModules.CredentialConfig,
     LoggerModules.Logger,
     UtilModules.Auth.ValidateSessionKey ],
-  async (cfg: CredentialConfig,
+  async (cfg: ConfigTypes.CredentialConfig,
     log: LoggerTypes.Logger,
     validateSessionKey: UtilTypes.Auth.ValidateSessionKey): Promise<MiddlewareTypes.Authentication> =>
 
@@ -39,11 +37,11 @@ injectable(MiddlewareModules.Authentication,
       });
 
 injectable(MiddlewareModules.Authorization,
-  [ Modules.Config.CredentialConfig,
+  [ ConfigModules.CredentialConfig,
     LoggerModules.Logger,
     UtilModules.Auth.DecryptMemberToken,
     UtilModules.Auth.ValidateSessionKey ],
-  async (cfg: CredentialConfig,
+  async (cfg: ConfigTypes.CredentialConfig,
     log: LoggerTypes.Logger,
     decryptMemberToken: UtilTypes.Auth.DecryptMemberToken,
     validateSessionKey: UtilTypes.Auth.ValidateSessionKey): Promise<MiddlewareTypes.Authorization> =>

@@ -1,16 +1,16 @@
-import { CacheConfig } from '../config/types';
-import { CacheTypes } from './types';
 import { injectable } from 'smart-factory';
-import { Modules } from '../modules';
+import { CacheTypes } from './types';
 import { CacheModules } from './modules';
+import { ConfigModules, ConfigTypes } from '../config';
+
 
 type DataFetcher = () => Promise<any>;
 
 injectable(CacheModules.Helper,
-  [ Modules.Config.CacheConfig,
+  [ ConfigModules.CacheConfig,
     CacheModules.Get,
     CacheModules.Set ],
-  async (cfg: CacheConfig,
+  async (cfg: ConfigTypes.CacheConfig,
     get: CacheTypes.Get,
     set: CacheTypes.Set): Promise<CacheTypes.Helper> =>
 

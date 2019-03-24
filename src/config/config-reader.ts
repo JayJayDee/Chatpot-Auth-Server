@@ -1,8 +1,8 @@
 import { readFile } from 'fs';
-import { ConfigSource, ConfigReader } from './types';
 import { ConfigurationError } from './errors';
+import { ConfigTypes } from './types';
 
-const read = (src: ConfigSource): ConfigReader =>
+const read = (src: ConfigTypes.ConfigSource): ConfigTypes.ConfigReader =>
   async () => {
     const configPath = src['CONFIG_FILE'];
     if (!configPath) return src;

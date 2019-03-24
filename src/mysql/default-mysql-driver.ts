@@ -4,14 +4,12 @@ import { MysqlTypes } from './types';
 import { MysqlConnectionError } from './errors';
 import { injectable } from 'smart-factory';
 import { MysqlModules } from './modules';
-
-import { Modules } from '../modules';
-import { MysqlConfig } from '../config/types';
+import { ConfigModules, ConfigTypes } from '../config';
 
 injectable(MysqlModules.MysqlDriver,
-  [ Modules.Config.MysqlConfig,
+  [ ConfigModules.MysqlConfig,
     LoggerModules.Logger ],
-  async (cfg: MysqlConfig, log: LoggerTypes.Logger) => {
+  async (cfg: ConfigTypes.MysqlConfig, log: LoggerTypes.Logger) => {
     log.info('[mysql] establishing MySQL connection...');
     const connector = getConnection(cfg, createPool);
     const pool = await connector();
@@ -32,7 +30,7 @@ type PoolCreateFunction = (opts: PoolCreateOpts) => Pool;
 type GetConnectionFunction = (pool: Pool) => Promise<PoolConnection>;
 
 export const getConnection =
-  (cfg: MysqlConfig, poolCreateFunc: PoolCreateFunction) =>
+  (cfg: ConfigTypes.MysqlConfig, poolCreateFunc: PoolCreateFunction) =>
     (): Promise<Pool> => new Promise((resolve, reject) => {
       const pool = poolCreateFunc(cfg);
       pool.query('SELECT 1', (err: Error, data: any) => {

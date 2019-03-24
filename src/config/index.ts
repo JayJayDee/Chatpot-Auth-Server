@@ -1,11 +1,11 @@
 import { injectable } from 'smart-factory';
-import { Modules } from '../modules';
-import { RootConfig, ConfigRule, ConfigReader, ConfigParser, ConfigSource, Env } from './types';
+import { ConfigTypes } from './types';
+import { ConfigModules } from './modules';
 
 import configParser from './config-parser';
 import configReader from './config-reader';
 
-export const emptyConfig: RootConfig = {
+export const emptyConfig: ConfigTypes.RootConfig = {
   http: {
     port: null
   },
@@ -34,61 +34,61 @@ export const emptyConfig: RootConfig = {
   }
 };
 
-injectable(Modules.Config.EmptyConfig, [], async () => emptyConfig);
+injectable(ConfigModules.EmptyConfig, [], async () => emptyConfig);
 
-injectable(Modules.Config.ConfigReader, [], async () => configReader(process.env));
+injectable(ConfigModules.ConfigReader, [], async () => configReader(process.env));
 
-injectable(Modules.Config.ConfigParser,
-  [Modules.Config.EmptyConfig],
-  async (empty: RootConfig) => configParser(empty));
+injectable(ConfigModules.ConfigParser,
+  [ConfigModules.EmptyConfig],
+  async (empty: ConfigTypes.RootConfig) => configParser(empty));
 
-injectable(Modules.Config.ConfigSource,
-  [Modules.Config.ConfigReader],
-  async (read: ConfigReader) => read());
+injectable(ConfigModules.ConfigSource,
+  [ConfigModules.ConfigReader],
+  async (read: ConfigTypes.ConfigReader) => read());
 
-injectable(Modules.Config.RootConfig,
-  [Modules.Config.ConfigParser,
-   Modules.Config.ConfigSource,
-   Modules.Config.ConfigRules],
-  async (parse: ConfigParser,
-    src: ConfigSource,
-    rules: ConfigRule[]): Promise<RootConfig> => parse(src, rules));
+injectable(ConfigModules.RootConfig,
+  [ConfigModules.ConfigParser,
+   ConfigModules.ConfigSource,
+   ConfigModules.ConfigRules],
+  async (parse: ConfigTypes.ConfigParser,
+    src: ConfigTypes.ConfigSource,
+    rules: ConfigTypes.ConfigRule[]): Promise<ConfigTypes.RootConfig> => parse(src, rules));
 
-injectable(Modules.Config.HttpConfig,
-  [Modules.Config.RootConfig],
-  async (root: RootConfig) => root.http);
+injectable(ConfigModules.HttpConfig,
+  [ConfigModules.RootConfig],
+  async (root: ConfigTypes.RootConfig) => root.http);
 
-injectable(Modules.Config.MysqlConfig,
-  [Modules.Config.RootConfig],
-  async (root: RootConfig) => root.mysql);
+injectable(ConfigModules.MysqlConfig,
+  [ConfigModules.RootConfig],
+  async (root: ConfigTypes.RootConfig) => root.mysql);
 
-injectable(Modules.Config.CredentialConfig,
-  [Modules.Config.RootConfig],
-  async (root: RootConfig) => root.credential);
+injectable(ConfigModules.CredentialConfig,
+  [ConfigModules.RootConfig],
+  async (root: ConfigTypes.RootConfig) => root.credential);
 
-injectable(Modules.Config.CacheConfig,
-  [Modules.Config.RootConfig],
-  async (root: RootConfig) => root.cache);
+injectable(ConfigModules.CacheConfig,
+  [ConfigModules.RootConfig],
+  async (root: ConfigTypes.RootConfig) => root.cache);
 
-injectable(Modules.Config.StorageConfig,
-  [Modules.Config.RootConfig],
-  async (root: RootConfig) => root.storage);
+injectable(ConfigModules.StorageConfig,
+  [ConfigModules.RootConfig],
+  async (root: ConfigTypes.RootConfig) => root.storage);
 
-injectable(Modules.Config.ExtApiConfig,
-  [Modules.Config.RootConfig],
-  async (root: RootConfig) => root.extapi);
+injectable(ConfigModules.ExtApiConfig,
+  [ConfigModules.RootConfig],
+  async (root: ConfigTypes.RootConfig) => root.extapi);
 
-injectable(Modules.Config.Env,
-  [Modules.Config.ConfigSource],
-  async (src: ConfigSource) => {
+injectable(ConfigModules.Env,
+  [ConfigModules.ConfigSource],
+  async (src: ConfigTypes.ConfigSource) => {
     const envExpr = src['NODE_ENV'];
-    if (!envExpr || envExpr === 'production') return Env.DEV;
-    return Env.PROD;
+    if (!envExpr || envExpr === 'production') return ConfigTypes.Env.DEV;
+    return ConfigTypes.Env.PROD;
   });
 
 // configuration rules.
-injectable(Modules.Config.ConfigRules, [],
-  async (): Promise<ConfigRule[]> => ([
+injectable(ConfigModules.ConfigRules, [],
+  async (): Promise<ConfigTypes.ConfigRule[]> => ([
     { key: 'HTTP_PORT', path: ['http', 'port'], defaultValue: 8080 },
     { key: 'MYSQL_HOST', path: ['mysql', 'host'] },
     { key: 'MYSQL_PORT', path: ['mysql', 'port'] },
@@ -107,3 +107,6 @@ injectable(Modules.Config.ConfigRules, [],
     { key: 'EXTAPI_ASSET_HOST', path: ['extapi', 'assetHost'] },
     { key: 'STORAGE_TEMPORARY_PATH', path: ['storage', 'temporaryPath'] }
   ]));
+
+  export { ConfigModules } from './modules';
+  export { ConfigTypes } from './types';

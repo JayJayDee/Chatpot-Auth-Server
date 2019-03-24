@@ -1,9 +1,6 @@
 import { injectable } from 'smart-factory';
 import { createCipher, createDecipher, createHash } from 'crypto';
-
-import { Modules } from '../modules';
-import { CredentialConfig } from '../config/types';
-
+import { ConfigModules, ConfigTypes } from '../config';
 import { LoggerModules, LoggerTypes } from '../loggers-new';
 import { UtilModules } from './modules';
 import { UtilTypes } from './types';
@@ -18,8 +15,8 @@ const decipher = (secret: string) =>
   createDecipher('des-ede3-cbc', secret);
 
 injectable(UtilModules.Auth.CreateMemberToken,
-  [ Modules.Config.CredentialConfig ],
-  async (cfg: CredentialConfig): Promise<UtilTypes.Auth.CreateMemberToken> =>
+  [ ConfigModules.CredentialConfig ],
+  async (cfg: ConfigTypes.CredentialConfig): Promise<UtilTypes.Auth.CreateMemberToken> =>
     (memberNo: number) => {
       const cp = cipher(cfg.secret);
       let encrypted: string = '';
@@ -29,9 +26,9 @@ injectable(UtilModules.Auth.CreateMemberToken,
     });
 
 injectable(UtilModules.Auth.DecryptMemberToken,
-  [ Modules.Config.CredentialConfig,
+  [ ConfigModules.CredentialConfig,
     LoggerModules.Logger ],
-  async (cfg: CredentialConfig,
+  async (cfg: ConfigTypes.CredentialConfig,
     log: LoggerTypes.Logger): Promise<UtilTypes.Auth.DecryptMemberToken> =>
       (memberToken: string) => {
         const dp = decipher(cfg.secret);
@@ -55,9 +52,9 @@ injectable(UtilModules.Auth.DecryptMemberToken,
 
 injectable(UtilModules.Auth.ValidateSessionKey,
   [ LoggerModules.Logger,
-    Modules.Config.CredentialConfig ],
+    ConfigModules.CredentialConfig ],
   async (log: LoggerTypes.Logger,
-    cfg: CredentialConfig): Promise<UtilTypes.Auth.ValidateSessionKey> =>
+    cfg: ConfigTypes.CredentialConfig): Promise<UtilTypes.Auth.ValidateSessionKey> =>
 
     (sessionKey) => {
       const dp = decipher(cfg.secret);
@@ -88,8 +85,8 @@ injectable(UtilModules.Auth.ValidateSessionKey,
     });
 
 injectable(UtilModules.Auth.CreateSessionKey,
-  [ Modules.Config.CredentialConfig ],
-  async (cfg: CredentialConfig): Promise<UtilTypes.Auth.CreateSessionKey> =>
+  [ ConfigModules.CredentialConfig ],
+  async (cfg: ConfigTypes.CredentialConfig): Promise<UtilTypes.Auth.CreateSessionKey> =>
     (memberNo) => {
       const cp = cipher(cfg.secret);
       let encrypted: string = '';
@@ -135,8 +132,8 @@ injectable(UtilModules.Auth.RevalidateSessionKey,
     });
 
 injectable(UtilModules.Auth.CreatePassHash,
-  [ Modules.Config.CredentialConfig ],
-  async (cfg: CredentialConfig): Promise<UtilTypes.Auth.CreatePassHash> =>
+  [ ConfigModules.CredentialConfig ],
+  async (cfg: ConfigTypes.CredentialConfig): Promise<UtilTypes.Auth.CreatePassHash> =>
     (rawPassword) => {
       const cp = cipher(cfg.secret);
       let encrypted: string = '';
@@ -146,8 +143,8 @@ injectable(UtilModules.Auth.CreatePassHash,
     });
 
 injectable(UtilModules.Auth.DecryptPassHash,
-  [ Modules.Config.CredentialConfig ],
-  async (cfg: CredentialConfig): Promise<UtilTypes.Auth.DecryptPassHash> =>
+  [ ConfigModules.CredentialConfig ],
+  async (cfg: ConfigTypes.CredentialConfig): Promise<UtilTypes.Auth.DecryptPassHash> =>
     (encryptedPassword) => {
       const dp = decipher(cfg.secret);
       let decrypted: string = dp.update(encryptedPassword, 'hex', 'utf8');
@@ -156,8 +153,8 @@ injectable(UtilModules.Auth.DecryptPassHash,
     });
 
 injectable(UtilModules.Auth.CreatePassphrase,
-  [ Modules.Config.CredentialConfig ],
-  async (cfg: CredentialConfig): Promise<UtilTypes.Auth.CreatePassphrase> =>
+  [ ConfigModules.CredentialConfig ],
+  async (cfg: ConfigTypes.CredentialConfig): Promise<UtilTypes.Auth.CreatePassphrase> =>
     (memberNo) => {
       const timestamp = Date.now();
       return createHash('sha256')

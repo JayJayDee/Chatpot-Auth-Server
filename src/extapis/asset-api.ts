@@ -1,14 +1,13 @@
 import { injectable } from 'smart-factory';
-import { Modules } from '../modules';
-import { ExtApiConfig } from '../config/types';
 import { ExtApiTypes } from './types';
 import { ExtApiModules } from './modules';
+import { ConfigModules, ConfigTypes } from '../config';
 
 injectable(ExtApiModules.Asset.RequestAvatar,
   [ ExtApiModules.Requestor,
-    Modules.Config.ExtApiConfig ],
+    ConfigModules.ExtApiConfig ],
   async (request: ExtApiTypes.Request,
-    cfg: ExtApiConfig): Promise<ExtApiTypes.Asset.RequestAvatar> =>
+    cfg: ConfigTypes.ExtApiConfig): Promise<ExtApiTypes.Asset.RequestAvatar> =>
 
     async (nickEn, gender) => {
       const url = `${cfg.assetHost}/avatar`;
