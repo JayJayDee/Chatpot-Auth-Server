@@ -6,7 +6,7 @@ import { InvalidParamError } from '../errors';
 import { UtilModules, UtilTypes } from '../utils';
 import { Modules } from '../modules';
 import { Auth } from '../stores/types';
-import { Logger } from '../loggers/types';
+import { LoggerModules, LoggerTypes } from '../loggers-new';
 
 injectable(EndpointModules.Auth.AuthEmail,
   [ EndpointModules.Utils.WrapAync,
@@ -56,12 +56,12 @@ injectable(EndpointModules.Auth.AuthSimple,
 
 
 injectable(EndpointModules.Auth.Reauth,
-  [ Modules.Logger,
+  [ LoggerModules.Logger,
     EndpointModules.Utils.WrapAync,
     UtilModules.Auth.DecryptMemberToken,
     Modules.Store.Auth.GetPassword,
     UtilModules.Auth.RevalidateSessionKey ],
-  async (log: Logger,
+  async (log: LoggerTypes.Logger,
     wrapAsync: EndpointTypes.Utils.WrapAsync,
     decryptMemberToken: UtilTypes.Auth.DecryptMemberToken,
     getPassword: Auth.GetPassword,

@@ -1,8 +1,8 @@
 import { flatten, set, groupBy } from 'lodash';
-import { MysqlDriver } from '../mysql/types';
 import { Nick } from './types';
 import { injectable } from 'smart-factory';
 import { Modules } from '../modules';
+import { MysqlTypes, MysqlModules } from '../mysql';
 
 export const fetch = (cols: any) => ({
   ko: cols.ko,
@@ -16,7 +16,7 @@ export const merge = (adj: Nick.NickEntity, noun: Nick.NickEntity) => ({
   ja: adj.ja + noun.ja
 });
 
-export const pickNick = (mysql: MysqlDriver): Nick.PickNick =>
+export const pickNick = (mysql: MysqlTypes.MysqlDriver): Nick.PickNick =>
   async () => {
     const adjQuery =
     `SELECT * FROM chatpot_nick_pool_adj ORDER BY RAND() LIMIT 1`;
@@ -33,7 +33,7 @@ export const pickNick = (mysql: MysqlDriver): Nick.PickNick =>
     return merge(adj, noun);
   };
 
-export const insertNick = (mysql: MysqlDriver): Nick.InsertNick =>
+export const insertNick = (mysql: MysqlTypes.MysqlDriver): Nick.InsertNick =>
   async (req: Nick.ReqInsertNick) => {
     const rowDatas = Object.keys(req.nick).map((k) => ({
       member_no: req.member_no,
@@ -48,7 +48,7 @@ export const insertNick = (mysql: MysqlDriver): Nick.InsertNick =>
     await mysql.query(query, flatten(params));
   };
 
-export const getMemberNick = (mysql: MysqlDriver): Nick.GetNick =>
+export const getMemberNick = (mysql: MysqlTypes.MysqlDriver): Nick.GetNick =>
   async (req: Nick.ReqGetNick) => {
     const nick: Nick.NickEntity = {
       en: null,
@@ -62,7 +62,7 @@ export const getMemberNick = (mysql: MysqlDriver): Nick.GetNick =>
     return nick;
   };
 
-export const getMemberNickMultiple = (mysql: MysqlDriver): Nick.GetNickMultiple =>
+export const getMemberNickMultiple = (mysql: MysqlTypes.MysqlDriver): Nick.GetNickMultiple =>
   async (memberNos: number[]) => {
     if (memberNos.length === 0) return [];
     const inClause = memberNos.map((n) => '?').join(',');
@@ -92,17 +92,17 @@ export const getMemberNickMultiple = (mysql: MysqlDriver): Nick.GetNickMultiple 
   };
 
 injectable(Modules.Store.Nick.Pick,
-  [ Modules.Mysql ],
-  async (mysql: MysqlDriver) => pickNick(mysql));
+  [ MysqlModules.MysqlDriver ],
+  async (mysql) => pickNick(mysql));
 
 injectable(Modules.Store.Nick.Insert,
-  [ Modules.Mysql ],
-  async (mysql: MysqlDriver) => insertNick(mysql));
+  [ MysqlModules.MysqlDriver ],
+  async (mysql) => insertNick(mysql));
 
 injectable(Modules.Store.Nick.Get,
-  [ Modules.Mysql ],
+  [ MysqlModules.MysqlDriver ],
   async (mysql) => getMemberNick(mysql));
 
 injectable(Modules.Store.Nick.GetMultiple,
-  [ Modules.Mysql ],
+  [ MysqlModules.MysqlDriver ],
   async (mysql) => getMemberNickMultiple(mysql));

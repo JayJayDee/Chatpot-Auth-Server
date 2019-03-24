@@ -1,4 +1,4 @@
-export namespace Cache {
+export namespace CacheTypes {
   export type Get = (key: string) => Promise<any>;
   export type Set = (key: string, value: any, expires?: number) => Promise<void>;
 

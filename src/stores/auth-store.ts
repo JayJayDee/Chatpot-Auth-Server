@@ -1,19 +1,19 @@
 import { injectable } from 'smart-factory';
-import { MysqlDriver } from '../mysql/types';
-import { Logger } from '../loggers/types';
 import { Auth } from './types';
 import { Modules } from '../modules';
 import { UtilModules, UtilTypes } from '../utils';
+import { LoggerModules, LoggerTypes } from '../loggers-new';
+import { MysqlModules, MysqlTypes } from '../mysql';
 
 class SqlException extends Error {}
 
 injectable(Modules.Store.Auth.Insert,
-  [ Modules.Mysql,
+  [ MysqlModules.MysqlDriver,
     UtilModules.Auth.CreatePassHash,
-    Modules.Logger ],
-  async (mysql: MysqlDriver,
+    LoggerModules.Logger ],
+  async (mysql: MysqlTypes.MysqlDriver,
     passHash: UtilTypes.Auth.CreatePassHash,
-    log: Logger): Promise<Auth.InsertAuth> =>
+    log: LoggerTypes.Logger): Promise<Auth.InsertAuth> =>
 
     async (param) => {
       const hashedPassword = passHash(param.password);
@@ -42,12 +42,12 @@ injectable(Modules.Store.Auth.Insert,
 
 
 injectable(Modules.Store.Auth.Authenticate,
-  [ Modules.Mysql,
+  [ MysqlModules.MysqlDriver,
     UtilModules.Auth.CreatePassHash,
-    Modules.Logger ],
-  async (mysql: MysqlDriver,
+    LoggerModules.Logger ],
+  async (mysql: MysqlTypes.MysqlDriver,
     passHash: UtilTypes.Auth.CreatePassHash,
-    log: Logger): Promise<Auth.Authenticate> =>
+    log: LoggerTypes.Logger): Promise<Auth.Authenticate> =>
 
     async (param) => {
       const hashed = passHash(param.password);
@@ -78,9 +78,9 @@ injectable(Modules.Store.Auth.Authenticate,
 
 
 injectable(Modules.Store.Auth.GetPassword,
-  [ Modules.Mysql,
+  [ MysqlModules.MysqlDriver,
     UtilModules.Auth.DecryptPassHash ],
-  async (mysql: MysqlDriver,
+  async (mysql: MysqlTypes.MysqlDriver,
     decryptPass: UtilTypes.Auth.DecryptPassHash): Promise<Auth.GetPassword> =>
 
     async (memberNo: number) => {

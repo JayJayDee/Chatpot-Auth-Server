@@ -1,14 +1,16 @@
-import memoryCacheFactory from './memory-driver';
-import redisCacheFactory from './redis-driver';
 import { injectable } from 'smart-factory';
 import { Modules } from '../modules';
 import { CacheConfig, CacheProvider } from '../config/types';
-import { Cache } from './types';
-import { Logger } from '../loggers/types';
+import { LoggerTypes, LoggerModules } from '../loggers-new';
+import { CacheTypes } from './types';
+import { CacheModules } from './modules';
+
+import memoryCacheFactory from './memory-driver';
+import redisCacheFactory from './redis-driver';
 
 export const initCache =
-  async (cfg: CacheConfig, logger: Logger): Promise<Cache.CacheOperations> => {
-    let cacheOps: Cache.CacheOperations = null;
+  async (cfg: CacheConfig, logger: LoggerTypes.Logger): Promise<CacheTypes.CacheOperations> => {
+    let cacheOps: CacheTypes.CacheOperations = null;
     const initMemory = memoryCacheFactory();
     const initRedis = redisCacheFactory(cfg.redis, logger);
 
@@ -20,14 +22,17 @@ export const initCache =
     return cacheOps;
   };
 
-injectable(Modules.Cache.Operations,
-  [ Modules.Config.CacheConfig, Modules.Logger ],
+injectable(CacheModules.Operations,
+  [ Modules.Config.CacheConfig, LoggerModules.Logger ],
   initCache);
 
-injectable(Modules.Cache.Get,
-  [ Modules.Cache.Operations ],
-  async (ops: Cache.CacheOperations) => ops.get);
+injectable(CacheModules.Get,
+  [ CacheModules.Operations ],
+  async (ops: CacheTypes.CacheOperations) => ops.get);
 
-injectable(Modules.Cache.Set,
-  [ Modules.Cache.Operations ],
-  async (ops: Cache.CacheOperations) => ops.set);
+injectable(CacheModules.Set,
+  [ CacheModules.Operations ],
+  async (ops: CacheTypes.CacheOperations) => ops.set);
+
+export { CacheModules } from './modules';
+export { CacheTypes } from './types';
