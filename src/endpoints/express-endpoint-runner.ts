@@ -7,19 +7,19 @@ import { EndpointModules } from './modules';
 import { EndpointTypes } from './types';
 import { MiddlewareModules, MiddlewareTypes } from '../middlewares';
 import { Modules } from '../modules';
-import { Logger } from '../loggers/types';
 import { HttpConfig } from '../config/types';
+import { LoggerTypes, LoggerModules } from '../loggers-new';
 
 injectable(EndpointModules.EndpointRunner,
 
   [Modules.Config.HttpConfig,
-    Modules.Logger,
+    LoggerModules.Logger,
     EndpointModules.Endpoints,
     MiddlewareModules.Error,
     MiddlewareModules.NotFound],
 
   async (cfg: HttpConfig,
-    log: Logger,
+    log: LoggerTypes.Logger,
     endpoints: EndpointTypes.Endpoint[],
     error: MiddlewareTypes.Error,
     notFound: MiddlewareTypes.NotFound): Promise<EndpointTypes.EndpointRunner> =>
@@ -39,7 +39,7 @@ injectable(EndpointModules.EndpointRunner,
 const registerEndpoints =
   (app: Application,
     endpoints: EndpointTypes.Endpoint[],
-    log: Logger) => {
+    log: LoggerTypes.Logger) => {
     endpoints.map((e) => {
       if (e.method === EndpointTypes.EndpointMethod.GET) {
         app.get(e.uri, e.handler);

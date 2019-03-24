@@ -4,7 +4,7 @@ import { Logger } from '../loggers/types';
 import { Nick, Member, Auth } from '../stores/types';
 import { injectable } from 'smart-factory';
 import { BaseLogicError } from '../errors';
-import { ExtApiTypes } from '../extapis';
+import { ExtApiTypes, ExtApiModules } from '../extapis';
 import { ServiceModules } from './modules';
 import { Modules } from '../modules';
 import { UtilModules, UtilTypes } from '../utils';
@@ -107,7 +107,7 @@ injectable(ServiceModules.Member.Create,
     Modules.Store.Member.UpdateAvatar,
     UtilModules.Auth.CreateMemberToken,
     UtilModules.Auth.CreatePassphrase,
-    Modules.ExtApi.Asset.GetAvatar ],
+    ExtApiModules.Asset.RequestAvatar ],
   async (logger: Logger,
     pick: Nick.PickNick,
     insertNick: Nick.InsertNick,

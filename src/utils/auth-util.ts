@@ -3,8 +3,8 @@ import { createCipher, createDecipher, createHash } from 'crypto';
 
 import { Modules } from '../modules';
 import { CredentialConfig } from '../config/types';
-import { Logger } from '../loggers/types';
 
+import { LoggerModules, LoggerTypes } from '../loggers-new';
 import { UtilModules } from './modules';
 import { UtilTypes } from './types';
 import { BaseLogicError } from '../errors';
@@ -30,9 +30,9 @@ injectable(UtilModules.Auth.CreateMemberToken,
 
 injectable(UtilModules.Auth.DecryptMemberToken,
   [ Modules.Config.CredentialConfig,
-    Modules.Logger ],
+    LoggerModules.Logger ],
   async (cfg: CredentialConfig,
-    log: Logger): Promise<UtilTypes.Auth.DecryptMemberToken> =>
+    log: LoggerTypes.Logger): Promise<UtilTypes.Auth.DecryptMemberToken> =>
       (memberToken: string) => {
         const dp = decipher(cfg.secret);
           try {
@@ -54,9 +54,9 @@ injectable(UtilModules.Auth.DecryptMemberToken,
       });
 
 injectable(UtilModules.Auth.ValidateSessionKey,
-  [ Modules.Logger,
+  [ LoggerModules.Logger,
     Modules.Config.CredentialConfig ],
-  async (log: Logger,
+  async (log: LoggerTypes.Logger,
     cfg: CredentialConfig): Promise<UtilTypes.Auth.ValidateSessionKey> =>
 
     (sessionKey) => {
@@ -99,11 +99,11 @@ injectable(UtilModules.Auth.CreateSessionKey,
     });
 
 injectable(UtilModules.Auth.RevalidateSessionKey,
-  [ Modules.Logger,
+  [ LoggerModules.Logger,
     UtilModules.Auth.DecryptMemberToken,
     UtilModules.Auth.ValidateSessionKey,
     UtilModules.Auth.CreateSessionKey ],
-  async (log: Logger,
+  async (log: LoggerTypes.Logger,
     decryptToken: UtilTypes.Auth.DecryptMemberToken,
     validateSession: UtilTypes.Auth.ValidateSessionKey,
     createSession: UtilTypes.Auth.CreateSessionKey): Promise<UtilTypes.Auth.RevalidateSessionKey> =>
