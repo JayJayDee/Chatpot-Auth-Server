@@ -14,7 +14,7 @@ class AuthDuplicationError extends BaseLogicError {}
 
 injectable(ServiceModules.Member.Authenticate,
   [LoggerModules.Logger,
-    StoreModules.Auth.InsertAuth,
+    StoreModules.Auth.Authenticate,
     UtilModules.Auth.CreateSessionKey],
   async (logger: LoggerTypes.Logger,
     auth: StoreTypes.Auth.Authenticate,
