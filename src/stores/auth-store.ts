@@ -51,7 +51,6 @@ injectable(StoreModules.Auth.Authenticate,
 
     async (param) => {
       const hashed = passHash(param.password);
-      console.log(hashed);
       let additionalQuery = '';
       if (param.auth_type) additionalQuery = 'AND auth_type=?';
 
