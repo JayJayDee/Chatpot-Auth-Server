@@ -1,0 +1,104 @@
+---
+tags:
+  name: Member
+  description: 회원 생성, 회원 정보 조회 API
+
+/member:
+  post:
+    summary: 간편 회원 가입
+    tags: [Member]
+    parameters:
+      - name: region
+        in: formData
+        required: true
+        type: string
+        description: ISO 3166-2 국가코드 (예- KR, JP, US ..)
+      - name: language
+        in: formData
+        required: true
+        type: string
+        description: ISO 639-1 언어코드 (예- ko, ja, en ..)
+      - name: gender
+        in: formData
+        required: true
+        type: string
+        enum: [M, F]
+        description: 선택한 성별 (M/F)
+    responses:
+      200:
+        description: 성공
+        type: object
+        properties:
+          nick:
+            $ref: '#/definitions/Nick'
+          token:
+            type: string
+            description: 사용자 token
+          avatar:
+            $ref: '#/definitions/Avatar'
+          passphrase:
+            type: string
+            description: session_key 인증을 위해 사용할 비밀키. 저장해둬야 한다.
+
+/member/email:
+  post:
+    summary: email을 이용한 회원가입
+    tags: [Member]
+    parameters:
+      - name: email
+        in: formData
+        required: true
+        type: string
+        description: 가입할 email
+      - name: password
+        in: formData
+        required: true
+        type: string
+        description: 비밀번호
+      - name: region
+        in: formData
+        required: true
+        type: string
+        description: ISO 3166-2 국가코드 (예- KR, JP, US ..)
+      - name: language
+        in: formData
+        required: true
+        type: string
+        description: ISO 639-1 언어코드 (예- ko, ja, en ..)
+      - name: gender
+        in: formData
+        required: true
+        type: string
+        enum: [M, F]
+        description: 선택한 성별 (M/F)
+    responses:
+      200:
+        description: 성공
+        type: object
+        properties:
+          nick:
+            $ref: '#/definitions/Nick'
+          token:
+            type: string
+            description: 사용자 token
+          avatar:
+            $ref: '#/definitions/Avatar'
+          passphrase:
+            type: string
+            description: session_key 인증을 위해 사용할 비밀키. 저장해둬야 한다.
+
+/member/{member_token}:
+  get:
+    summary: 회원의 정보 조회
+    tags: [Member]
+    parameters:
+      - name: member_token
+        in: path
+        required: true
+        type: string
+        description: 회원의 token
+    responses:
+      200:
+        description: 성공
+        schema:
+          $ref: '#/definitions/Member'
