@@ -1,0 +1,63 @@
+---
+servers:
+  - url: http://dev-auth.chatpot.chat
+
+tags:
+  name: Auth
+  description: Chatpot 회원, 인증 API
+
+/member:
+  post:
+    summary: 새로운 임시 멤버 생성 (간편 회원가입)
+    tags: [Auth]
+    parameters:
+      - name: region
+        in: formData
+        required: true
+        type: string
+        description: ISO 3166-2 국가코드 (예- KR, JP, US ..)
+      - name: language
+        in: formData
+        required: true
+        type: string
+        description: ISO 639-1 언어코드 (예- ko, ja, en ..)
+      - name: gender
+        in: formData
+        required: true
+        type: string
+        enum: [M, F]
+        description: 선택한 성별 (M/F)
+    responses:
+      200:
+        description: 성공
+        type: object
+        properties:
+          nick:
+            type: object
+            description: 별명 object
+            properties:
+              ko:
+                type: string
+                description: 한국어 별명
+              ja:
+                type: string
+                description: 일본어 별명
+              en:
+                type: string
+                description: 영어 별명
+          token:
+            type: string
+            description: 사용자 token
+          avatar:
+            type: object
+            description: 프로필사진 object
+            properties:
+              profile_img:
+                type: string
+                description: 프로필 사진 image url
+              profile_thumb:
+                type: string
+                description: 프로필 썸네일 image url
+          passphrase:
+            type: string
+            description: session_key 인증을 위해 사용할 비밀키. 저장해둬야 한다.
