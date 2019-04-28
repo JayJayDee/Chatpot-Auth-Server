@@ -1,63 +1,81 @@
 ---
-servers:
-  - url: http://dev-auth.chatpot.chat
-
 tags:
   name: Auth
-  description: Chatpot 회원, 인증 API
+  description: 인증 API
 
-/member:
+/auth:
   post:
-    summary: 새로운 임시 멤버 생성 (간편 회원가입)
+    summary: 간편 회원 가입으로 가입한 회원의 인증
     tags: [Auth]
     parameters:
-      - name: region
+      - name: login_id
         in: formData
         required: true
         type: string
-        description: ISO 3166-2 국가코드 (예- KR, JP, US ..)
-      - name: language
+        description: 간편 회원 가입시 받은 member_token
+      - name: password
         in: formData
         required: true
         type: string
-        description: ISO 639-1 언어코드 (예- ko, ja, en ..)
-      - name: gender
-        in: formData
-        required: true
-        type: string
-        enum: [M, F]
-        description: 선택한 성별 (M/F)
+        description: 간편 회원 가입시 받은 passphrase
     responses:
       200:
         description: 성공
         type: object
         properties:
-          nick:
-            type: object
-            description: 별명 object
-            properties:
-              ko:
-                type: string
-                description: 한국어 별명
-              ja:
-                type: string
-                description: 일본어 별명
-              en:
-                type: string
-                description: 영어 별명
-          token:
+          session_key:
             type: string
-            description: 사용자 token
-          avatar:
-            type: object
-            description: 프로필사진 object
-            properties:
-              profile_img:
-                type: string
-                description: 프로필 사진 image url
-              profile_thumb:
-                type: string
-                description: 프로필 썸네일 image url
-          passphrase:
+            description: 앞으로의 API 호출에 사용할 세션 키.
+
+/auth/email:
+  post:
+    summary: email로 회원 가입한 회원에 대한 인증
+    tags: [Auth]
+    parameters:
+      - name: login_id
+        in: formData
+        required: true
+        type: string
+        description: 회원 가입시 입력한 email
+      - name: password
+        in: formData
+        required: true
+        type: string
+        description: 회원 가입시 입력한 password
+    responses:
+      200:
+        description: 성공
+        type: object
+        properties:
+          session_key:
             type: string
-            description: session_key 인증을 위해 사용할 비밀키. 저장해둬야 한다.
+            description: 앞으로의 API 호출에 사용할 세션 키.
+
+/auth/reauth:
+  post:
+    summary: session_key가 만료되었을 경우에 대한 session_key 재발급
+    tags: [Auth]
+    parameters:
+      - name: session_key
+        in: query
+        required: true
+        type: string
+        description: 세션 키
+      - name: refresh_key
+        in: query
+        required: true
+        type: string
+        description: SHA256_HEXCODE(member_token + 이전세션키 + passphrase)
+      - name: token
+        in: formData
+        required: true
+        type: string
+        description: 회원 token
+    responses:
+      200:
+        description: 성공
+        type: object
+        properties:
+          session_key:
+            type: string
+            description: 재발급된 세션 키. 앞으로는 이 키를 만료시까지 사용한다.
