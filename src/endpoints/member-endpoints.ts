@@ -4,6 +4,7 @@ import { EndpointTypes } from './types';
 import { ServiceModules, ServiceTypes } from '../services';
 import { InvalidParamError } from '../errors';
 import { MiddlewareModules, MiddlewareTypes } from '../middlewares';
+import { UtilModules, UtilTypes } from '../utils';
 
 injectable(EndpointModules.Member.CreateSimple,
   [ EndpointModules.Utils.WrapAync,
@@ -72,10 +73,12 @@ injectable(EndpointModules.Member.CreateEmail,
 injectable(EndpointModules.Member.Get,
   [ EndpointModules.Utils.WrapAync,
     MiddlewareModules.Authorization,
-    ServiceModules.Member.Fetch ],
+    ServiceModules.Member.Fetch,
+    UtilModules.Auth.DecryptMemberToken ],
   async (wrapAsync: EndpointTypes.Utils.WrapAsync,
     authorize: MiddlewareTypes.Authorization,
-    fetchMember: ServiceTypes.FetchMember): Promise<EndpointTypes.Endpoint> =>
+    fetchMember: ServiceTypes.FetchMember,
+    decryptMemberToken: UtilTypes.Auth.DecryptMemberToken): Promise<EndpointTypes.Endpoint> =>
 
   ({
     uri: '/member/:member_token',
@@ -85,6 +88,10 @@ injectable(EndpointModules.Member.Get,
       wrapAsync(async (req, res, next) => {
         const token: string = req.params['member_token'];
         if (!token) throw new InvalidParamError('member_token required');
+
+        const decrypted = decryptMemberToken(token);
+        if (!decrypted) throw new InvalidParamError('invalid member_token');
+
         const member = await fetchMember(token);
         res.status(200).json(member);
       })
