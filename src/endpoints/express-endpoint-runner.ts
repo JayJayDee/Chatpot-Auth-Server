@@ -2,6 +2,7 @@ import { injectable } from 'smart-factory';
 import * as bodyParser from 'body-parser';
 import * as express from 'express';
 import { Application } from 'express';
+import * as cors from 'cors';
 
 import { EndpointModules } from './modules';
 import { EndpointTypes } from './types';
@@ -30,6 +31,7 @@ injectable(EndpointModules.EndpointRunner,
     () => {
       const app = express();
 
+      app.use(cors());
       app.use(bodyParser.urlencoded({ extended: true }));
       swagger(app);
       registerEndpoints(app, endpoints, log);
