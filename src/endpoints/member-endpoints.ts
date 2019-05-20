@@ -1,10 +1,12 @@
 import { injectable } from 'smart-factory';
+import { createHash } from 'crypto';
 import { EndpointModules } from './modules';
 import { EndpointTypes } from './types';
 import { ServiceModules, ServiceTypes } from '../services';
 import { InvalidParamError } from '../errors';
 import { MiddlewareModules, MiddlewareTypes } from '../middlewares';
 import { UtilModules, UtilTypes } from '../utils';
+import { StoreModules, StoreTypes } from '../stores';
 
 injectable(EndpointModules.Member.CreateSimple,
   [ EndpointModules.Utils.WrapAync,
@@ -35,15 +37,42 @@ injectable(EndpointModules.Member.CreateSimple,
   }));
 
 
+const generateCode = (memberNo: number, email: string) =>
+  createHash('sha1')
+    .update(`${memberNo}${email}${Date.now()}`)
+    .digest('hex');
+
 injectable(EndpointModules.Member.UpgradeEmail,
-  [ EndpointModules.Utils.WrapAync ],
-  async (wrapAsync: EndpointTypes.Utils.WrapAsync): Promise<EndpointTypes.Endpoint> =>
+  [ EndpointModules.Utils.WrapAync,
+    UtilModules.Auth.DecryptMemberToken,
+    StoreModules.Member.CreateEmailAuth ],
+  async (wrapAsync: EndpointTypes.Utils.WrapAsync,
+    decryptMemberToken: UtilTypes.Auth.DecryptMemberToken,
+    createEmailAuth: StoreTypes.Member.CreateEmailAuth): Promise<EndpointTypes.Endpoint> =>
 
   ({
-    uri: '/member/upgrade/email',
+    uri: '/member/:member_token/upgrade/email',
     method: EndpointTypes.EndpointMethod.POST,
     handler: [
       wrapAsync(async (req, res, next) => {
+        const memberToken = req.params['member_token'];
+        const email = req.body['email'];
+
+        if (!memberToken || !email) {
+          throw new InvalidParamError('member_token or email required');
+        }
+
+        const member = decryptMemberToken(memberToken);
+        if (member === null) throw new InvalidParamError('invalid member_token');
+
+        const code = generateCode(member.member_no, email);
+        // TODO: send email
+
+        await createEmailAuth({
+          code,
+          email,
+          member_no: member.member_no
+        });
         res.status(200).json({});
       })
     ]

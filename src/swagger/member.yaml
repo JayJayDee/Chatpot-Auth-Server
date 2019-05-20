@@ -40,6 +40,26 @@ tags:
             type: string
             description: session_key 인증을 위해 사용할 비밀키. 저장해둬야 한다.
 
+/member/{member_token}/upgrade/email:
+  post:
+    summary: 간편회원 가입으로 가입한 회원 -> 이메일 회원으로 업그레이드 
+    tags: [Member]
+    parameters:
+      - name: member_token
+        in: path
+        required: true
+        type: string
+        description: 회원의 token
+      - name: email
+        in: formData
+        required: true
+        type: string
+        description: 인증코드를 발송할 email
+    responses:
+      200:
+        description: 성공
+        $ref: '#/definitions/Ok'
+
 /member/email:
   post:
     summary: email을 이용한 회원가입
