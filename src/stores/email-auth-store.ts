@@ -1,16 +1,15 @@
 import { injectable } from 'smart-factory';
-import { createHash } from 'crypto';
 import { StoreModules } from './modules';
 import { LoggerModules, LoggerTypes } from '../loggers';
 import { StoreTypes } from './types';
 import { MysqlModules, MysqlTypes } from '../mysql';
+import { BaseLogicError } from '../errors';
 
-
-const generateCode = (memberNo: number, email: string) =>
-  createHash('sha1')
-    .update(`${memberNo}${email}${Date.now()}`)
-    .digest('hex');
-
+class InvalidUpgradeError extends BaseLogicError {
+  constructor() {
+    super('INVALID_UPGRADE', 'already email user');
+  }
+}
 
 injectable(StoreModules.Member.CreateEmailAuth,
   [ LoggerModules.Logger,
@@ -31,13 +30,26 @@ injectable(StoreModules.Member.CreateEmailAuth,
               code=?,
               reg_date=NOW()
           `;
-          const code = generateCode(param.member_no, param.email);
           const params = [
             param.member_no,
             param.email,
-            code
+            param.code
           ];
           await con.query(sql, params);
+
+          const inspectSql = `
+            SELECT
+              *
+            FROM
+              chatpot_auth
+            WHERE
+              member_no=? AND
+              auth_type='EMAIL'
+          `;
+          const rows: any[] = await con.query(inspectSql, [ param.member_no ]) as any[];
+          if (rows.length > 0) {
+            throw new InvalidUpgradeError();
+          }
 
         } catch (err) {
           log.error(err);

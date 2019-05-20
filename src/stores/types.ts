@@ -32,6 +32,7 @@ export namespace StoreTypes {
     export type InsertMember = (create: ReqCreateMember) => Promise<ResCreateMember>;
     export type UpdateAvatar = (no: number, avatar: ProfileAvatar) => Promise<void>;
     export type CreateEmailAuth = (param: {
+      code: string;
       member_no: number;
       email: string
     }) => Promise<void>;
