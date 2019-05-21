@@ -10,10 +10,11 @@ injectable(EndpointModules.Endpoints,
     EndpointModules.Auth.AuthEmail,
     EndpointModules.Auth.AuthSimple,
     EndpointModules.Auth.Reauth,
+    EndpointModules.Activate.Email,
     EndpointModules.Internal.GetMultiple ],
   async (mcreates, mcreateem, mget,
     mupg, authE, authS, reauth,
-    intGm): Promise<EndpointTypes.Endpoint[]> =>
+    activate, intGm): Promise<EndpointTypes.Endpoint[]> =>
 
   ([
     mcreates,
@@ -23,6 +24,7 @@ injectable(EndpointModules.Endpoints,
     authE,
     authS,
     reauth,
+    activate,
     intGm
   ]));
 
