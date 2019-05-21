@@ -7,6 +7,7 @@ import { InvalidParamError } from '../errors';
 import { MiddlewareModules, MiddlewareTypes } from '../middlewares';
 import { UtilModules, UtilTypes } from '../utils';
 import { StoreModules, StoreTypes } from '../stores';
+import { MailerModules, MailerTypes } from '../mailer';
 
 injectable(EndpointModules.Member.CreateSimple,
   [ EndpointModules.Utils.WrapAync,
@@ -45,10 +46,12 @@ const generateCode = (memberNo: number, email: string) =>
 injectable(EndpointModules.Member.UpgradeEmail,
   [ EndpointModules.Utils.WrapAync,
     UtilModules.Auth.DecryptMemberToken,
-    StoreModules.Member.CreateEmailAuth ],
+    StoreModules.Member.CreateEmailAuth,
+    MailerModules.SendActivationMail ],
   async (wrapAsync: EndpointTypes.Utils.WrapAsync,
     decryptMemberToken: UtilTypes.Auth.DecryptMemberToken,
-    createEmailAuth: StoreTypes.Member.CreateEmailAuth): Promise<EndpointTypes.Endpoint> =>
+    createEmailAuth: StoreTypes.Member.CreateEmailAuth,
+    sendMail: MailerTypes.SendActivationMail): Promise<EndpointTypes.Endpoint> =>
 
   ({
     uri: '/member/:member_token/upgrade/email',
@@ -66,8 +69,8 @@ injectable(EndpointModules.Member.UpgradeEmail,
         if (member === null) throw new InvalidParamError('invalid member_token');
 
         const code = generateCode(member.member_no, email);
-        // TODO: send email
 
+        await sendMail(email);
         await createEmailAuth({
           code,
           email,
