@@ -3,21 +3,27 @@ import { MailerModules } from './modules';
 import { LoggerModules, LoggerTypes } from '../loggers';
 import { MailerTypes } from './types';
 import { Transporter, createTransport } from 'nodemailer';
+import { ConfigModules, ConfigTypes } from '../config';
 
 injectable(MailerModules.SendActivationMail,
-  [ LoggerModules.Logger ],
-  async (log: LoggerTypes.Logger): Promise<MailerTypes.SendActivationMail> =>
+  [ LoggerModules.Logger,
+    ConfigModules.MailerConfig ],
+  async (log: LoggerTypes.Logger,
+    mailerCfg: ConfigTypes.MailerConfig): Promise<MailerTypes.SendActivationMail> =>
 
     async (email) => {
-      console.log(transporter());
+      const txer = transporter(mailerCfg);
+      await txer.sendMail({
+        from: '"Chatpot-Dev 👻" <jindongp@gmail.com>',
+        to: email,
+        subject: '[Chatpot] Account activation'
+      }); // TODO: html content add required
     });
 
 let tx: Transporter = null;
-const transporter = (): Transporter => {
+const transporter = (cfg: ConfigTypes.MailerConfig): Transporter => {
   if (tx == null) {
-    tx = createTransport({
-      host: 'smtp.gmail.com'
-    });
+    tx = createTransport(cfg);
   }
   return tx;
 };
