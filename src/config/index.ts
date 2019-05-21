@@ -31,6 +31,15 @@ export const emptyConfig: ConfigTypes.RootConfig = {
   },
   storage: {
     temporaryPath: null
+  },
+  mailer: {
+    host: null,
+    port: null,
+    secure: null,
+    auth: {
+      user: null,
+      pass: null
+    }
   }
 };
 
@@ -78,6 +87,10 @@ injectable(ConfigModules.ExtApiConfig,
   [ConfigModules.RootConfig],
   async (root: ConfigTypes.RootConfig) => root.extapi);
 
+injectable(ConfigModules.MailerConfig,
+  [ ConfigModules.RootConfig ],
+  async (root: ConfigTypes.RootConfig) => root.mailer);
+
 injectable(ConfigModules.Env,
   [ConfigModules.ConfigSource],
   async (src: ConfigTypes.ConfigSource) => {
@@ -105,7 +118,12 @@ injectable(ConfigModules.ConfigRules, [],
     { key: 'CACHE_REDIS_PORT', path: ['cache', 'redis', 'port'], defaultValue: null},
     { key: 'CACHE_REDIS_PASSWORD', path: ['cache', 'redis', 'password'], defaultValue: null},
     { key: 'EXTAPI_ASSET_HOST', path: ['extapi', 'assetHost'] },
-    { key: 'STORAGE_TEMPORARY_PATH', path: ['storage', 'temporaryPath'] }
+    { key: 'STORAGE_TEMPORARY_PATH', path: ['storage', 'temporaryPath'] },
+    { key: 'MAILER_HOST', path: ['mailer', 'host'] },
+    { key: 'MAILER_PORT', path: ['mailer', 'port'] },
+    { key: 'MAILER_SECURE', path: ['mailer', 'secure'] },
+    { key: 'MAILER_AUTH_USER', path: ['mailer', 'auth', 'user'] },
+    { key: 'MAILER_AUTH_PASSWORD', path: ['mailer', 'auth', 'pass'] }
   ]));
 
   export { ConfigModules } from './modules';

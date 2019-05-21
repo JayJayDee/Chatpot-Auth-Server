@@ -12,5 +12,6 @@ export namespace ConfigModules {
   export const CacheConfig = 'Config/CacheConfig';
   export const StorageConfig = 'Config/StorageConfig';
   export const ExtApiConfig = 'Config/ExtApiConfig';
+  export const MailerConfig = 'Config/MailerConfig';
   export const Env = 'Config/Env';
 }
