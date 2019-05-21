@@ -4,8 +4,12 @@ export namespace StoreModules {
     GetMembers = 'Store/Member/GetMultiple',
     InsertMember = 'Store/Member/InsertMember',
     UpdateAvatar = 'Store/Member/UpdateAvatar',
-    CreateEmailAuth = 'Store/Member/CreateEmailAuth',
-    VerifyEmailAuthCompleted = 'Store/Member/VerifyEmailAuthCompleted'
+    CreateEmailAuth = 'Store/Member/CreateEmailAuth'
+  }
+
+  export enum Activation {
+    Activate = 'Store/Activation/Activate',
+    GetActivationStatus = 'Store/Activation/GetActivationStatus'
   }
 
   export enum Auth {

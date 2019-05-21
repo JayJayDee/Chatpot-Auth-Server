@@ -95,4 +95,17 @@ export namespace StoreTypes {
     export type GetNick = (req: ReqGetNick) => Promise<NickEntity>;
     export type GetNickMultiple = (memberNos: number[]) => Promise<NickMatchEntity[]>;
   }
+
+  export namespace Activation {
+    type ActivationStatusParam = {
+      member_no: number;
+    };
+    export type GetActivationStatus = (param: ActivationStatusParam) => Promise<void>;
+
+    type ActivateParam = {
+      member_no: number;
+      activation_code: string;
+    };
+    export type Activate = (param: ActivateParam) => Promise<void>;
+  }
 }

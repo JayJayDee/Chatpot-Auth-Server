@@ -58,12 +58,3 @@ injectable(StoreModules.Member.CreateEmailAuth,
         }
       });
     });
-
-
-injectable(StoreModules.Member.VerifyEmailAuthCompleted,
-  [ LoggerModules.Logger ],
-  async (log: LoggerTypes.Logger): Promise<StoreTypes.Member.VerifyEmailAuthCompleted> =>
-
-    async (param) => {
-      return null;
-    });
