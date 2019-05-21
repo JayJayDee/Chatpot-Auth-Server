@@ -19,6 +19,12 @@ export namespace EndpointModules {
     Reauth = 'Endpoint/Auth/Reauth'
   }
 
+  export enum Activate {
+    EmailWithApi = 'Endpoint/Activate/EmailWithApi',
+    EmailWithPage = 'Endpoint/Activate/EmailWithPage',
+    ActivateStatus = 'Endpoint/Activate/Status'
+  }
+
   export enum Internal {
     GetMultiple = 'Endpoint/Internal/GetMultiple'
   }
