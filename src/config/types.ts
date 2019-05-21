@@ -6,6 +6,7 @@ export namespace ConfigTypes {
     extapi: ExtApiConfig;
     credential: CredentialConfig;
     storage: StorageConfig;
+    mailer: MailerConfig;
   };
   export type HttpConfig = {
     port: number;
@@ -38,6 +39,15 @@ export namespace ConfigTypes {
   };
   export type StorageConfig = {
     temporaryPath: string;
+  };
+  export type MailerConfig = {
+    host: string;
+    port: number;
+    secure: boolean;
+    auth: {
+      user: string;
+      pass: string;
+    }
   };
   export enum CacheProvider {
     MEMORY = 'MEMORY', REDIS = 'REDIS'
