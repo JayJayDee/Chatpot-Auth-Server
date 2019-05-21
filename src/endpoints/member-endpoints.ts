@@ -70,7 +70,10 @@ injectable(EndpointModules.Member.UpgradeEmail,
 
         const code = generateCode(member.member_no, email);
 
-        sendMail(email);
+        sendMail({
+          code,
+          email
+        });
         await createEmailAuth({
           code,
           email,
