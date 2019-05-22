@@ -12,7 +12,21 @@ injectable(StoreModules.Activation.GetActivationStatus,
     mysql: MysqlTypes.MysqlDriver): Promise<StoreTypes.Activation.GetActivationStatus> =>
 
     async (param) => {
-
+      const sql = `
+        SELECT
+          email,
+          state
+        FROM
+          chatpot_email
+        WHERE
+          member_no=?
+      `;
+      const rows = await mysql.query(sql, [ param.member_no ]) as any[];
+      if (rows.length === 0) return null;
+      return {
+        email: rows[0].email,
+        status: rows[0].status
+      };
     });
 
 

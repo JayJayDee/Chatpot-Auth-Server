@@ -100,7 +100,11 @@ export namespace StoreTypes {
     type ActivationStatusParam = {
       member_no: number;
     };
-    export type GetActivationStatus = (param: ActivationStatusParam) => Promise<void>;
+    type ActivationStatus = {
+      email: string;
+      status: 'SENT' | 'CONFIRMED';
+    };
+    export type GetActivationStatus = (param: ActivationStatusParam) => Promise<ActivationStatus>;
 
     type ActivateParam = {
       member_no: number;
