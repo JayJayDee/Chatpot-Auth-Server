@@ -12,6 +12,17 @@ injectable(StoreModules.Activation.GetActivationStatus,
     mysql: MysqlTypes.MysqlDriver): Promise<StoreTypes.Activation.GetActivationStatus> =>
 
     async (param) => {
+      let whereClause = '';
+      let queryParam: any[] = [];
+
+      if (param.activation_code) {
+        whereClause = 'code=?';
+        queryParam = [ param.activation_code ];
+      } else if (param.member_no) {
+        whereClause = 'member_no=?';
+        queryParam = [ param.member_no ];
+      }
+
       const sql = `
         SELECT
           email,
@@ -19,9 +30,9 @@ injectable(StoreModules.Activation.GetActivationStatus,
         FROM
           chatpot_email
         WHERE
-          member_no=?
+          ${whereClause}
       `;
-      const rows = await mysql.query(sql, [ param.member_no ]) as any[];
+      const rows = await mysql.query(sql, queryParam) as any[];
       if (rows.length === 0) return null;
       return {
         email: rows[0].email,
