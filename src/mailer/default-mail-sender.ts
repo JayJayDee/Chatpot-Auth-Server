@@ -17,7 +17,7 @@ injectable(MailerModules.SendActivationMail,
 You can finish the email registration process via below link.<br />
 also typing the code manually is available option.<br /><br />
 Activation code : <b>${param.code}</b><br/><br />
-<a href="http://dev-auth.chatpot.chat/member/activate?code=${param.code}">Finish the email registration</a><br /><br />
+<a href="http://dev-auth.chatpot.chat/activate/email?activation_code=${param.code}">Finish the email registration</a><br /><br />
 Enjoy!<br /><br />
 Sincerly,<br />
 Chatpot Team.<br />
