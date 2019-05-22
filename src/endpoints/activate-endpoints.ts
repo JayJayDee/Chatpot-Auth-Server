@@ -68,9 +68,8 @@ injectable(EndpointModules.Activate.ActivateStatus,
       authorize(['query', 'member_token']),
       wrapAsync(async (req, res, next) => {
         const memberToken = req.query['member_token'];
-        const activationCode = req.query['activation_code'];
 
-        if (!memberToken || !activationCode) throw new InvalidParamError('member_token or activation_code required');
+        if (!memberToken) throw new InvalidParamError('member_token required');
 
         const member = decryptMember(memberToken);
         if (!member) throw new InvalidParamError('invalid member_token');

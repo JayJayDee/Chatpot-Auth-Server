@@ -25,7 +25,7 @@ injectable(StoreModules.Activation.GetActivationStatus,
       if (rows.length === 0) return null;
       return {
         email: rows[0].email,
-        status: rows[0].status
+        status: rows[0].state
       };
     });
 
