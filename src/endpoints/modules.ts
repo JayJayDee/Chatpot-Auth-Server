@@ -21,6 +21,7 @@ export namespace EndpointModules {
 
   export enum Activate {
     EmailWithApi = 'Endpoint/Activate/EmailWithApi',
+    EmailWithPageAction = 'Endpoint/Activate/EmailWithPageAction',
     EmailWithPage = 'Endpoint/Activate/EmailWithPage',
     ActivateStatus = 'Endpoint/Activate/Status'
   }

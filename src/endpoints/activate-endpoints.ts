@@ -14,7 +14,7 @@ injectable(EndpointModules.Activate.EmailWithApi,
     authorize: MiddlewareTypes.Authorization): Promise<EndpointTypes.Endpoint> =>
 
   ({
-    uri: '/activate/email',
+    uri: '/activate/app/email',
     method: EndpointTypes.EndpointMethod.POST,
     handler: [
       authorize(['body', 'member_token']),
@@ -22,8 +22,31 @@ injectable(EndpointModules.Activate.EmailWithApi,
         const memberToken = req.query['member_token'];
         const activationCode = req.query['activation_code'];
 
-        if (!memberToken || !activationCode) throw new InvalidParamError('member_token or activation_code required');
+        if (!memberToken || !activationCode) {
+          throw new InvalidParamError('member_token or activation_code required');
+        }
 
+        // TODO: activate with code & member_no
+        res.status(200).json({});
+      })
+    ]
+  }));
+
+
+injectable(EndpointModules.Activate.EmailWithPageAction,
+  [ EndpointModules.Utils.WrapAync ],
+  async (wrapAsync: EndpointTypes.Utils.WrapAsync): Promise<EndpointTypes.Endpoint> =>
+
+  ({
+    uri: '/activate/email/action',
+    method: EndpointTypes.EndpointMethod.POST,
+    handler: [
+      wrapAsync(async (req, res, next) => {
+        const activationCode = req.body['activation_code'];
+
+        if (!activationCode) throw new InvalidParamError('activation_code required');
+
+        // TODO: activate with code
         res.status(200).json({});
       })
     ]
@@ -87,7 +110,7 @@ injectable(EndpointModules.Activate.ActivateStatus,
     decryptMember: UtilTypes.Auth.DecryptMemberToken): Promise<EndpointTypes.Endpoint> =>
 
   ({
-    uri: '/activate/status',
+    uri: '/activate/app/status',
     method: EndpointTypes.EndpointMethod.GET,
     handler: [
       authorize(['query', 'member_token']),
