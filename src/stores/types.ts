@@ -98,7 +98,8 @@ export namespace StoreTypes {
 
   export namespace Activation {
     type ActivationStatusParam = {
-      member_no: number;
+      member_no?: number;
+      activation_code?: string;
     };
     type ActivationStatus = {
       email: string;

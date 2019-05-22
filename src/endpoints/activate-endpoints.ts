@@ -31,15 +31,40 @@ injectable(EndpointModules.Activate.EmailWithApi,
 
 
 injectable(EndpointModules.Activate.EmailWithPage,
-  [ EndpointModules.Utils.WrapAync ],
-  async (wrapAsync: EndpointTypes.Utils.WrapAsync): Promise<EndpointTypes.Endpoint> =>
+  [ EndpointModules.Utils.WrapAync,
+    StoreModules.Activation.GetActivationStatus ],
+  async (wrapAsync: EndpointTypes.Utils.WrapAsync,
+    activationStatus: StoreTypes.Activation.GetActivationStatus): Promise<EndpointTypes.Endpoint> =>
 
   ({
     uri: '/activate/email',
     method: EndpointTypes.EndpointMethod.GET,
     handler: [
-      wrapAsync((req, res, next) => {
-        res.status(200).render('activation');
+      wrapAsync(async (req, res, next) => {
+        const activationCode = req.query.activation_code;
+
+        if (!activationCode) {
+          return res.status(200).render('error', {
+            message: 'invalid access, please try again.'
+          });
+        }
+
+        const status = await activationStatus({ activation_code: activationCode });
+        if (status === null) {
+          return res.status(200).render('error', {
+            message: 'invalid activation code.'
+          });
+        }
+
+        if (status.status !== 'SENT') {
+          return res.status(200).render('error', {
+            message: 'the activation code was already used.'
+          });
+        }
+
+        res.status(200).render('activation', {
+          email: status.email
+        });
       })
     ]
   }));
