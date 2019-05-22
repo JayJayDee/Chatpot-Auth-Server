@@ -35,11 +35,11 @@ injectable(EndpointModules.Activate.EmailWithPage,
   async (wrapAsync: EndpointTypes.Utils.WrapAsync): Promise<EndpointTypes.Endpoint> =>
 
   ({
-    uri: '/activate/page/email',
+    uri: '/activate/email',
     method: EndpointTypes.EndpointMethod.GET,
     handler: [
       wrapAsync((req, res, next) => {
-        res.status(200).json({});
+        res.status(200).render('activation');
       })
     ]
   }));
