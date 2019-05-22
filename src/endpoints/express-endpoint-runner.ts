@@ -11,6 +11,7 @@ import { LoggerTypes, LoggerModules } from '../loggers';
 import { ConfigModules, ConfigTypes } from '../config';
 import { SwaggerModules } from '../swagger';
 import { SwaggerTypes } from '../swagger/types';
+import { PageModules, PageTypes } from '../pages';
 
 injectable(EndpointModules.EndpointRunner,
 
@@ -19,18 +20,21 @@ injectable(EndpointModules.EndpointRunner,
     EndpointModules.Endpoints,
     MiddlewareModules.Error,
     MiddlewareModules.NotFound,
-    SwaggerModules.SwaggerRegisterer],
+    SwaggerModules.SwaggerRegisterer,
+    PageModules.PagesRegisterer],
 
   async (cfg: ConfigTypes.HttpConfig,
     log: LoggerTypes.Logger,
     endpoints: EndpointTypes.Endpoint[],
     error: MiddlewareTypes.Error,
     notFound: MiddlewareTypes.NotFound,
-    swagger: SwaggerTypes.SwaggerRegisterer): Promise<EndpointTypes.EndpointRunner> =>
+    swagger: SwaggerTypes.SwaggerRegisterer,
+    pages: PageTypes.PagesRegisterer): Promise<EndpointTypes.EndpointRunner> =>
 
     () => {
       const app = express();
 
+      pages(app);
       app.use(cors());
       app.use(bodyParser.urlencoded({ extended: true }));
       swagger(app);
