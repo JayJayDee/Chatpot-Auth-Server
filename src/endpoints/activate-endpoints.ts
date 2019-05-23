@@ -85,12 +85,13 @@ injectable(EndpointModules.Activate.EmailWithPage,
 
         if (status.status !== 'SENT') {
           return res.status(200).render('error', {
-            message: 'the activation code was already used.'
+            message: `already activated account: ${status.email}`
           });
         }
 
         res.status(200).render('activation', {
-          email: status.email
+          email: status.email,
+          code: activationCode
         });
       })
     ]
