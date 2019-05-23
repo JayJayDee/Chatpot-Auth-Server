@@ -29,8 +29,18 @@
       Please click the below button to activate your email account.
     </p>
     <br />
-    <button class="btn btn-primary btn-lg">Activate</button>
+    <button id="btn-activate" class="btn btn-primary btn-lg">Activate</button>
   </div>
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+      var code = '<%= code %>';
+      $('#btn-activate').on('click', function(evt) {
+        $('#btn-activate').attr('disabled', '');
+        // TODO: ajax call required.
+      });
+    });
+  </script>
 </body>
 
 </html>

@@ -108,9 +108,9 @@ export namespace StoreTypes {
     export type GetActivationStatus = (param: ActivationStatusParam) => Promise<ActivationStatus>;
 
     type ActivateParam = {
-      member_no: number;
-      activation_code: string;
+      member_no?: number;
+      activation_code?: string;
     };
-    export type Activate = (param: ActivateParam) => Promise<void>;
+    export type Activate = (param: ActivateParam) => Promise<number>;
   }
 }

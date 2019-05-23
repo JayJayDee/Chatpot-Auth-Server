@@ -34,8 +34,10 @@ injectable(EndpointModules.Activate.EmailWithApi,
 
 
 injectable(EndpointModules.Activate.EmailWithPageAction,
-  [ EndpointModules.Utils.WrapAync ],
-  async (wrapAsync: EndpointTypes.Utils.WrapAsync): Promise<EndpointTypes.Endpoint> =>
+  [ EndpointModules.Utils.WrapAync,
+    StoreModules.Activation.Activate ],
+  async (wrapAsync: EndpointTypes.Utils.WrapAsync,
+    activate: StoreTypes.Activation.Activate): Promise<EndpointTypes.Endpoint> =>
 
   ({
     uri: '/activate/email/action',
@@ -46,7 +48,9 @@ injectable(EndpointModules.Activate.EmailWithPageAction,
 
         if (!activationCode) throw new InvalidParamError('activation_code required');
 
-        // TODO: activate with code
+        const numUpdated = await activate({ activation_code: activationCode });
+        console.log(numUpdated);
+
         res.status(200).json({});
       })
     ]
@@ -81,12 +85,13 @@ injectable(EndpointModules.Activate.EmailWithPage,
 
         if (status.status !== 'SENT') {
           return res.status(200).render('error', {
-            message: 'the activation code was already used.'
+            message: `already activated account: ${status.email}`
           });
         }
 
         res.status(200).render('activation', {
-          email: status.email
+          email: status.email,
+          code: activationCode
         });
       })
     ]
