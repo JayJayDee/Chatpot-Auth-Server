@@ -83,9 +83,10 @@ injectable(EndpointModules.Activate.EmailWithPage,
           });
         }
 
-        if (status.status !== 'SENT') {
-          return res.status(200).render('error', {
-            message: `already activated account: ${status.email}`
+        if (status.status === 'CONFIRMED') {
+          return res.status(200).render('success', {
+            email: status.email,
+            message: `Congratulations! your account has been activated.`
           });
         }
 
