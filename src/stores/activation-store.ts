@@ -48,5 +48,29 @@ injectable(StoreModules.Activation.Activate,
     mysql: MysqlTypes.MysqlDriver): Promise<StoreTypes.Activation.Activate> =>
 
     async (param) => {
+      const queryParams = [];
+      const clauses = [];
 
+      if (param.activation_code) {
+        queryParams.push(param.activation_code);
+        clauses.push('code=?');
+      }
+      if (param.member_no) {
+        queryParams.push(param.member_no);
+        clauses.push('member_no=?');
+      }
+
+      const sql =
+      `
+        UPDATE
+          chatpot_email
+        SET
+          state='CONFIRMED'
+        WHERE
+          state='SENT' AND
+          ${clauses.join(' AND ')}
+      `;
+      const resp = await mysql.query(sql, queryParams);
+      console.log(resp);
+      return 0;
     });
