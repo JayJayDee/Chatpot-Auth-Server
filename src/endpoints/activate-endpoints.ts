@@ -45,6 +45,7 @@ injectable(EndpointModules.Activate.EmailWithApi,
   }));
 
 
+
 injectable(EndpointModules.Activate.EmailWithPageAction,
   [ EndpointModules.Utils.WrapAync,
     StoreModules.Activation.Activate ],
@@ -60,9 +61,10 @@ injectable(EndpointModules.Activate.EmailWithPageAction,
 
         if (!activationCode) throw new InvalidParamError('activation_code required');
 
-        const numUpdated = await activate({ activation_code: activationCode });
-        console.log(numUpdated);
-
+        const activateRes = await activate({ activation_code: activationCode });
+        if (activateRes.activated === false) {
+          throw new InvalidActivationOperationError('activation failed, maybe already activated.');
+        }
         res.status(200).json({});
       })
     ]
