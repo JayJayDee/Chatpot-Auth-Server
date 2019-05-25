@@ -75,7 +75,8 @@ injectable(StoreModules.Activation.Activate,
           state='SENT' AND
           ${clauses.join(' AND ')}
       `;
-      const resp = await mysql.query(sql, queryParams);
-      console.log(resp);
-      return 0;
+      const resp: any = await mysql.query(sql, queryParams);
+      let activated = false;
+      if (resp.changedRows > 0) activated = true;
+      return { activated };
     });

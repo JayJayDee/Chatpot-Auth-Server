@@ -111,6 +111,9 @@ export namespace StoreTypes {
       member_no?: number;
       activation_code?: string;
     };
-    export type Activate = (param: ActivateParam) => Promise<number>;
+    type ActivateRes = {
+      activated: boolean;
+    };
+    export type Activate = (param: ActivateParam) => Promise<ActivateRes>;
   }
 }
