@@ -33,7 +33,12 @@ injectable(StoreModules.Activation.GetActivationStatus,
           ${whereClause}
       `;
       const rows = await mysql.query(sql, queryParam) as any[];
-      if (rows.length === 0) return null;
+      if (rows.length === 0) {
+        return {
+          email: null,
+          status: 'IDLE'
+        };
+      }
       return {
         email: rows[0].email,
         status: rows[0].state

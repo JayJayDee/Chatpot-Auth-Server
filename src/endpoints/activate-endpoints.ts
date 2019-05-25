@@ -45,6 +45,11 @@ injectable(EndpointModules.Activate.EmailWithApi,
   }));
 
 
+class InvalidActivationOperationError extends BaseLogicError {
+  constructor(msg: string) {
+    super('INVALID_ACTIVATION_OPERATION', msg);
+  }
+}
 
 injectable(EndpointModules.Activate.EmailWithPageAction,
   [ EndpointModules.Utils.WrapAync,
@@ -113,12 +118,6 @@ injectable(EndpointModules.Activate.EmailWithPage,
   }));
 
 
-class InvalidActivationOperationError extends BaseLogicError {
-  constructor(msg: string) {
-    super('INVALID_ACTIVATION', msg);
-  }
-}
-
 injectable(EndpointModules.Activate.ActivateStatus,
   [ EndpointModules.Utils.WrapAync,
     MiddlewareModules.Authorization,
@@ -139,13 +138,10 @@ injectable(EndpointModules.Activate.ActivateStatus,
 
         if (!memberToken) throw new InvalidParamError('member_token required');
 
-        const member = decryptMember(memberToken);
+        const   member = decryptMember(memberToken);
         if (!member) throw new InvalidParamError('invalid member_token');
 
         const status = await activationStatus({ member_no: member.member_no });
-        if (status === null) {
-          throw new InvalidActivationOperationError('activation apply not exist');
-        }
         res.status(200).json(status);
       })
     ]
