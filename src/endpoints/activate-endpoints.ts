@@ -84,12 +84,14 @@ injectable(EndpointModules.Activate.AppVerify,
         const member = decryptMember(memberToken);
         if (member === null) throw new InvalidParamError('invalid member_token');
 
-        await activate({
+        const activateResp = await activate({
           member_no: member.member_no,
           activation_code: activationCode
         });
-        // TODO: check updated with num_activate_rows
 
+        if (activateResp.activated === false) {
+          throw new InvalidActivationOperationError('activation failed, maybe already activated.');
+        }
         res.status(200).json({});
       })
     ]
