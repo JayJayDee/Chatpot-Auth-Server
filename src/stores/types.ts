@@ -103,7 +103,7 @@ export namespace StoreTypes {
     };
     type ActivationStatus = {
       email: string;
-      status: 'SENT' | 'CONFIRMED';
+      status: 'SENT' | 'CONFIRMED' | 'IDLE';
     };
     export type GetActivationStatus = (param: ActivationStatusParam) => Promise<ActivationStatus>;
 

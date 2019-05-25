@@ -2,7 +2,7 @@ import { injectable } from 'smart-factory';
 import { EndpointModules } from './modules';
 import { EndpointTypes } from './types';
 import { MiddlewareModules, MiddlewareTypes } from '../middlewares';
-import { InvalidParamError, BaseLogicError } from '../errors';
+import { InvalidParamError } from '../errors';
 import { StoreModules, StoreTypes } from '../stores';
 import { UtilModules, UtilTypes } from '../utils';
 
@@ -99,12 +99,6 @@ injectable(EndpointModules.Activate.EmailWithPage,
   }));
 
 
-class InvalidActivationOperationError extends BaseLogicError {
-  constructor(msg: string) {
-    super('INVALID_ACTIVATION', msg);
-  }
-}
-
 injectable(EndpointModules.Activate.ActivateStatus,
   [ EndpointModules.Utils.WrapAync,
     MiddlewareModules.Authorization,
@@ -125,13 +119,10 @@ injectable(EndpointModules.Activate.ActivateStatus,
 
         if (!memberToken) throw new InvalidParamError('member_token required');
 
-        const member = decryptMember(memberToken);
+        const   member = decryptMember(memberToken);
         if (!member) throw new InvalidParamError('invalid member_token');
 
         const status = await activationStatus({ member_no: member.member_no });
-        if (status === null) {
-          throw new InvalidActivationOperationError('activation apply not exist');
-        }
         res.status(200).json(status);
       })
     ]
