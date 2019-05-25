@@ -9,8 +9,7 @@ export namespace EndpointModules {
   export enum Member {
     CreateSimple = 'Endpoint/Member/CreateSimple',
     CreateEmail = 'Endpoint/Member/CreateEmail',
-    Get = 'Endpoint/Member/Get',
-    UpgradeEmail = 'Endpoint/Member/UpgradeEmail'
+    Get = 'Endpoint/Member/Get'
   }
 
   export enum Auth {
@@ -20,10 +19,11 @@ export namespace EndpointModules {
   }
 
   export enum Activate {
-    EmailWithApi = 'Endpoint/Activate/EmailWithApi',
+    AppRequest = 'Endpoint/Activate/App/Request',
+    AppVerify = 'Endpoint/Activate/App/Verify',
     EmailWithPageAction = 'Endpoint/Activate/EmailWithPageAction',
     EmailWithPage = 'Endpoint/Activate/EmailWithPage',
-    ActivateStatus = 'Endpoint/Activate/Status'
+    AppActivateStatus = 'Endpoint/Activate/App/Status'
   }
 
   export enum Internal {
