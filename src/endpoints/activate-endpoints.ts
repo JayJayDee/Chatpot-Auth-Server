@@ -31,7 +31,7 @@ injectable(EndpointModules.Activate.AppRequest,
     handler: [
       authorize(['body', 'member_token']),
       wrapAsync(async (req, res, next) => {
-        const memberToken = req.params['member_token'];
+        const memberToken = req.body['member_token'];
         const email = req.body['email'];
 
         if (!memberToken || !email) {
