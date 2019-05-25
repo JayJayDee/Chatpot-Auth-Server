@@ -35,7 +35,7 @@
       var code = '<%= code %>';
       $('#btn-activate').on('click', function(evt) {
         $('#btn-activate').attr('disabled', '');
-        fetch('/activate/email/action', {
+        fetch('/activate/page/email/verify', {
           method: 'post',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded'

@@ -1,13 +1,64 @@
 import { injectable } from 'smart-factory';
+import { createHash } from 'crypto';
 import { EndpointModules } from './modules';
 import { EndpointTypes } from './types';
 import { MiddlewareModules, MiddlewareTypes } from '../middlewares';
 import { InvalidParamError, BaseLogicError } from '../errors';
 import { StoreModules, StoreTypes } from '../stores';
 import { UtilModules, UtilTypes } from '../utils';
+import { MailerModules, MailerTypes } from '../mailer';
+
+const generateCode = (memberNo: number, email: string) =>
+  createHash('sha1')
+    .update(`${memberNo}${email}${Date.now()}`)
+    .digest('hex');
+
+injectable(EndpointModules.Activate.AppRequest,
+  [ EndpointModules.Utils.WrapAync,
+    UtilModules.Auth.DecryptMemberToken,
+    StoreModules.Member.CreateEmailAuth,
+    MailerModules.SendActivationMail,
+    MiddlewareModules.Authorization ],
+  async (wrapAsync: EndpointTypes.Utils.WrapAsync,
+    decryptMemberToken: UtilTypes.Auth.DecryptMemberToken,
+    createEmailAuth: StoreTypes.Member.CreateEmailAuth,
+    sendMail: MailerTypes.SendActivationMail,
+    authorize: MiddlewareTypes.Authorization): Promise<EndpointTypes.Endpoint> =>
+
+  ({
+    uri: '/activate/app/email',
+    method: EndpointTypes.EndpointMethod.POST,
+    handler: [
+      authorize(['body', 'member_token']),
+      wrapAsync(async (req, res, next) => {
+        const memberToken = req.params['member_token'];
+        const email = req.body['email'];
+
+        if (!memberToken || !email) {
+          throw new InvalidParamError('member_token or email required');
+        }
+
+        const member = decryptMemberToken(memberToken);
+        if (member === null) throw new InvalidParamError('invalid member_token');
+
+        const code = generateCode(member.member_no, email);
+
+        sendMail({
+          code,
+          email
+        });
+        await createEmailAuth({
+          code,
+          email,
+          member_no: member.member_no
+        });
+        res.status(200).json({});
+      })
+    ]
+  }));
 
 
-injectable(EndpointModules.Activate.EmailWithApi,
+injectable(EndpointModules.Activate.AppVerify,
   [ EndpointModules.Utils.WrapAync,
     MiddlewareModules.Authorization,
     StoreModules.Activation.Activate,
@@ -18,7 +69,7 @@ injectable(EndpointModules.Activate.EmailWithApi,
     decryptMember: UtilTypes.Auth.DecryptMemberToken): Promise<EndpointTypes.Endpoint> =>
 
   ({
-    uri: '/activate/app/email',
+    uri: '/activate/app/email/verify',
     method: EndpointTypes.EndpointMethod.POST,
     handler: [
       authorize(['body', 'member_token']),
@@ -58,7 +109,7 @@ injectable(EndpointModules.Activate.EmailWithPageAction,
     activate: StoreTypes.Activation.Activate): Promise<EndpointTypes.Endpoint> =>
 
   ({
-    uri: '/activate/email/action',
+    uri: '/activate/page/email/verify',
     method: EndpointTypes.EndpointMethod.POST,
     handler: [
       wrapAsync(async (req, res, next) => {
@@ -83,7 +134,7 @@ injectable(EndpointModules.Activate.EmailWithPage,
     activationStatus: StoreTypes.Activation.GetActivationStatus): Promise<EndpointTypes.Endpoint> =>
 
   ({
-    uri: '/activate/email',
+    uri: '/activate/page/email',
     method: EndpointTypes.EndpointMethod.GET,
     handler: [
       wrapAsync(async (req, res, next) => {
@@ -118,7 +169,7 @@ injectable(EndpointModules.Activate.EmailWithPage,
   }));
 
 
-injectable(EndpointModules.Activate.ActivateStatus,
+injectable(EndpointModules.Activate.AppActivateStatus,
   [ EndpointModules.Utils.WrapAync,
     MiddlewareModules.Authorization,
     StoreModules.Activation.GetActivationStatus,
