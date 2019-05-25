@@ -2,7 +2,7 @@ import { injectable } from 'smart-factory';
 import { EndpointModules } from './modules';
 import { EndpointTypes } from './types';
 import { MiddlewareModules, MiddlewareTypes } from '../middlewares';
-import { InvalidParamError } from '../errors';
+import { InvalidParamError, BaseLogicError } from '../errors';
 import { StoreModules, StoreTypes } from '../stores';
 import { UtilModules, UtilTypes } from '../utils';
 
@@ -45,6 +45,11 @@ injectable(EndpointModules.Activate.EmailWithApi,
   }));
 
 
+class InvalidActivationOperationError extends BaseLogicError {
+  constructor(msg: string) {
+    super('INVALID_ACTIVATION_OPERATION', msg);
+  }
+}
 
 injectable(EndpointModules.Activate.EmailWithPageAction,
   [ EndpointModules.Utils.WrapAync,
