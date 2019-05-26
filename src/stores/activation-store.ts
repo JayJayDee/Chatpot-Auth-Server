@@ -27,7 +27,7 @@ injectable(StoreModules.Activation.GetActivationStatus,
         SELECT
           e.email,
           e.state,
-          IF(a.auth_type = 1, 1, 0) AS password_inputed
+          IF(a.auth_type = '', 1, 0) AS password_inputed
         FROM
           chatpot_email e
         INNER JOIN
@@ -59,30 +59,19 @@ injectable(StoreModules.Activation.Activate,
     mysql: MysqlTypes.MysqlDriver): Promise<StoreTypes.Activation.Activate> =>
 
     async (param) => {
-      const queryParams = [];
-      const clauses = [];
+      const queryParams: any[] = [];
+      const clauses: any[] = [];
 
       if (param.activation_code) {
         queryParams.push(param.activation_code);
-        clauses.push('code=?');
+        clauses.push('e.code=?');
       }
       if (param.member_no) {
         queryParams.push(param.member_no);
-        clauses.push('member_no=?');
+        clauses.push('e.member_no=?');
       }
 
-      const sql =
-      `
-        UPDATE
-          chatpot_email
-        SET
-          state='CONFIRMED'
-        WHERE
-          state='SENT' AND
-          ${clauses.join(' AND ')}
-      `;
-      const resp: any = await mysql.query(sql, queryParams);
-      let activated = false;
-      if (resp.changedRows > 0) activated = true;
-      return { activated };
+      // TODO: db operation with conditions
+
+      return { activated: true, cause: null };
     });
