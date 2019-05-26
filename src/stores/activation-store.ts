@@ -16,10 +16,10 @@ injectable(StoreModules.Activation.GetActivationStatus,
       let queryParam: any[] = [];
 
       if (param.activation_code) {
-        whereClause = 'code=?';
+        whereClause = 'e.code=?';
         queryParam = [ param.activation_code ];
       } else if (param.member_no) {
-        whereClause = 'member_no=?';
+        whereClause = 'e.member_no=?';
         queryParam = [ param.member_no ];
       }
 
@@ -32,7 +32,7 @@ injectable(StoreModules.Activation.GetActivationStatus,
           chatpot_email e
         INNER JOIN
           chatpot_auth a
-          ON m.no=e.member_no
+          ON a.member_no=e.member_no
         WHERE
           ${whereClause}
       `;
