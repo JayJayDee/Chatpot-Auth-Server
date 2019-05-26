@@ -25,10 +25,14 @@ injectable(StoreModules.Activation.GetActivationStatus,
 
       const sql = `
         SELECT
-          email,
-          state
+          e.email,
+          e.state,
+          IF(a.auth_type = 1, 1, 0) AS password_inputed
         FROM
-          chatpot_email
+          chatpot_email e
+        INNER JOIN
+          chatpot_auth a
+          ON m.no=e.member_no
         WHERE
           ${whereClause}
       `;
@@ -36,12 +40,14 @@ injectable(StoreModules.Activation.GetActivationStatus,
       if (rows.length === 0) {
         return {
           email: null,
-          status: 'IDLE'
+          status: 'IDLE',
+          password_inputed: false
         };
       }
       return {
         email: rows[0].email,
-        status: rows[0].state
+        status: rows[0].state,
+        password_inputed: rows[0].password_inputed === 1 ? true : false
       };
     });
 
