@@ -1,4 +1,5 @@
 import { find } from 'lodash';
+import { createHash } from 'crypto';
 import { ServiceTypes } from './types';
 import { injectable } from 'smart-factory';
 import { BaseLogicError } from '../errors';
@@ -7,6 +8,7 @@ import { ServiceModules } from './modules';
 import { UtilModules, UtilTypes } from '../utils';
 import { LoggerModules, LoggerTypes } from '../loggers';
 import { StoreModules, StoreTypes } from '../stores';
+import { MailerModules, MailerTypes } from '../mailer';
 
 class AuthFailError extends BaseLogicError {}
 class AuthDuplicationError extends BaseLogicError {}
@@ -106,7 +108,9 @@ injectable(ServiceModules.Member.Create,
     StoreModules.Member.UpdateAvatar,
     UtilModules.Auth.CreateMemberToken,
     UtilModules.Auth.CreatePassphrase,
-    ExtApiModules.Asset.RequestAvatar ],
+    ExtApiModules.Asset.RequestAvatar,
+    StoreModules.Member.CreateEmailAuth,
+    MailerModules.SendActivationMail ],
   async (logger: LoggerTypes.Logger,
     pick: StoreTypes.Nick.PickNick,
     insertNick: StoreTypes.Nick.InsertNick,
@@ -115,7 +119,9 @@ injectable(ServiceModules.Member.Create,
     updateAvt: StoreTypes.Member.UpdateAvatar,
     token: UtilTypes.Auth.CreateMemberToken,
     passphrase: UtilTypes.Auth.CreatePassphrase,
-    requestAvatar: ExtApiTypes.Asset.RequestAvatar): Promise<ServiceTypes.CreateMember> =>
+    requestAvatar: ExtApiTypes.Asset.RequestAvatar,
+    createEmailAuth: StoreTypes.Member.CreateEmailAuth,
+    sendActivationMail: MailerTypes.SendActivationMail): Promise<ServiceTypes.CreateMember> =>
 
     async (param: ServiceTypes.ReqCreateMember) => {
       const created = await create(param);
@@ -168,6 +174,20 @@ injectable(ServiceModules.Member.Create,
 
       if (param.auth.auth_type === ServiceTypes.AuthType.SIMPLE) {
         ret.passphrase = password;
+
+      } else if (param.auth.auth_type === ServiceTypes.AuthType.EMAIL) {
+        const code = generateCode(memberNo, login_id);
+        await createEmailAuth({
+          code,
+          email: login_id,
+          member_no: memberNo
+        });
+        sendActivationMail({ code, email: login_id });
       }
       return ret;
     });
+
+const generateCode = (memberNo: number, email: string) =>
+  createHash('sha1')
+    .update(`${memberNo}${email}${Date.now()}`)
+    .digest('hex');
