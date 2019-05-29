@@ -1,0 +1,73 @@
+---
+tags:
+  name: Activation
+  description: 이메일 계정 활성화 APIs
+
+/activate/app/email:
+  post:
+    summary: 앱에서 이메일 인증 요청 발송. 이 api의 호출로 입력받은 email로 인증 메일이 발송된다.
+    tags: [Activation]
+    parameters:
+      - name: member_token
+        in: formData
+        required: true
+        type: string
+        description: 회원 token
+      - name: email
+        in: formData
+        required: true
+        type: string
+        description: 활성화할 이메일 
+    responses:
+      200:
+        description: 성공
+        type: object
+        $ref: '#/definitions/Ok'
+
+/activate/app/email/verify:
+  post:
+    summary: 유저가 수신한 인증 코드를 이용한 메일 인증 완료를 위한 api.
+    tags: [Activation]
+    parameters:
+      - name: member_token
+        in: formData
+        required: true
+        type: string
+        description: 회원 token
+      - name: activation_code
+        in: formData
+        required: true
+        type: string
+        description: 이메일로 수신한 인증 코드
+    responses:
+      200:
+        description: 성공
+        type: object
+        $ref: '#/definitions/Ok'
+
+/activate/app/status:
+  get:
+    summary: 유저 메일 활성화 작업의 상태를 반환하는 api.
+    tags: [Activation]
+    parameters:
+      - name: member_token
+        in: query
+        required: true
+        type: string
+        description: 사용자 token.
+    responses:
+      200:
+        description: 성공
+        type: object
+        properties:
+          email:
+            type: string
+            required: false
+            description: 메일 활성화시 입력한 email. 활성화 한 적이 없다면 null
+          status:
+            type: string
+            enum: [IDLE,SENT,CONFIRMED]
+            description: 현재 상태.<br />미신청=IDLE, 메일발송완료=SENT, 활성화완료=CONFIRMED
+          password_inputed:
+            type: boolean
+            description: 메일 계정 활성화 신청 전에 패스워드가 입력되었는지의 여부

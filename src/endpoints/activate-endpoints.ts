@@ -74,8 +74,8 @@ injectable(EndpointModules.Activate.AppVerify,
     handler: [
       authorize(['body', 'member_token']),
       wrapAsync(async (req, res, next) => {
-        const memberToken = req.query['member_token'];
-        const activationCode = req.query['activation_code'];
+        const memberToken = req.body['member_token'];
+        const activationCode = req.body['activation_code'];
 
         if (!memberToken || !activationCode) {
           throw new InvalidParamError('member_token or activation_code required');
