@@ -51,11 +51,19 @@ injectable(StoreModules.Auth.Authenticate,
 
     async (param) => {
       const hashed = passHash(param.password);
-      let additionalQuery = '';
-      if (param.auth_type) additionalQuery = 'AND auth_type=?';
-
       const params: any[] = [ param.login_id, hashed ];
-      if (param.auth_type) params.push(param.auth_type);
+
+      let additionalQuery = '';
+      if (param.auth_type) {
+        additionalQuery = 'AND auth_type=?';
+        params.push(param.auth_type);
+
+        if (param.auth_type === StoreTypes.Auth.AuthType.EMAIL) {
+          additionalQuery += ' AND email_status=?';
+          params.push('ACTIVATED');
+        }
+      }
+
       const query = `
         SELECT * FROM chatpot_auth WHERE login_id=? AND password=? ${additionalQuery}
       `;
