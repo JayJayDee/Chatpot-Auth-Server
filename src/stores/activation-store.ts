@@ -76,15 +76,14 @@ injectable(StoreModules.Activation.Activate,
         const where = createWhereClause(param);
         const updateEmailSql = `
           UPDATE
-            chatpot_email
+            chatpot_email e
           SET
-            state='CONFIRMED'
+            e.state='CONFIRMED'
           WHERE
             ${where.whereClause}
         `;
         const updatedEmailResp: any =
           await t.query(updateEmailSql, [ ...where.params ]);
-        console.log(updatedEmailResp);
 
         if (updatedEmailResp.changedRows === 0) {
           await t.rollback();
@@ -103,7 +102,7 @@ injectable(StoreModules.Activation.Activate,
             chatpot_auth
           SET
             auth_type='EMAIL',
-            email_status='ACTIVATED',
+            email_status='ACTIVATED'
             ${pwChangeClause}
           WHERE
             member_no=? AND
@@ -155,7 +154,7 @@ const fetchCurrent =
       SELECT
         e.member_no,
         a.email_status,
-        e.auth_type,
+        a.auth_type,
         e.state
       FROM
         chatpot_email e
@@ -164,6 +163,7 @@ const fetchCurrent =
       WHERE
         ${where.whereClause}
     `;
+
     const rows: any[] = await t.query(sql, [ ...where.params ]) as any[];
     if (rows.length === 0) {
       return {

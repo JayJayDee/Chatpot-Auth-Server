@@ -72,7 +72,6 @@ injectable(EndpointModules.Activate.AppVerify,
     uri: '/activate/app/email/verify',
     method: EndpointTypes.EndpointMethod.POST,
     handler: [
-      authorize(['body', 'member_token']),
       wrapAsync(async (req, res, next) => {
         const memberToken = req.body['member_token'];
         const activationCode = req.body['activation_code'];
@@ -90,7 +89,7 @@ injectable(EndpointModules.Activate.AppVerify,
         });
 
         if (activateResp.activated === false) {
-          throw new InvalidActivationOperationError('activation failed, maybe already activated.');
+          throw new InvalidActivationOperationError(activateResp.cause);
         }
         res.status(200).json({});
       })
