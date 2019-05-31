@@ -43,14 +43,15 @@ injectable(EndpointModules.Activate.AppRequest,
 
         const code = generateCode(member.member_no, email);
 
-        sendMail({
-          code,
-          email
-        });
         await createEmailAuth({
           code,
           email,
           member_no: member.member_no
+        });
+
+        sendMail({
+          code,
+          email
         });
         res.status(200).json({});
       })
