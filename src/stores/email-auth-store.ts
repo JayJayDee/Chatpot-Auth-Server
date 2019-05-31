@@ -3,6 +3,13 @@ import { StoreModules } from './modules';
 import { LoggerModules, LoggerTypes } from '../loggers';
 import { StoreTypes } from './types';
 import { MysqlModules, MysqlTypes } from '../mysql';
+import { BaseLogicError } from '../errors';
+
+class DuplicatedEmailError extends BaseLogicError {
+  constructor(email: string) {
+    super('DUPLICATED_EMAIL', `duplicated email: ${email}`);
+  }
+}
 
 injectable(StoreModules.Member.CreateEmailAuth,
   [ LoggerModules.Logger,
@@ -11,29 +18,30 @@ injectable(StoreModules.Member.CreateEmailAuth,
     mysql: MysqlTypes.MysqlDriver): Promise<StoreTypes.Member.CreateEmailAuth> =>
 
     async (param) => {
-      mysql.transaction(async (con) => {
+      await mysql.transaction(async (con) => {
+        const sql = `
+          INSERT INTO
+            chatpot_email
+          SET
+            member_no=?,
+            email=?,
+            state='SENT',
+            code=?,
+            reg_date=NOW()
+        `;
+        const params = [
+          param.member_no,
+          param.email,
+          param.code
+        ];
         try {
-          const sql = `
-            INSERT INTO
-              chatpot_email
-            SET
-              member_no=?,
-              email=?,
-              state='SENT',
-              code=?,
-              reg_date=NOW()
-          `;
-          const params = [
-            param.member_no,
-            param.email,
-            param.code
-          ];
           await con.query(sql, params);
-
         } catch (err) {
-          log.error(err);
-          con.rollback();
-          throw err;
+          if (err.message.includes('ER_DUP_ENTRY')) {
+            throw new DuplicatedEmailError(param.email);
+          } else {
+            throw err;
+          }
         }
       });
     });
