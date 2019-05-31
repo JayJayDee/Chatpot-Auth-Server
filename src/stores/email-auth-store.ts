@@ -3,13 +3,6 @@ import { StoreModules } from './modules';
 import { LoggerModules, LoggerTypes } from '../loggers';
 import { StoreTypes } from './types';
 import { MysqlModules, MysqlTypes } from '../mysql';
-import { BaseLogicError } from '../errors';
-
-class InvalidUpgradeError extends BaseLogicError {
-  constructor() {
-    super('INVALID_UPGRADE', 'already email user');
-  }
-}
 
 injectable(StoreModules.Member.CreateEmailAuth,
   [ LoggerModules.Logger,
@@ -36,20 +29,6 @@ injectable(StoreModules.Member.CreateEmailAuth,
             param.code
           ];
           await con.query(sql, params);
-
-          const inspectSql = `
-            SELECT
-              *
-            FROM
-              chatpot_auth
-            WHERE
-              member_no=? AND
-              auth_type='EMAIL'
-          `;
-          const rows: any[] = await con.query(inspectSql, [ param.member_no ]) as any[];
-          if (rows.length > 0) {
-            throw new InvalidUpgradeError();
-          }
 
         } catch (err) {
           log.error(err);

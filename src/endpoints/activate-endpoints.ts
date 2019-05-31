@@ -72,7 +72,6 @@ injectable(EndpointModules.Activate.AppVerify,
     uri: '/activate/app/email/verify',
     method: EndpointTypes.EndpointMethod.POST,
     handler: [
-      authorize(['body', 'member_token']),
       wrapAsync(async (req, res, next) => {
         const memberToken = req.body['member_token'];
         const activationCode = req.body['activation_code'];
@@ -90,7 +89,7 @@ injectable(EndpointModules.Activate.AppVerify,
         });
 
         if (activateResp.activated === false) {
-          throw new InvalidActivationOperationError('activation failed, maybe already activated.');
+          throw new InvalidActivationOperationError(activateResp.cause);
         }
         res.status(200).json({});
       })
@@ -185,13 +184,11 @@ injectable(EndpointModules.Activate.AppActivateStatus,
     uri: '/activate/app/status',
     method: EndpointTypes.EndpointMethod.GET,
     handler: [
-      authorize(['query', 'member_token']),
       wrapAsync(async (req, res, next) => {
         const memberToken = req.query['member_token'];
-
         if (!memberToken) throw new InvalidParamError('member_token required');
 
-        const   member = decryptMember(memberToken);
+        const member = decryptMember(memberToken);
         if (!member) throw new InvalidParamError('invalid member_token');
 
         const status = await activationStatus({ member_no: member.member_no });
