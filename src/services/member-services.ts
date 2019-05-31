@@ -13,6 +13,8 @@ import { MailerModules, MailerTypes } from '../mailer';
 class AuthFailError extends BaseLogicError {}
 class AuthDuplicationError extends BaseLogicError {}
 
+const tag = '[member-service]';
+
 
 injectable(ServiceModules.Member.Authenticate,
   [LoggerModules.Logger,
@@ -173,9 +175,11 @@ injectable(ServiceModules.Member.Create,
       };
 
       if (param.auth.auth_type === ServiceTypes.AuthType.SIMPLE) {
+        logger.debug(`${tag} simple login process done.`);
         ret.passphrase = password;
 
       } else if (param.auth.auth_type === ServiceTypes.AuthType.EMAIL) {
+        logger.debug(`${tag} email activation process in progress.`);
         const code = generateCode(memberNo, login_id);
         await createEmailAuth({
           code,

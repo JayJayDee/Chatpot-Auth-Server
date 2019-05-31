@@ -185,13 +185,11 @@ injectable(EndpointModules.Activate.AppActivateStatus,
     uri: '/activate/app/status',
     method: EndpointTypes.EndpointMethod.GET,
     handler: [
-      authorize(['query', 'member_token']),
       wrapAsync(async (req, res, next) => {
         const memberToken = req.query['member_token'];
-
         if (!memberToken) throw new InvalidParamError('member_token required');
 
-        const   member = decryptMember(memberToken);
+        const member = decryptMember(memberToken);
         if (!member) throw new InvalidParamError('invalid member_token');
 
         const status = await activationStatus({ member_no: member.member_no });
