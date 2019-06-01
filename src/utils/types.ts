@@ -34,5 +34,6 @@ export namespace UtilTypes {
     export type CreatePassHash = (rawPassword: string) => string;
     export type DecryptPassHash = (encrypted: string) => string;
     export type CreatePassphrase = (memberNo: number) => string;
+    export type CreateEmailPassphrase = (rawPassword: string) => string;
   }
 }
