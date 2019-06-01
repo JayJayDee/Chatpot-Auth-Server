@@ -9,6 +9,7 @@ export namespace UtilModules {
     CreateSessionKey = 'Util/Auth/CreateSessionKey',
     CreatePassHash = 'Util/Auth/CreatePassHash',
     DecryptPassHash = 'Util/Auth/DecryptPassHash',
-    CreatePassphrase = 'Util/Auth/CreatePassphrase'
+    CreatePassphrase = 'Util/Auth/CreatePassphrase',
+    CreateEmailPassphrase = 'Util/Auth/CreateEmailPassphrase'
   }
 }

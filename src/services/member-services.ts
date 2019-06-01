@@ -110,6 +110,7 @@ injectable(ServiceModules.Member.Create,
     StoreModules.Member.UpdateAvatar,
     UtilModules.Auth.CreateMemberToken,
     UtilModules.Auth.CreatePassphrase,
+    UtilModules.Auth.CreateEmailPassphrase,
     ExtApiModules.Asset.RequestAvatar,
     StoreModules.Member.CreateEmailAuth,
     MailerModules.SendActivationMail ],
@@ -121,6 +122,7 @@ injectable(ServiceModules.Member.Create,
     updateAvt: StoreTypes.Member.UpdateAvatar,
     token: UtilTypes.Auth.CreateMemberToken,
     passphrase: UtilTypes.Auth.CreatePassphrase,
+    emailPassphrase: UtilTypes.Auth.CreateEmailPassphrase,
     requestAvatar: ExtApiTypes.Asset.RequestAvatar,
     createEmailAuth: StoreTypes.Member.CreateEmailAuth,
     sendActivationMail: MailerTypes.SendActivationMail): Promise<ServiceTypes.CreateMember> =>
@@ -137,7 +139,7 @@ injectable(ServiceModules.Member.Create,
 
       if (param.auth.auth_type === ServiceTypes.AuthType.EMAIL) {
         login_id = param.auth.login_id;
-        password = param.auth.password;
+        password = emailPassphrase(param.auth.password);
       } else if (param.auth.auth_type === ServiceTypes.AuthType.SIMPLE) {
         login_id = memberToken;
         password = passphrase(memberNo);
@@ -187,6 +189,7 @@ injectable(ServiceModules.Member.Create,
           member_no: memberNo
         });
         sendActivationMail({ code, email: login_id });
+        ret.passphrase = password;
       }
       return ret;
     });

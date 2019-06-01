@@ -161,3 +161,11 @@ injectable(UtilModules.Auth.CreatePassphrase,
         .update(`${timestamp}${memberNo}${cfg.secret}`)
         .digest('hex');
     });
+
+injectable(UtilModules.Auth.CreateEmailPassphrase,
+  [ ConfigModules.CredentialConfig ],
+  async (cfg: ConfigTypes.CredentialConfig): Promise<UtilTypes.Auth.CreateEmailPassphrase> =>
+    (rawPassword) =>
+      createHash('sha256')
+        .update(`${rawPassword}${cfg.secret}`)
+        .digest('hex'));
