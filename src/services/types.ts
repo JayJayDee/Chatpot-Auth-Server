@@ -46,6 +46,7 @@ export namespace ServiceTypes {
   };
   export type ResAuthenticate = {
     session_key: string;
+    member_token: string;
   };
 
   export type FetchMember = (token: string) => Promise<Member>;

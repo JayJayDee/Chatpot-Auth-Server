@@ -71,11 +71,13 @@ injectable(StoreModules.Auth.Authenticate,
       if (rows.length === 0) {
         return {
           success: false,
+          member_token: null,
           auth_type: null,
           member_no: null
         };
       }
       const resp: StoreTypes.Auth.ResAuthenticate = {
+        member_token: rows[0].token,
         member_no: rows[0].member_no,
         auth_type: rows[0].auth_type,
         success: true
