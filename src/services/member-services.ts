@@ -35,7 +35,8 @@ injectable(ServiceModules.Member.Authenticate,
       }
       const sessionKey = createSession(result.member_no);
       return {
-        session_key: sessionKey
+        session_key: sessionKey,
+        member_token: result.member_token
       };
     });
 
@@ -54,6 +55,7 @@ injectable(ServiceModules.Member.Fetch,
       const decrypted = decrypt(token);
       const member = await getMember(decrypted.member_no);
       const nick = await getNick({ member_no: decrypted.member_no });
+
       return {
         nick,
         token,

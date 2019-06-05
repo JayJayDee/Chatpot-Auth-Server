@@ -61,6 +61,7 @@ export namespace StoreTypes {
     };
     export type ResAuthenticate = {
       member_no: number;
+      member_token: string;
       auth_type: AuthType;
       success: boolean;
     };
