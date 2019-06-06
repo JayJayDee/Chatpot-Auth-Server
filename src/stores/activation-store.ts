@@ -28,7 +28,7 @@ injectable(StoreModules.Activation.GetActivationStatus,
         SELECT
           e.email,
           e.state,
-          IF(a.auth_type = '', 1, 0) AS password_inputed
+          IF(a.auth_type = 'EMAIL', 0, 1) AS password_required
         FROM
           chatpot_email e
         INNER JOIN
@@ -42,13 +42,13 @@ injectable(StoreModules.Activation.GetActivationStatus,
         return {
           email: null,
           status: 'IDLE',
-          password_inputed: false
+          password_required: false
         };
       }
       return {
         email: rows[0].email,
         status: rows[0].state,
-        password_inputed: rows[0].password_inputed === 1 ? true : false
+        password_required: rows[0].password_required === 1 ? true : false
       };
     });
 

@@ -105,7 +105,7 @@ export namespace StoreTypes {
     type ActivationStatus = {
       email: string;
       status: 'SENT' | 'CONFIRMED' | 'IDLE';
-      password_inputed: boolean;
+      password_required: boolean;
     };
     export type GetActivationStatus = (param: ActivationStatusParam) => Promise<ActivationStatus>;
 
