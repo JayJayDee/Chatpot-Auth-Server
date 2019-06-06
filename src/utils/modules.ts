@@ -16,4 +16,8 @@ export namespace UtilModules {
   export enum Ip {
     GetMyIp = 'Util/Ip/GetMyIp'
   }
+
+  export enum Country {
+    GetCountryName = 'Util/Country/GetCountryName'
+  }
 }

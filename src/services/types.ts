@@ -5,6 +5,7 @@ export namespace ServiceTypes {
   }
   export type Member = {
     region: string;
+    region_name: string;
     language: string;
     gender: string;
     auth_type: AuthType;

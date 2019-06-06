@@ -42,4 +42,8 @@ export namespace UtilTypes {
   export namespace Ip {
     export type GetMyIp = (req: Request) => string;
   }
+
+  export namespace Country {
+    export type GetCountryName = (region: string) => string;
+  }
 }
