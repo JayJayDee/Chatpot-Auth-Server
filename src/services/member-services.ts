@@ -45,11 +45,13 @@ injectable(ServiceModules.Member.Fetch,
   [ LoggerModules.Logger,
     StoreModules.Member.GetMember,
     StoreModules.Nick.GetNick,
-    UtilModules.Auth.DecryptMemberToken ],
+    UtilModules.Auth.DecryptMemberToken,
+    UtilModules.Country.GetCountryName ],
   async (logger: LoggerTypes.Logger,
     getMember: StoreTypes.Member.GetMember,
     getNick: StoreTypes.Nick.GetNick,
-    decrypt: UtilTypes.Auth.DecryptMemberToken): Promise<ServiceTypes.FetchMember> =>
+    decrypt: UtilTypes.Auth.DecryptMemberToken,
+    getCountryName: UtilTypes.Country.GetCountryName): Promise<ServiceTypes.FetchMember> =>
 
     async (token: string) => {
       const decrypted = decrypt(token);
@@ -61,6 +63,7 @@ injectable(ServiceModules.Member.Fetch,
         token,
         auth_type: member.auth_type,
         region: member.region,
+        region_name: getCountryName(member.region),
         language: member.language,
         gender: member.gender,
         avatar: {
@@ -74,10 +77,12 @@ injectable(ServiceModules.Member.Fetch,
 injectable(ServiceModules.Member.FetchMultiple,
   [ LoggerModules.Logger,
     StoreModules.Member.GetMembers,
-    StoreModules.Nick.GetNickMultiple ],
+    StoreModules.Nick.GetNickMultiple,
+    UtilModules.Country.GetCountryName ],
   async (logger: LoggerTypes.Logger,
     getMembers: StoreTypes.Member.GetMembers,
-    getNicks: StoreTypes.Nick.GetNickMultiple): Promise<ServiceTypes.FetchMembers> =>
+    getNicks: StoreTypes.Nick.GetNickMultiple,
+    getCountryName: UtilTypes.Country.GetCountryName): Promise<ServiceTypes.FetchMembers> =>
 
     async (memberNos: number[]) => {
       const members = await getMembers(memberNos);
@@ -85,6 +90,7 @@ injectable(ServiceModules.Member.FetchMultiple,
       const resp: ServiceTypes.Member[] = members.map((m) => ({
         token: m.token,
         region: m.region,
+        region_name: getCountryName(m.region),
         auth_type: m.auth_type,
         language: m.language,
         gender: m.gender,
