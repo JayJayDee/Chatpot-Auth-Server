@@ -9,9 +9,11 @@ import { StoreModules, StoreTypes } from '../stores';
 
 injectable(EndpointModules.Auth.AuthEmail,
   [ EndpointModules.Utils.WrapAync,
-    ServiceModules.Member.Authenticate ],
+    ServiceModules.Member.Authenticate,
+    UtilModules.Auth.CreateEmailPassphrase ],
   async (wrapAsync: EndpointTypes.Utils.WrapAsync,
-    authenticate: ServiceTypes.Authenticate): Promise<EndpointTypes.Endpoint> =>
+    authenticate: ServiceTypes.Authenticate,
+    emailPassphrase: UtilTypes.Auth.CreateEmailPassphrase): Promise<EndpointTypes.Endpoint> =>
 
   ({
     uri: '/auth/email',
@@ -24,8 +26,13 @@ injectable(EndpointModules.Auth.AuthEmail,
 
         if (!login_id || !password) throw new InvalidParamError('login_id, password');
 
+        const passphrase = emailPassphrase(password);
+
         const resp = await authenticate({ login_id, password, auth_type });
-        res.status(200).json(resp);
+        res.status(200).json({
+          ...resp,
+          passphrase
+        });
       })
     ]
   }));
