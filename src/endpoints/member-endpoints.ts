@@ -44,23 +44,29 @@ injectable(EndpointModules.Member.CreateSimple,
 
 injectable(EndpointModules.Member.CreateEmail,
   [ EndpointModules.Utils.WrapAync,
-    ServiceModules.Member.Create ],
+    ServiceModules.Member.Create,
+    UtilModules.Ip.GetMyIp,
+    GeoIpModules.GetRegionCode ],
   async (wrapAsync: EndpointTypes.Utils.WrapAsync,
-    create: ServiceTypes.CreateMember): Promise<EndpointTypes.Endpoint> =>
+    create: ServiceTypes.CreateMember,
+    getIp: UtilTypes.Ip.GetMyIp,
+    getRegionCode: GeoIpTypes.GetRegionCode): Promise<EndpointTypes.Endpoint> =>
 
   ({
     uri: '/member/email',
     method: EndpointTypes.EndpointMethod.POST,
     handler: [
       wrapAsync(async (req, res, next) => {
+        const ip = getIp(req);
+        const region = getRegionCode(ip);
+
         const email = req.body['email'];
         const password = req.body['password'];
-        const region = req.body['region'];
         const language = req.body['language'];
         const gender = req.body['gender'];
 
-        if (!email || !password || !region || !language || !gender) {
-          throw new InvalidParamError('email, password, region, language, gender required');
+        if (!email || !password || !language || !gender) {
+          throw new InvalidParamError('email, password, language, gender required');
         }
 
         const auth = {
