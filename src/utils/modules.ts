@@ -12,4 +12,8 @@ export namespace UtilModules {
     CreatePassphrase = 'Util/Auth/CreatePassphrase',
     CreateEmailPassphrase = 'Util/Auth/CreateEmailPassphrase'
   }
+
+  export enum Ip {
+    GetMyIp = 'Util/Ip/GetMyIp'
+  }
 }
