@@ -5,23 +5,29 @@ import { ServiceModules, ServiceTypes } from '../services';
 import { InvalidParamError } from '../errors';
 import { MiddlewareModules, MiddlewareTypes } from '../middlewares';
 import { UtilModules, UtilTypes } from '../utils';
+import { GeoIpModules, GeoIpTypes } from '../geoip';
 
 
 injectable(EndpointModules.Member.CreateSimple,
   [ EndpointModules.Utils.WrapAync,
-    ServiceModules.Member.Create ],
+    ServiceModules.Member.Create,
+    UtilModules.Ip.GetMyIp,
+    GeoIpModules.GetRegionCode ],
   async (wrapAsync: EndpointTypes.Utils.WrapAsync,
-    createMember: ServiceTypes.CreateMember): Promise<EndpointTypes.Endpoint> =>
+    createMember: ServiceTypes.CreateMember,
+    getIp: UtilTypes.Ip.GetMyIp,
+    getRegionCode: GeoIpTypes.GetRegionCode): Promise<EndpointTypes.Endpoint> =>
 
   ({
     uri: '/member',
     method: EndpointTypes.EndpointMethod.POST,
     handler: [
       wrapAsync(async (req, res, next) => {
-        if (!req.body['region'] || !req.body['language'] || !req.body['gender']) {
-          throw new InvalidParamError('region, language, gender');
+        if (!req.body['language'] || !req.body['gender']) {
+          throw new InvalidParamError('language, gender');
         }
-        const region = req.body['region'];
+        const ip = getIp(req);
+        const region = getRegionCode(ip);
         const language = req.body['language'];
         const gender = req.body['gender'];
         const auth = {
