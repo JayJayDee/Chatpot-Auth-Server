@@ -12,7 +12,6 @@ injectable(GeoIpModules.GetRegionCode,
       if (!lookupResult) {
         lookupResult = lookup('182.253.153.57'); // for develop only
       }
-      console.log(lookupResult);
       log.debug(`[region-fetcher] gain ip: ${ip}, region: ${lookupResult.country}`);
       return lookupResult.country;
     });
