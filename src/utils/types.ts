@@ -1,3 +1,5 @@
+import { Request } from 'express';
+
 export namespace UtilTypes {
   export type RoomPayload = {
     room_no: number;
@@ -35,5 +37,9 @@ export namespace UtilTypes {
     export type DecryptPassHash = (encrypted: string) => string;
     export type CreatePassphrase = (memberNo: number) => string;
     export type CreateEmailPassphrase = (rawPassword: string) => string;
+  }
+
+  export namespace Ip {
+    export type GetMyIp = (req: Request) => string;
   }
 }
