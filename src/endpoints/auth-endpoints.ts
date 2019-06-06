@@ -28,7 +28,11 @@ injectable(EndpointModules.Auth.AuthEmail,
 
         const passphrase = emailPassphrase(password);
 
-        const resp = await authenticate({ login_id, password, auth_type });
+        const resp = await authenticate({
+          login_id, auth_type,
+          password: passphrase
+        });
+
         res.status(200).json({
           ...resp,
           passphrase
