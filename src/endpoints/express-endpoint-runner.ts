@@ -33,7 +33,7 @@ injectable(EndpointModules.EndpointRunner,
 
     () => {
       const app = express();
-
+      app.set('etag', false);
       pages(app);
       app.use(cors());
       app.use(bodyParser.urlencoded({ extended: true }));
