@@ -107,7 +107,7 @@ injectable(StoreModules.Activation.Activate,
             current.member_no,
             current.email,
             current.member_token,
-            param.password
+            passHash(param.password)
           ];
           const insertResp: any = await t.query(authInsertSql, insertParams);
           if (!insertResp.insertId) {
