@@ -63,11 +63,13 @@ injectable(EndpointModules.Activate.AppVerify,
   [ EndpointModules.Utils.WrapAync,
     MiddlewareModules.Authorization,
     StoreModules.Activation.Activate,
-    UtilModules.Auth.DecryptMemberToken ],
+    UtilModules.Auth.DecryptMemberToken,
+    UtilModules.Auth.CreateEmailPassphrase ],
   async (wrapAsync: EndpointTypes.Utils.WrapAsync,
     authorize: MiddlewareTypes.Authorization,
     activate: StoreTypes.Activation.Activate,
-    decryptMember: UtilTypes.Auth.DecryptMemberToken): Promise<EndpointTypes.Endpoint> =>
+    decryptMember: UtilTypes.Auth.DecryptMemberToken,
+    passPhrase: UtilTypes.Auth.CreateEmailPassphrase): Promise<EndpointTypes.Endpoint> =>
 
   ({
     uri: '/activate/app/email/verify',
@@ -76,6 +78,7 @@ injectable(EndpointModules.Activate.AppVerify,
       wrapAsync(async (req, res, next) => {
         const memberToken = req.body['member_token'];
         const activationCode = req.body['activation_code'];
+        const password = req.body['password'];
 
         if (!memberToken || !activationCode) {
           throw new InvalidParamError('member_token or activation_code required');
@@ -86,7 +89,8 @@ injectable(EndpointModules.Activate.AppVerify,
 
         const activateResp = await activate({
           member_no: member.member_no,
-          activation_code: activationCode
+          activation_code: activationCode,
+          password: passPhrase(password)
         });
 
         if (activateResp.activated === false) {
