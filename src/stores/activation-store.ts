@@ -90,30 +90,49 @@ injectable(StoreModules.Activation.Activate,
           return { activated: false, cause: 'invalid activation code' };
         }
 
-        const authUpdateParams: any[] = [];
-        let pwChangeClause = '';
         if (current.simple_signup === true) {
-          authUpdateParams.push(passHash(param.password));
-          pwChangeClause = ',password=?';
+          const authInsertSql = `
+            INSERT INTO
+              chatpot_auth
+            SET
+              member_no=?,
+              auth_type='EMAIL',
+              login_id=?,
+              token=?,
+              password=?,
+              email_status='ACTIVATED',
+              reg_date=NOW()
+          `;
+          const insertParams = [
+            current.member_no,
+            current.email,
+            current.member_token,
+            param.password
+          ];
+          const insertResp: any = await t.query(authInsertSql, insertParams);
+          if (!insertResp.insertId) {
+            await t.rollback();
+            return { activated: false, cause: 'failed to activate' };
+          }
+
+        } else if (current.simple_signup === false) {
+          const authUpdateSql = `
+            UPDATE
+              chatpot_auth
+            SET
+              auth_type='EMAIL',
+              email_status='ACTIVATED'
+            WHERE
+              member_no=? AND
+              email_status='UNREGISTERED'
+          `;
+          const authUpdatedResp: any = await t.query(authUpdateSql, [ current.member_no ]);
+          if (authUpdatedResp.changedRows === 0) {
+            await t.rollback();
+            return { activated: false, cause: 'failed to activate' };
+          }
         }
 
-        const authUpdateSql = `
-          UPDATE
-            chatpot_auth
-          SET
-            auth_type='EMAIL',
-            email_status='ACTIVATED'
-            ${pwChangeClause}
-          WHERE
-            member_no=? AND
-            email_status='UNREGISTERED'
-        `;
-        const authUpdatedResp: any =
-          await t.query(authUpdateSql, [ ...authUpdateParams, current.member_no ]);
-        if (authUpdatedResp.changedRows === 0) {
-          await t.rollback();
-          return { activated: false, cause: 'failed to activate' };
-        }
         return { activated: true, cause: null };
       });
       return resp;
@@ -142,6 +161,8 @@ const createWhereClause = (param: CurrentParam): WhereClause => {
 type CurrentParam = { activation_code?: string; member_no?: number; };
 type Current = {
   member_no: number;
+  member_token: string;
+  email: string;
   invalid: boolean;
   simple_signup: boolean;
   already_activated: boolean;
@@ -155,7 +176,9 @@ const fetchCurrent =
         e.member_no,
         a.email_status,
         a.auth_type,
-        e.state
+        e.state,
+        a.token,
+        e.email
       FROM
         chatpot_email e
       INNER JOIN
@@ -168,9 +191,11 @@ const fetchCurrent =
     if (rows.length === 0) {
       return {
         member_no: null,
+        member_token: null,
         invalid: true,
         simple_signup: null,
-        already_activated: null
+        already_activated: null,
+        email: null
       };
     }
 
@@ -186,6 +211,8 @@ const fetchCurrent =
 
     return {
       member_no,
+      member_token: rows[0].token,
+      email: rows[0].email,
       invalid,
       simple_signup,
       already_activated
