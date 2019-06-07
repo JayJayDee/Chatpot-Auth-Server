@@ -8,17 +8,27 @@ injectable(StoreModules.Member.GetMember,
   async (mysql: MysqlTypes.MysqlDriver): Promise<StoreTypes.Member.GetMember> =>
     async (memberNo: number): Promise<StoreTypes.Member.MemberEntity> => {
       const sql = `
-        SELECT
-          m.*,
-          a.auth_type,
-          a.token
-        FROM
-          chatpot_member m
-        INNER JOIN
-          chatpot_auth a ON a.member_no=m.no
-        WHERE
-          m.no=?`;
-      const rows: any = await mysql.query(sql, [memberNo]);
+      SELECT
+        m.*,
+        a.auth_type,
+        a.token
+      FROM
+        chatpot_member m
+      INNER JOIN
+        (
+          SELECT
+            MAX(no) AS max_no
+          FROM
+            chatpot_auth
+          WHERE
+            member_no=?
+        ) recentauth
+      INNER JOIN
+        chatpot_auth a ON
+          a.no=recentauth.max_no
+      WHERE
+        m.no=?`;
+      const rows: any = await mysql.query(sql, [memberNo, memberNo]);
       if (rows.length === 0) return null;
 
       const member: StoreTypes.Member.MemberEntity = {
@@ -49,7 +59,17 @@ injectable(StoreModules.Member.GetMembers,
         FROM
           chatpot_member m
         INNER JOIN
-          chatpot_auth a ON a.member_no=m.no
+          (
+            SELECT
+              MAX(no) AS max_no
+            FROM
+              chatpot_auth
+            WHERE
+              member_no=351
+          ) recentauth
+        INNER JOIN
+          chatpot_auth a ON
+            a.no=recentauth.max_no
         WHERE
           m.no IN (${inClause})
       `;
