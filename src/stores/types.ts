@@ -41,6 +41,13 @@ export namespace StoreTypes {
     }) => Promise<{
       completed: boolean;
     }>;
+
+    type ChangePasswordReq = {
+      member_no: number;
+      current_password: string;
+      new_password: string;
+    };
+    export type ChangePassword = (param: ChangePasswordReq) => Promise<void>;
   }
 
   export namespace Auth {

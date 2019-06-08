@@ -2,6 +2,7 @@ import { injectable } from 'smart-factory';
 import { MysqlTypes, MysqlModules } from '../mysql';
 import { StoreTypes } from './types';
 import { StoreModules } from './modules';
+import { UtilModules, UtilTypes } from '../utils';
 
 injectable(StoreModules.Member.GetMember,
   [ MysqlModules.MysqlDriver ],
@@ -128,3 +129,32 @@ injectable(StoreModules.Member.UpdateAvatar,
       const params = [ avatar.profile_img, avatar.profile_thumb, memberNo ];
       await mysql.query(sql, params);
     });
+
+injectable(StoreModules.Member.ChangePassword,
+  [ MysqlModules.MysqlDriver,
+    UtilModules.Auth.CreatePassHash,
+    UtilModules.Auth.CreateEmailPassphrase ],
+  async (mysql: MysqlTypes.MysqlDriver,
+    passHash: UtilTypes.Auth.CreatePassHash,
+    emailPassphrase: UtilTypes.Auth.CreateEmailPassphrase): Promise<StoreTypes.Member.ChangePassword> =>
+      async (param) => {
+        await mysql.transaction(async (t) => {
+          const updateSql = `
+            UPDATE
+              chatpot_auth
+            SET
+              password=?
+            WHERE
+              member_no=? AND
+              password=?
+          `;
+          const updateResp = await t.query(updateSql, [
+            passHash(emailPassphrase(param.new_password)),
+            param.member_no,
+            passHash(emailPassphrase(param.current_password))
+          ]);
+
+          console.log(updateResp);
+          // TODO: check affected_rows and throw something.
+        });
+      });
