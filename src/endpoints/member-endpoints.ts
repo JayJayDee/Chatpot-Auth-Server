@@ -6,6 +6,7 @@ import { InvalidParamError } from '../errors';
 import { MiddlewareModules, MiddlewareTypes } from '../middlewares';
 import { UtilModules, UtilTypes } from '../utils';
 import { GeoIpModules, GeoIpTypes } from '../geoip';
+import { StoreModules, StoreTypes } from '../stores';
 
 
 injectable(EndpointModules.Member.CreateSimple,
@@ -114,9 +115,15 @@ injectable(EndpointModules.Member.Get,
 
 injectable(EndpointModules.Member.ChangePassword,
   [ EndpointModules.Utils.WrapAync,
-    MiddlewareModules.Authorization ],
+    MiddlewareModules.Authorization,
+    StoreModules.Member.ChangePassword,
+    UtilModules.Auth.DecryptMemberToken,
+    UtilModules.Auth.CreateEmailPassphrase ],
   async (wrapAsync: EndpointTypes.Utils.WrapAsync,
-    authorize: MiddlewareTypes.Authorization) =>
+    authorize: MiddlewareTypes.Authorization,
+    changePassword: StoreTypes.Member.ChangePassword,
+    decryptMemberToken: UtilTypes.Auth.DecryptMemberToken,
+    emailPassphrase: UtilTypes.Auth.CreateEmailPassphrase) =>
 
   ({
     uri: '/member/:member_token/password',
@@ -124,7 +131,28 @@ injectable(EndpointModules.Member.ChangePassword,
     handler: [
       authorize(['params', 'member_token']),
       wrapAsync(async (req, res, next) => {
-        res.status(200).json({});
+        const memberToken = req.params['member_token'];
+        const current_password = req.body['current_password'];
+        const new_password = req.body['new_password'];
+
+        if (!memberToken || !current_password || !new_password) {
+          throw new InvalidParamError('current_password, new_password required');
+        }
+
+        const member = decryptMemberToken(memberToken);
+        if (member === null) {
+          throw new InvalidParamError('invalid member_token');
+        }
+
+        await changePassword({
+          member_no: member.member_no,
+          current_password,
+          new_password
+        });
+
+        res.status(200).json({
+          passphrase: emailPassphrase(new_password)
+        });
       })
     ]
   }));

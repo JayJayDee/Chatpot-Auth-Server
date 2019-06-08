@@ -3,6 +3,7 @@ import { MysqlTypes, MysqlModules } from '../mysql';
 import { StoreTypes } from './types';
 import { StoreModules } from './modules';
 import { UtilModules, UtilTypes } from '../utils';
+import { BaseLogicError } from '../errors';
 
 injectable(StoreModules.Member.GetMember,
   [ MysqlModules.MysqlDriver ],
@@ -130,6 +131,13 @@ injectable(StoreModules.Member.UpdateAvatar,
       await mysql.query(sql, params);
     });
 
+
+class ChangePasswordError extends BaseLogicError {
+  constructor(msg: string) {
+    super('PASSWORD_CHANGE_ERROR', msg);
+  }
+}
+
 injectable(StoreModules.Member.ChangePassword,
   [ MysqlModules.MysqlDriver,
     UtilModules.Auth.CreatePassHash,
@@ -146,15 +154,40 @@ injectable(StoreModules.Member.ChangePassword,
               password=?
             WHERE
               member_no=? AND
-              password=?
+              password=? AND
+              auth_type='EMAIL'
           `;
-          const updateResp = await t.query(updateSql, [
+          const updateResp: any = await t.query(updateSql, [
             passHash(emailPassphrase(param.new_password)),
             param.member_no,
             passHash(emailPassphrase(param.current_password))
           ]);
 
-          console.log(updateResp);
-          // TODO: check affected_rows and throw something.
+          if (updateResp.changedRows !== 1) {
+            throw new ChangePasswordError('invalid current password or member not found');
+          }
+
+          const inspectSql = `
+            SELECT
+              a.auth_type
+            FROM
+              chatpot_auth a
+            INNER JOIN
+              (
+                SELECT MAX(no) AS max_no
+                  FROM chatpot_auth
+                    WHERE member_no=?
+              ) recents
+            ON a.no=recents.max_no
+            WHERE
+              member_no=?
+          `;
+          const rows: any[] = await t.query(inspectSql, [
+            param.member_no,
+            param.member_no
+          ]) as any[];
+
+          if (rows.length === 0) throw new ChangePasswordError('member not exist');
+          if (rows[0].auth_type !== 'EMAIL') throw new ChangePasswordError('simple_account cannot change password');
         });
       });
