@@ -56,6 +56,8 @@ const registerEndpoints =
         app.get(e.uri, e.handler);
       } else if (e.method === EndpointTypes.EndpointMethod.POST) {
         app.post(e.uri, e.handler);
+      } else if (e.method === EndpointTypes.EndpointMethod.PUT) {
+        app.put(e.uri, e.handler);
       }
       log.info(`[http] endpoint registered: ${e.method} ${e.uri}`);
     });
