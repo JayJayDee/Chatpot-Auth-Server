@@ -126,7 +126,9 @@ injectable(UtilModules.Auth.RevalidateSessionKey,
             .digest('hex');
       log.debug(`[auth-util] valid refresh_key = ${validRefreshKey}`);
 
-      if (validRefreshKey !== param.inputedRefreshKey) throw new RevalidationError('REAUTH_ERROR', 'invalid refresh_key');
+      if (validRefreshKey !== param.inputedRefreshKey) {
+        throw new RevalidationError('REAUTH_ERROR', 'invalid refresh_key');
+      }
       const newSessionKey = createSession(decryptedToken.member_no);
       return { newSessionKey };
     });
