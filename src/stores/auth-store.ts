@@ -95,17 +95,13 @@ injectable(StoreModules.Auth.GetPassword,
     async (memberNo: number) => {
       const sql = `
         SELECT
-          a.password
+          password
         FROM
           chatpot_auth a
-        INNER JOIN
-          (
-            SELECT MAX(no) AS max_no
-              FROM chatpot_auth
-              WHERE member_no=?
-          ) recents ON a.no=recents.max_no
+        WHERE
+          member_no=?
       `;
       const rows: any[] = await mysql.query(sql, [ memberNo ]) as any[];
-      if (rows.length === 0) return null;
-      return decryptPass(rows[0].password);
+      const passwords: string[] = rows.map((r) => decryptPass(r.password));
+      return passwords;
     });

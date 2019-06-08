@@ -114,19 +114,31 @@ injectable(UtilModules.Auth.RevalidateSessionKey,
         throw new RevalidationError('REAUTH_ERROR', 'invalid session_key');
       }
 
+      log.debug(`inputed refresh_key = ${param.inputedRefreshKey}`);
+
       log.debug(`member_no from token: ${decryptedToken.member_no}`);
       log.debug(`member_no from session_key: ${decryptedSessionKey.member_no}`);
       if (decryptedToken.member_no !== decryptedSessionKey.member_no) {
         throw new RevalidationError('REAUTH_ERROR', 'unauthorized operation');
       }
 
-      const validRefreshKey =
-          createHash('sha256')
-            .update(`${param.token}${param.oldSessionKey}${param.passwordFromDb}`)
-            .digest('hex');
-      log.debug(`[auth-util] valid refresh_key = ${validRefreshKey}`);
+      const validRefreshKeys = param.passwordsFromDb.map((pw) =>
+        createHash('sha256')
+        .update(`${param.token}${param.oldSessionKey}${pw}`)
+        .digest('hex'));
 
-      if (validRefreshKey !== param.inputedRefreshKey) {
+      log.debug('[auth-util] valid refresh_keys');
+      console.log(validRefreshKeys);
+
+      let foundSame = false;
+      for (let i = 0; i < validRefreshKeys.length; i++ ) {
+        if (validRefreshKeys[i] === param.inputedRefreshKey) {
+          foundSame = true;
+          break;
+        }
+      }
+
+      if (foundSame === false) {
         throw new RevalidationError('REAUTH_ERROR', 'invalid refresh_key');
       }
       const newSessionKey = createSession(decryptedToken.member_no);
