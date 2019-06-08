@@ -9,7 +9,8 @@ export namespace EndpointModules {
   export enum Member {
     CreateSimple = 'Endpoint/Member/CreateSimple',
     CreateEmail = 'Endpoint/Member/CreateEmail',
-    Get = 'Endpoint/Member/Get'
+    Get = 'Endpoint/Member/Get',
+    ChangePassword = 'Endpoint/Auth/ChangePassword'
   }
 
   export enum Auth {

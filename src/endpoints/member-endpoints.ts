@@ -110,3 +110,21 @@ injectable(EndpointModules.Member.Get,
       })
     ]
   }));
+
+
+injectable(EndpointModules.Member.ChangePassword,
+  [ EndpointModules.Utils.WrapAync,
+    MiddlewareModules.Authorization ],
+  async (wrapAsync: EndpointTypes.Utils.WrapAsync,
+    authorize: MiddlewareTypes.Authorization) =>
+
+  ({
+    uri: '/member/:member_token/password',
+    method: EndpointTypes.EndpointMethod.PUT,
+    handler: [
+      authorize(['params', 'member_token']),
+      wrapAsync(async (req, res, next) => {
+        res.status(200).json({});
+      })
+    ]
+  }));
