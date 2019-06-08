@@ -122,3 +122,32 @@ tags:
         description: 성공
         schema:
           $ref: '#/definitions/Member'
+
+/member/{member_token}/password:
+  put:
+    summary: 회원의 비밀번호 변경
+    tags: [Member]
+    parameters:
+      - name: member_token
+        in: path
+        required: true
+        type: string
+        description: 회원의 token
+      - name: current_password
+        in: formData
+        required: true
+        type: string
+        description: 회원의 현재 비밀번호
+      - name: new_password
+        in: formData
+        required: true
+        type: string
+        description: 회원의 새 비밀번호
+    responses:
+      200:
+        description: 성공
+        type: object
+        properties:
+          passphrase:
+            type: string
+            description: session_key 인증을 위해 사용할 비밀키. 저장해둬야 한다.
