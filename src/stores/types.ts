@@ -68,7 +68,7 @@ export namespace StoreTypes {
 
     export type InsertAuth = (param: ReqInsertAuth) => Promise<void>;
     export type Authenticate = (param: ReqAuthenticate) => Promise<ResAuthenticate>;
-    export type GetPassword = (memberNo: number) => Promise<string>;
+    export type GetPassword = (memberNo: number) => Promise<string[]>;
   }
 
   export namespace Nick {

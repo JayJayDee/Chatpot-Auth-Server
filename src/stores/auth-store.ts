@@ -97,11 +97,11 @@ injectable(StoreModules.Auth.GetPassword,
         SELECT
           password
         FROM
-          chatpot_auth
+          chatpot_auth a
         WHERE
           member_no=?
       `;
       const rows: any[] = await mysql.query(sql, [ memberNo ]) as any[];
-      if (rows.length === 0) return null;
-      return decryptPass(rows[0].password);
+      const passwords: string[] = rows.map((r) => decryptPass(r.password));
+      return passwords;
     });

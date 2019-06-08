@@ -97,10 +97,10 @@ injectable(EndpointModules.Auth.Reauth,
         log.debug(`[reauth] gain old_session_key = ${oldSessionKey}`);
         log.debug(`[reauth] gain refresh_key = ${inputedRefreshKey}`);
 
-        const passwordFromDb = await getPassword(member.member_no);
-        log.debug(`[reauth] gain password = ${passwordFromDb}`);
+        const passwordsFromDb = await getPassword(member.member_no);
+        log.debug(`[reauth] gain password = ${passwordsFromDb}`);
 
-        const revalidated = revalidate({ token, oldSessionKey, passwordFromDb, inputedRefreshKey });
+        const revalidated = revalidate({ token, oldSessionKey, passwordsFromDb, inputedRefreshKey });
 
         res.status(200).json({
           session_key: revalidated.newSessionKey

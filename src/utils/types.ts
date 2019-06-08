@@ -19,7 +19,7 @@ export namespace UtilTypes {
     token: string;
     oldSessionKey: string;
     inputedRefreshKey: string;
-    passwordFromDb: string;
+    passwordsFromDb: string[];
   };
   export type ResRevalidate = {
     newSessionKey: string;
