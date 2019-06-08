@@ -12,6 +12,7 @@ injectable(StoreModules.Member.GetMember,
       const sql = `
       SELECT
         m.*,
+        a.login_id,
         a.auth_type,
         a.token
       FROM
@@ -35,6 +36,7 @@ injectable(StoreModules.Member.GetMember,
 
       const member: StoreTypes.Member.MemberEntity = {
         no: rows[0].no,
+        login_id: rows[0].login_id,
         token: rows[0].token,
         region: rows[0].region,
         language: rows[0].language,
@@ -57,18 +59,21 @@ injectable(StoreModules.Member.GetMembers,
         SELECT
           m.*,
           a.auth_type,
-          a.token
+          a.token,
+          a.login_id
         FROM
           chatpot_member m
         INNER JOIN
           (
             SELECT
+              member_no,
               MAX(no) AS max_no
             FROM
               chatpot_auth
-            WHERE
-              member_no=351
-          ) recentauth
+            GROUP BY
+              member_no
+          ) recentauth ON
+          recentauth.member_no=m.no
         INNER JOIN
           chatpot_auth a ON
             a.no=recentauth.max_no
@@ -80,6 +85,7 @@ injectable(StoreModules.Member.GetMembers,
         rows.map((r) => ({
           no: r.no,
           token: r.token,
+          login_id: r.login_id,
           auth_type: r.auth_type,
           region: r.region,
           language: r.language,

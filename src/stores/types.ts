@@ -6,6 +6,7 @@ export namespace StoreTypes {
     }
     export type MemberEntity = {
       no: number;
+      login_id: string;
       token: string;
       region: string;
       language: string;
