@@ -156,3 +156,50 @@ injectable(EndpointModules.Member.ChangePassword,
       })
     ]
   }));
+
+
+type MemberPublic = {
+  region: string;
+  region_name: string;
+  language: string;
+  gender: string;
+  nick: ServiceTypes.Nick;
+  avatar: ServiceTypes.Avatar;
+  token: string;
+};
+
+const cvtToPublic = (member: ServiceTypes.Member): MemberPublic => ({
+  region: member.region,
+  region_name: member.region_name,
+  language: member.language,
+  gender: member.gender,
+  nick: member.nick,
+  avatar: member.avatar,
+  token: member.token
+});
+
+injectable(EndpointModules.Member.GetPublic,
+  [ EndpointModules.Utils.WrapAync,
+    MiddlewareModules.Authentication,
+    ServiceModules.Member.Fetch ],
+  async (wrapAsync: EndpointTypes.Utils.WrapAsync,
+    authenticate: MiddlewareTypes.Authentication,
+    fetchMember: ServiceTypes.FetchMember): Promise<EndpointTypes.Endpoint> =>
+
+  ({
+    uri: '/member/:member_token/public',
+    method: EndpointTypes.EndpointMethod.GET,
+    handler: [
+      authenticate,
+      wrapAsync(async (req, res, next) => {
+        const memberToken = req.params['member_token'];
+
+        if (!memberToken) {
+          throw new InvalidParamError('member_token required');
+        }
+
+        const member = await fetchMember(memberToken);
+        res.status(200).json(cvtToPublic(member));
+      })
+    ]
+  }));
