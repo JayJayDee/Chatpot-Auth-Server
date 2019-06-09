@@ -10,6 +10,7 @@ export namespace EndpointModules {
     CreateSimple = 'Endpoint/Member/CreateSimple',
     CreateEmail = 'Endpoint/Member/CreateEmail',
     Get = 'Endpoint/Member/Get',
+    GetPublic = 'Endpoint/Member/GetPublic',
     ChangePassword = 'Endpoint/Auth/ChangePassword'
   }
 

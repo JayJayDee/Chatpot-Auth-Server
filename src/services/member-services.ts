@@ -2,7 +2,7 @@ import { find } from 'lodash';
 import { createHash } from 'crypto';
 import { ServiceTypes } from './types';
 import { injectable } from 'smart-factory';
-import { BaseLogicError } from '../errors';
+import { BaseLogicError, InvalidParamError } from '../errors';
 import { ExtApiTypes, ExtApiModules } from '../extapis';
 import { ServiceModules } from './modules';
 import { UtilModules, UtilTypes } from '../utils';
@@ -41,6 +41,12 @@ injectable(ServiceModules.Member.Authenticate,
     });
 
 
+class MemberNotFoundError extends BaseLogicError {
+  constructor(msg: string) {
+    super('MEMBER_NOT_FOUND', msg);
+  }
+}
+
 injectable(ServiceModules.Member.Fetch,
   [ LoggerModules.Logger,
     StoreModules.Member.GetMember,
@@ -55,7 +61,15 @@ injectable(ServiceModules.Member.Fetch,
 
     async (token: string) => {
       const decrypted = decrypt(token);
+      if (decrypted === null) {
+        throw new InvalidParamError('invalid member_token');
+      }
+
       const member = await getMember(decrypted.member_no);
+      if (!member) {
+        throw new MemberNotFoundError(`member not found for token: ${token}`);
+      }
+
       const nick = await getNick({ member_no: decrypted.member_no });
 
       return {

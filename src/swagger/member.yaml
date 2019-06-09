@@ -151,3 +151,19 @@ tags:
           passphrase:
             type: string
             description: session_key 인증을 위해 사용할 비밀키. 저장해둬야 한다.
+
+/member/{member_token}/public:
+  get:
+    summary: 모든 사람이 접근 가능한 유저에 대한 정보 반환. (다른 유저의 정보도 접근 가능)
+    tags: [Member]
+    paramters:
+      - name: member_token
+        in: path
+        required: true
+        type: string
+        description: 회원의 token
+    responses:
+      200:
+        description: 성공
+        schema:
+          $ref: '#/definitions/MemberPublic'
