@@ -51,4 +51,25 @@ definitions:
         type: string
         enum: [M, F]
         description: 회원의 성별
+  
+  MemberPublic:
+    type: object
+    properties:
+      nick:
+        $ref: '#/definitions/Nick'
+      avatar:
+        $ref: '#/definitions/Avatar'
+      token:
+        type: string
+        description: 회원의 identifier
+      region:
+        type: string
+        description: 회원의 ISO 3166-2 국가코드
+      language:
+        type: string
+        description: 회원의 ISO 639-1 언어코드
+      gender:
+        type: string
+        enum: [M, F]
+        description: 회원의 성별
       
