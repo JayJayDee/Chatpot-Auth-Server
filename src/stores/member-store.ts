@@ -139,8 +139,8 @@ injectable(StoreModules.Member.UpdateAvatar,
 
 
 class ChangePasswordError extends BaseLogicError {
-  constructor(msg: string) {
-    super('PASSWORD_CHANGE_ERROR', msg);
+  constructor(code: string, msg: string) {
+    super(code, msg);
   }
 }
 
@@ -170,7 +170,7 @@ injectable(StoreModules.Member.ChangePassword,
           ]);
 
           if (updateResp.changedRows !== 1) {
-            throw new ChangePasswordError('invalid current password or member not found');
+            throw new ChangePasswordError('CURRENT_PASSWORD_INVALID', 'invalid current password or member not found');
           }
 
           const inspectSql = `
@@ -193,7 +193,7 @@ injectable(StoreModules.Member.ChangePassword,
             param.member_no
           ]) as any[];
 
-          if (rows.length === 0) throw new ChangePasswordError('member not exist');
-          if (rows[0].auth_type !== 'EMAIL') throw new ChangePasswordError('simple_account cannot change password');
+          if (rows.length === 0) throw new ChangePasswordError('MEMBER_NOT_EXIST', 'member not exist');
+          if (rows[0].auth_type !== 'EMAIL') throw new ChangePasswordError('SIMPLE_ACCOUNT_PWCHANGE_DENIED', 'simple_account cannot change password');
         });
       });
