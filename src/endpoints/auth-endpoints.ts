@@ -27,15 +27,19 @@ injectable(EndpointModules.Auth.AuthEmail,
         if (!login_id || !password) throw new InvalidParamError('login_id, password');
 
         const passphrase = emailPassphrase(password);
-
         const resp = await authenticate({
           login_id, auth_type,
           password: passphrase
         });
 
+        let additional: {[key: string]: any} = { passphrase: null };
+        if (resp.activated === true) {
+          additional.passphrase = passphrase;
+        }
+
         res.status(200).json({
           ...resp,
-          passphrase
+          ...additional
         });
       })
     ]
