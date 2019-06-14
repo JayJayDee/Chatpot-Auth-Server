@@ -33,10 +33,16 @@ injectable(ServiceModules.Member.Authenticate,
       if (result.success === false) {
         throw new AuthFailError('AUTH_FAILED', `authentication failed for id:${param.login_id}`);
       }
-      const sessionKey = createSession(result.member_no);
+      let sessionKey: string = null;
+
+      if (result.activated === true) {
+        sessionKey = createSession(result.member_no);
+      }
+
       return {
         session_key: sessionKey,
-        member_token: result.member_token
+        member_token: result.member_token,
+        activated: result.activated
       };
     });
 
