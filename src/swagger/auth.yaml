@@ -49,7 +49,17 @@ tags:
         properties:
           session_key:
             type: string
-            description: 앞으로의 API 호출에 사용할 세션 키.
+            description: 앞으로의 API 호출에 사용할 세션 키. 이메일 인증을 하지 않은 경우, null
+          passphrase:
+            type: string
+            description: session_key 생성을 위해 사용하는 비밀 키. 이메일 인증을 하지 않은 경우, null
+          member_token:
+            type: string
+            description: 로그인한 사용자의 member_token.
+          activated:
+            type: boolean
+            description: 이메일 활성화 작업 여부. true인 경우 활성화 됨.
+          
 
 /auth/reauth:
   post:
