@@ -4,7 +4,6 @@ import { LoggerModules, LoggerTypes } from '../loggers';
 import { MysqlModules, MysqlTypes } from '../mysql';
 import { StoreModules } from './modules';
 import { StoreTypes } from './types';
-import { BaseLogicError } from '../errors';
 
 class SqlException extends Error {}
 
@@ -41,13 +40,6 @@ injectable(StoreModules.Auth.InsertAuth,
       }
     });
 
-
-class InactivatedMemberError extends BaseLogicError {
-  constructor(email: string) {
-    super('INACTIVATED_MEMBER', `inactivated account: ${email}`);
-  }
-}
-
 injectable(StoreModules.Auth.Authenticate,
   [ MysqlModules.MysqlDriver,
     UtilModules.Auth.CreatePassHash,
@@ -73,6 +65,7 @@ injectable(StoreModules.Auth.Authenticate,
       if (rows.length === 0) {
         return {
           success: false,
+          activated: false,
           member_token: null,
           auth_type: null,
           member_no: null
@@ -80,14 +73,21 @@ injectable(StoreModules.Auth.Authenticate,
       }
 
       if (rows[0].email_status !== 'ACTIVATED') {
-        throw new InactivatedMemberError(param.login_id);
+        return {
+          success: true,
+          activated: false,
+          member_token: rows[0].token,
+          member_no: rows[0].member_no,
+          auth_type: rows[0].auth_type
+        };
       }
 
       const resp: StoreTypes.Auth.ResAuthenticate = {
         member_token: rows[0].token,
         member_no: rows[0].member_no,
         auth_type: rows[0].auth_type,
-        success: true
+        success: true,
+        activated: true
       };
       return resp;
     });

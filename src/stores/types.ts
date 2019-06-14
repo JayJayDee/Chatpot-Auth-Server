@@ -71,6 +71,7 @@ export namespace StoreTypes {
       member_no: number;
       member_token: string;
       auth_type: AuthType;
+      activated: boolean;
       success: boolean;
     };
 
