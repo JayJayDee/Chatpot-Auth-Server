@@ -28,6 +28,11 @@ export namespace EndpointModules {
     AppActivateStatus = 'Endpoint/Activate/App/Status'
   }
 
+  export enum Abuse {
+    ReportUser = 'Endpoint/Abuse/ReportUser',
+    GetReports = 'Endpoint/Abuse/GetReports'
+  }
+
   export enum Internal {
     GetMultiple = 'Endpoint/Internal/GetMultiple'
   }

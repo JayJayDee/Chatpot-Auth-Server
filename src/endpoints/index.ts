@@ -16,11 +16,13 @@ injectable(EndpointModules.Endpoints,
     EndpointModules.Activate.AppActivateStatus,
     EndpointModules.Activate.AppRequest,
     EndpointModules.Activate.AppVerify,
+    EndpointModules.Abuse.ReportUser,
+    EndpointModules.Abuse.GetReports,
     EndpointModules.Internal.GetMultiple ],
   async (mcreates, mcreateem, mget, mgetpub, mchpwd,
     authE, authS, reauth,
     actpage, actpageact, actstat,
-    appreq, appveri, intGm): Promise<EndpointTypes.Endpoint[]> =>
+    appreq, appveri, abRept, getRept, intGm): Promise<EndpointTypes.Endpoint[]> =>
 
   ([
     mcreates,
@@ -36,6 +38,8 @@ injectable(EndpointModules.Endpoints,
     actstat,
     appreq,
     appveri,
+    abRept,
+    getRept,
     intGm
   ]));
 
