@@ -12,7 +12,20 @@ injectable(ExtApiModules.Message.RequestMessages,
     request: ExtApiTypes.Request,
     extApiCfg: ConfigTypes.ExtApiConfig): Promise<ExtApiTypes.Message.RequestMessages> =>
 
-    async (roomNo) => {
-      // TODO: to be implemented
-      return [];
+    async (roomToken) => {
+      const uri = `${extApiCfg.messageHost}/internal/room/${roomToken}/messages`;
+      const resp: any[] = await request({
+        uri,
+        method: ExtApiTypes.RequestMethod.GET
+      });
+      return resp.map(convertToMessage);
     });
+
+const convertToMessage = (payload: any) => ({
+  message_id: payload.message_id,
+  type: payload.type,
+  from: payload.from,
+  to: payload.to,
+  content: payload.content,
+  sent_time: payload.sent_time
+});
