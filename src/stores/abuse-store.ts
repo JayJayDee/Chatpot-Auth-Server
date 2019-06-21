@@ -88,7 +88,27 @@ injectable(StoreModules.Abuse.IsBlocked,
   async (log: LoggerTypes.Logger,
     mysql: MysqlTypes.MysqlDriver): Promise<StoreTypes.Abuse.IsBlocked> =>
 
-    async (param) => {
-      // TODO: to be implemented
-      return false;
+    async (memberNo) => {
+      const sql = `
+        SELECT
+          cause_code,
+          reg_date AS blocked_date
+        FROM
+          chatpot_abuse_block
+        WHERE
+          member_no=?
+      `;
+      const rows: any[] = await mysql.query(sql, [ memberNo ]) as any[];
+      if (rows.length === 0) {
+        return {
+          blocked: false,
+          cause_code: null,
+          blocked_date: null
+        };
+      }
+      return {
+        blocked: true,
+        cause_code: rows[0].cause_code,
+        blocked_date: rows[0].blocked_date
+      };
     });
