@@ -27,7 +27,8 @@ export const emptyConfig: ConfigTypes.RootConfig = {
     provider: null
   },
   extapi: {
-    assetHost: null
+    assetHost: null,
+    messageHost: null
   },
   storage: {
     temporaryPath: null
@@ -118,6 +119,7 @@ injectable(ConfigModules.ConfigRules, [],
     { key: 'CACHE_REDIS_PORT', path: ['cache', 'redis', 'port'], defaultValue: null},
     { key: 'CACHE_REDIS_PASSWORD', path: ['cache', 'redis', 'password'], defaultValue: null},
     { key: 'EXTAPI_ASSET_HOST', path: ['extapi', 'assetHost'] },
+    { key: 'EXTAPI_MESSAGE_HOST', path: ['extapi', 'messageHost'] },
     { key: 'STORAGE_TEMPORARY_PATH', path: ['storage', 'temporaryPath'] },
     { key: 'MAILER_HOST', path: ['mailer', 'host'] },
     { key: 'MAILER_PORT', path: ['mailer', 'port'] },

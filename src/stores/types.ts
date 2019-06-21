@@ -129,4 +129,15 @@ export namespace StoreTypes {
     };
     export type Activate = (param: ActivateParam) => Promise<ActivateRes>;
   }
+
+  export namespace Abuse {
+    type InsertAbuseParam = {
+      room_no: number;
+      reporter_no: number;
+      target_no: number;
+      content: string;
+    };
+
+    export type InsertNewAbuse = (param: InsertAbuseParam) => Promise<void>;
+  }
 }
