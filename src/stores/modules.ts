@@ -27,6 +27,6 @@ export namespace StoreModules {
   }
 
   export enum Abuse {
-    InsertNewAbuse = 'Store/Abuse/InsertNewAbuse'
+    InsertNewReport = 'Store/Abuse/InsertNewReport'
   }
 }

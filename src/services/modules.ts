@@ -5,4 +5,8 @@ export namespace ServiceModules {
     Create = 'Service/Member/Create',
     Authenticate = 'Service/Member/Authenticate'
   }
+
+  export enum Abuse {
+    ReportAbuser = 'Service/Abuse/ReportAbuser'
+  }
 }

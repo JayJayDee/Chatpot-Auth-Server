@@ -57,4 +57,12 @@ export namespace ServiceTypes {
   export type FetchMembersWithToken = (tokens: string[]) => Promise<Member[]>;
   export type CreateMember = (param: ReqCreateMember) => Promise<ResCreateMember>;
   export type Authenticate = (param: ReqAuthenticate) => Promise<ResAuthenticate>;
+
+
+  type ReportAbuserParam = {
+    reporter_no: number;
+    target_no: number;
+    room_no: number;
+  };
+  export type ReportAbuser = (param: ReportAbuserParam) => Promise<void>;
 }
