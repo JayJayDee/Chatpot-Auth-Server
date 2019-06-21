@@ -20,7 +20,8 @@ export const emptyConfig: ConfigTypes.RootConfig = {
   credential: {
     sessionExpires: null,
     secret: null,
-    authEnabled: null
+    authEnabled: null,
+    roomSecret: null
   },
   cache: {
     enabled: null,
@@ -111,6 +112,7 @@ injectable(ConfigModules.ConfigRules, [],
     { key: 'MYSQL_DATABASE', path: ['mysql', 'database'] },
     { key: 'MYSQL_CONNECTION_LIMIT', path: ['mysql', 'connectionLimit'], defaultValue: 10 },
     { key: 'CREDENTIAL_SECRET', path: ['credential', 'secret'] },
+    { key: 'CREDENTIAL_ROOM_SECRET', path: ['credential', 'roomSecret'] },
     { key: 'CREDENTIAL_SESSION_EXPIRES', path: ['credential', 'sessionExpires'], defaultValue: 60 },
     { key: 'CREDENTIAL_AUTH_ENABLED', path: ['credential', 'authEnabled'], defaultValue: false },
     { key: 'CACHE_ENABLED', path: ['cache', 'enabled'], defaultValue: false},

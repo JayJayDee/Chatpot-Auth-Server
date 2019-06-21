@@ -14,11 +14,11 @@ injectable(ExtApiModules.Message.RequestMessages,
 
     async (roomToken) => {
       const uri = `${extApiCfg.messageHost}/internal/room/${roomToken}/messages`;
-      const resp: any[] = await request({
+      const resp: any = await request({
         uri,
         method: ExtApiTypes.RequestMethod.GET
       });
-      return resp.map(convertToMessage);
+      return resp.messages.map(convertToMessage);
     });
 
 const convertToMessage = (payload: any) => ({
