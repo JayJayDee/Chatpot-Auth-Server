@@ -4,4 +4,7 @@ export namespace ExtApiModules {
   export enum Asset {
     RequestAvatar = 'ExtApi/Asset/RequestAvatar'
   }
+  export enum Message {
+    RequestMessages = 'ExtApi/Message/RequestMessages'
+  }
 }
