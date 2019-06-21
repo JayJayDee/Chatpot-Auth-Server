@@ -57,6 +57,6 @@ export namespace ExtApiTypes {
       content: any;
       sent_time: number;
     };
-    export type RequestMessages = (roomNo: number) => Promise<Message[]>;
+    export type RequestMessages = (roomToken: string) => Promise<Message[]>;
   }
 }

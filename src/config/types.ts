@@ -23,6 +23,7 @@ export namespace ConfigTypes {
     authEnabled: boolean;
     sessionExpires: number;
     secret: string;
+    roomSecret: string;
   };
   export type CacheConfig = {
     enabled: boolean;

@@ -183,3 +183,29 @@ injectable(UtilModules.Auth.CreateEmailPassphrase,
       createHash('sha256')
         .update(`${rawPassword}${cfg.secret}`)
         .digest('hex'));
+
+
+injectable(UtilModules.Auth.DecryptRoomToken,
+  [ LoggerModules.Logger,
+    ConfigModules.CredentialConfig ],
+  async (log: LoggerTypes.Logger,
+    cfg: ConfigTypes.CredentialConfig): Promise<UtilTypes.Auth.DecryptRoomToken> =>
+      (roomToken: string) => {
+        const dp = decipher(cfg.roomSecret);
+        try {
+          let decrypted: string = dp.update(roomToken, 'hex', 'utf8');
+          decrypted += dp.final('utf8');
+          const splited: string[] = decrypted.split('|@|');
+          if (splited.length !== 2) {
+            log.error(`[authutil] invalid token, decryption successful, but invalid expression: ${roomToken}`);
+            return null;
+          }
+          return {
+            room_no: parseInt(splited[0]),
+            timestamp: parseInt(splited[1])
+          };
+        } catch (err) {
+          log.error(`[authutil] invalid token, decryption failure: ${roomToken}`);
+          return null;
+        }
+      });
