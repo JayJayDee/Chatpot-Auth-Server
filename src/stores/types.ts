@@ -148,6 +148,7 @@ export namespace StoreTypes {
       comment: string;
       content: any;
       result: string | null;
+      reg_date: string;
     };
     type GetReportStatusesParam = {
       member_no: number;
