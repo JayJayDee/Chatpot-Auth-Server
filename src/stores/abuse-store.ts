@@ -28,6 +28,7 @@ injectable(StoreModules.Abuse.InsertNewReport,
           reporter_no=?,
           target_no=?,
           content=?,
+          comment=?,
           reg_date=NOW()
       `;
       const params = [
@@ -35,6 +36,7 @@ injectable(StoreModules.Abuse.InsertNewReport,
         param.reporter_no,
         param.target_no,
         param.content,
+        param.comment ? param.comment : ''
       ];
 
       try {
@@ -45,4 +47,28 @@ injectable(StoreModules.Abuse.InsertNewReport,
         }
         throw err;
       }
+    });
+
+
+injectable(StoreModules.Abuse.GetReportStatuses,
+  [ LoggerModules.Logger,
+    MysqlModules.MysqlDriver ],
+  async (log: LoggerTypes.Logger,
+    mysql: MysqlTypes.MysqlDriver): Promise<StoreTypes.Abuse.GetReportStatuses> =>
+
+    async (param) => {
+      // TODO: to be implemented
+      return [];
+    });
+
+
+injectable(StoreModules.Abuse.IsBlocked,
+  [ LoggerModules.Logger,
+    MysqlModules.MysqlDriver ],
+  async (log: LoggerTypes.Logger,
+    mysql: MysqlTypes.MysqlDriver): Promise<StoreTypes.Abuse.IsBlocked> =>
+
+    async (param) => {
+      // TODO: to be implemented
+      return false;
     });

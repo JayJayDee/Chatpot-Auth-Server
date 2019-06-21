@@ -63,6 +63,7 @@ export namespace ServiceTypes {
     reporter_no: number;
     target_no: number;
     room_token: string;
+    comment?: string;
   };
   export type ReportAbuser = (param: ReportAbuserParam) => Promise<void>;
 }
