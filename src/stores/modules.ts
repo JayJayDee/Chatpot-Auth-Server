@@ -25,4 +25,8 @@ export namespace StoreModules {
     GetNick = 'Store/Nick/GetNick',
     GetNickMultiple = 'Store/Nick/GetNickMultiple'
   }
+
+  export enum Abuse {
+    InsertNewAbuse = 'Store/Abuse/InsertNewAbuse'
+  }
 }

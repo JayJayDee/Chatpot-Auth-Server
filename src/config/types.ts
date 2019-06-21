@@ -36,6 +36,7 @@ export namespace ConfigTypes {
   };
   export type ExtApiConfig = {
     assetHost: string;
+    messageHost: string;
   };
   export type StorageConfig = {
     temporaryPath: string;
