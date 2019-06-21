@@ -136,8 +136,25 @@ export namespace StoreTypes {
       reporter_no: number;
       target_no: number;
       content: string;
+      comment: string;
+    };
+    enum ReportStatus {
+      REPORTED = 'REPORTED',
+      IN_PROGRESS = 'IN_PROGRESS',
+      DONE = 'DONE'
+    }
+    type CurrentReportStatus = {
+      status: ReportStatus;
+      comment: string;
+      content: any;
+      result: string | null;
+    };
+    type GetReportStatusesParam = {
+      member_no: number;
     };
 
     export type InsertNewAbuse = (param: InsertAbuseParam) => Promise<void>;
+    export type GetReportStatuses = (param: GetReportStatusesParam) => Promise<CurrentReportStatus[]>;
+    export type IsBlocked = (memberNo: number) => Promise<boolean>;
   }
 }
