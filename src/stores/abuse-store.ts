@@ -57,9 +57,29 @@ injectable(StoreModules.Abuse.GetReportStatuses,
     mysql: MysqlTypes.MysqlDriver): Promise<StoreTypes.Abuse.GetReportStatuses> =>
 
     async (param) => {
-      // TODO: to be implemented
-      return [];
+      const selectSql = `
+        SELECT
+          status,
+          comment,
+          content,
+          result,
+          reg_date
+        FROM
+          chatpot_abuse_report
+        WHERE
+          reporter_no=?
+      `;
+      const rows: any[] = await mysql.query(selectSql, [ param.member_no ]) as any[];
+      return rows.map(convertToCurrentStatus);
     });
+
+const convertToCurrentStatus = (row: any) => ({
+  status: row.status,
+  comment: row.comment,
+  content: row.content,
+  result: row.result,
+  reg_date: row.reg_date
+});
 
 
 injectable(StoreModules.Abuse.IsBlocked,
