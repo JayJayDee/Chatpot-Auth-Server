@@ -43,3 +43,13 @@ export class SecurityExpireError extends BaseSecurityError {
     super(msg);
   }
 }
+
+type BlockedPayload = {
+  cause_code: string;
+  blocked_date: string;
+};
+export class MemberBlockedErrror extends BaseLogicError {
+  constructor(payload: BlockedPayload) {
+    super('MEMBER_BLOCKED', payload);
+  }
+}

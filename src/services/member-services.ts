@@ -2,7 +2,7 @@ import { find } from 'lodash';
 import { createHash } from 'crypto';
 import { ServiceTypes } from './types';
 import { injectable } from 'smart-factory';
-import { BaseLogicError, InvalidParamError } from '../errors';
+import { BaseLogicError, InvalidParamError, MemberBlockedErrror } from '../errors';
 import { ExtApiTypes, ExtApiModules } from '../extapis';
 import { ServiceModules } from './modules';
 import { UtilModules, UtilTypes } from '../utils';
@@ -15,13 +15,14 @@ class AuthDuplicationError extends BaseLogicError {}
 
 const tag = '[member-service]';
 
-
 injectable(ServiceModules.Member.Authenticate,
   [LoggerModules.Logger,
     StoreModules.Auth.Authenticate,
+    StoreModules.Abuse.IsBlocked,
     UtilModules.Auth.CreateSessionKey],
   async (logger: LoggerTypes.Logger,
     auth: StoreTypes.Auth.Authenticate,
+    isBlocked: StoreTypes.Abuse.IsBlocked,
     createSession: UtilTypes.Auth.CreateSessionKey): Promise<ServiceTypes.Authenticate> =>
 
     async (param) => {
@@ -33,8 +34,16 @@ injectable(ServiceModules.Member.Authenticate,
       if (result.success === false) {
         throw new AuthFailError('AUTH_FAILED', `authentication failed for id:${param.login_id}`);
       }
-      let sessionKey: string = null;
 
+      const blockStatus = await isBlocked(result.member_no);
+      if (blockStatus.blocked === true) {
+        throw new MemberBlockedErrror({
+          cause_code: blockStatus.cause_code,
+          blocked_date: blockStatus.blocked_date
+        });
+      }
+
+      let sessionKey: string = null;
       if (result.activated === true) {
         sessionKey = createSession(result.member_no);
       }

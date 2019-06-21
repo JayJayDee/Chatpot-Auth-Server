@@ -153,9 +153,14 @@ export namespace StoreTypes {
     type GetReportStatusesParam = {
       member_no: number;
     };
+    type BlockedStatus = {
+      blocked: boolean;
+      cause_code: string | null;
+      blocked_date: string;
+    };
 
     export type InsertNewAbuse = (param: InsertAbuseParam) => Promise<void>;
     export type GetReportStatuses = (param: GetReportStatusesParam) => Promise<CurrentReportStatus[]>;
-    export type IsBlocked = (memberNo: number) => Promise<boolean>;
+    export type IsBlocked = (memberNo: number) => Promise<BlockedStatus>;
   }
 }

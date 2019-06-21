@@ -2,10 +2,11 @@ import { injectable } from 'smart-factory';
 import { EndpointModules } from './modules';
 import { EndpointTypes } from './types';
 import { ServiceModules, ServiceTypes } from '../services';
-import { InvalidParamError } from '../errors';
+import { InvalidParamError, MemberBlockedErrror } from '../errors';
 import { UtilModules, UtilTypes } from '../utils';
 import { LoggerModules, LoggerTypes } from '../loggers';
 import { StoreModules, StoreTypes } from '../stores';
+
 
 injectable(EndpointModules.Auth.AuthEmail,
   [ EndpointModules.Utils.WrapAync,
@@ -74,12 +75,14 @@ injectable(EndpointModules.Auth.Reauth,
     EndpointModules.Utils.WrapAync,
     UtilModules.Auth.DecryptMemberToken,
     StoreModules.Auth.GetPassword,
-    UtilModules.Auth.RevalidateSessionKey ],
+    UtilModules.Auth.RevalidateSessionKey,
+    StoreModules.Abuse.IsBlocked ],
   async (log: LoggerTypes.Logger,
     wrapAsync: EndpointTypes.Utils.WrapAsync,
     decryptMemberToken: UtilTypes.Auth.DecryptMemberToken,
     getPassword: StoreTypes.Auth.GetPassword,
-    revalidate: UtilTypes.Auth.RevalidateSessionKey): Promise<EndpointTypes.Endpoint> =>
+    revalidate: UtilTypes.Auth.RevalidateSessionKey,
+    isBlocked: StoreTypes.Abuse.IsBlocked): Promise<EndpointTypes.Endpoint> =>
 
   ({
     uri: '/auth/reauth',
@@ -96,6 +99,14 @@ injectable(EndpointModules.Auth.Reauth,
 
         const member = decryptMemberToken(token);
         if (!member) throw new InvalidParamError('invalid member token');
+
+        const blockStatus = await isBlocked(member.member_no);
+        if (blockStatus.blocked === true) {
+          throw new MemberBlockedErrror({
+            cause_code: blockStatus.cause_code,
+            blocked_date: blockStatus.blocked_date
+          });
+        }
 
         log.debug(`[reauth] gain token = ${token}`);
         log.debug(`[reauth] gain old_session_key = ${oldSessionKey}`);
