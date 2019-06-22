@@ -151,6 +151,7 @@ export namespace StoreTypes {
     }
     type CurrentReportStatus = {
       status: ReportStatus;
+      report_type: ReportType;
       comment: string;
       content: any;
       result: string | null;

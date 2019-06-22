@@ -63,6 +63,7 @@ injectable(StoreModules.Abuse.GetReportStatuses,
     async (param) => {
       const selectSql = `
         SELECT
+          report_type,
           status,
           comment,
           content,
@@ -82,7 +83,8 @@ const convertToCurrentStatus = (row: any) => ({
   comment: row.comment,
   content: row.content,
   result: row.result,
-  reg_date: row.reg_date
+  reg_date: row.reg_date,
+  report_type: row.report_type
 });
 
 
