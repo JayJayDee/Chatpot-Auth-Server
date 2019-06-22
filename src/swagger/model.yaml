@@ -73,3 +73,26 @@ definitions:
         enum: [M, F]
         description: 회원의 성별
       
+  ReportStatus:
+    type: object
+    properties:
+      report_type:
+        type: string
+        enum: [HATE, SEXUAL, ETC]
+        description: 입력했던 신고 종류. HATE=혐오발언, SEXUAL=성희롱, ETC=기타
+      status:
+        type: string
+        enum: [REPORTED, IN_PROGRESS, DONE]
+        description: 현재 신고 진행상태. REPORTED=신고완료, IN_PROGRESS=검토중, DONE=조치완료
+      comment:
+        type: string
+        description: 신고시 작성했던 참고사항
+      content:
+        type: object
+        description: 기본으로는 신고시의 채팅방 메시지들. 증거로 사용됨.
+      result:
+        type: string
+        description: status가 DONE인 경우, 관리자 조치 결과가 반환됨.
+      reg_date:
+        type: string
+        description: 신고 일시
