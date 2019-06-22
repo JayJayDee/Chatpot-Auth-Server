@@ -21,6 +21,7 @@ injectable(ServiceModules.Abuse.ReportAbuser,
       const messages = await requestMessages(param.room_token);
 
       await insertNewReport({
+        report_type: param.report_type,
         comment: param.comment,
         room_no: room.room_no,
         reporter_no: param.reporter_no,

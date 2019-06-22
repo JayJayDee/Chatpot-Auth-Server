@@ -132,6 +132,7 @@ export namespace StoreTypes {
 
   export namespace Abuse {
     type InsertAbuseParam = {
+      report_type: ReportType;
       room_no: number;
       reporter_no: number;
       target_no: number;
@@ -142,6 +143,11 @@ export namespace StoreTypes {
       REPORTED = 'REPORTED',
       IN_PROGRESS = 'IN_PROGRESS',
       DONE = 'DONE'
+    }
+    export enum ReportType {
+      HATE = 'HATE',
+      SEXUAL = 'SEXUAL',
+      ETC = 'ETC'
     }
     type CurrentReportStatus = {
       status: ReportStatus;
