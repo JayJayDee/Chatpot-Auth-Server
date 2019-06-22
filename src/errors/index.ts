@@ -50,6 +50,6 @@ type BlockedPayload = {
 };
 export class MemberBlockedErrror extends BaseLogicError {
   constructor(payload: BlockedPayload) {
-    super('MEMBER_BLOCKED', payload);
+    super('MEMBER_BLOCKED', `${payload.cause_code}::${payload.blocked_date}`);
   }
 }
