@@ -25,11 +25,13 @@ injectable(EndpointModules.Abuse.ReportUser,
     handler: [
       authorize(['body', 'member_token']),
       wrapAsync(async (req, res, next) => {
+        const reportType = req.body['report_type'];
         const memberToken = req.body['member_token'];
         const targetToken = req.body['target_token'];
         const roomToken = req.body['room_token'];
         const comment = req.body['comment'];
 
+        if (!reportType) throw new InvalidParamError('report_type required');
         if (!memberToken) throw new InvalidParamError('member_token required');
         if (!targetToken) throw new InvalidParamError('target_token required');
         if (!roomToken) throw new InvalidParamError('room_token required');
@@ -42,8 +44,14 @@ injectable(EndpointModules.Abuse.ReportUser,
         if (target === null) throw new InvalidParamError('invalid target_token');
         if (room === null) throw new InvalidParamError('invalid room_token');
 
+        const report_type = cvtToReportType(reportType);
+        if (!report_type) {
+          throw new InvalidParamError('report_type must be HATE or SEXUAL or ETC');
+        }
+
         await reportAbuser({
           comment,
+          report_type,
           reporter_no: reporter.member_no,
           target_no: target.member_no,
           room_token: roomToken
@@ -53,6 +61,10 @@ injectable(EndpointModules.Abuse.ReportUser,
     ]
   }));
 
+const cvtToReportType = (inputed: any): ServiceTypes.ReportType =>
+  inputed === 'HATE' ? ServiceTypes.ReportType.HATE :
+  inputed === 'SEXUAL' ? ServiceTypes.ReportType.SEXUAL :
+  inputed === 'ETC' ? ServiceTypes.ReportType.ETC : null;
 
 injectable(EndpointModules.Abuse.GetReports,
   [ EndpointModules.Utils.WrapAync,

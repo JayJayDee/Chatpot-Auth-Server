@@ -24,6 +24,7 @@ injectable(StoreModules.Abuse.InsertNewReport,
           chatpot_abuse_report
         SET
           status='REPORTED',
+          report_type=?,
           room_no=?,
           reporter_no=?,
           target_no=?,
@@ -32,12 +33,15 @@ injectable(StoreModules.Abuse.InsertNewReport,
           reg_date=NOW()
       `;
       const params = [
+        param.report_type,
         param.room_no,
         param.reporter_no,
         param.target_no,
         param.content,
         param.comment ? param.comment : ''
       ];
+
+      console.log(params);
 
       try {
         await mysql.query(insertSql, params);
@@ -59,6 +63,7 @@ injectable(StoreModules.Abuse.GetReportStatuses,
     async (param) => {
       const selectSql = `
         SELECT
+          report_type,
           status,
           comment,
           content,
@@ -78,7 +83,8 @@ const convertToCurrentStatus = (row: any) => ({
   comment: row.comment,
   content: row.content,
   result: row.result,
-  reg_date: row.reg_date
+  reg_date: row.reg_date,
+  report_type: row.report_type
 });
 
 

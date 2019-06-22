@@ -1,0 +1,58 @@
+---
+tags:
+  name: Abuse
+  description: 불량 사용자 신고 및 신고 결과 조회 APIs
+
+/abuse/report:
+  post:
+    summary: 불량 사용자 신고
+    tags: [Abuse]
+    parameters:
+      - name: member_token
+        in: formData
+        required: true
+        type: string
+        description: 회원 token
+      - name: target_token
+        in: formData
+        required: true
+        type: string
+        description: 신고할 회원의 token
+      - name: report_type
+        in: formData
+        required: true
+        type: string
+        enum: [HATE, SEXUAL, ETC]
+        description: 신고 종류. HATE=혐오발언, SEXUAL=성희롱, ETC=기타
+      - name: room_token
+        in: formData
+        required: true
+        type: string
+        description: 신고할 채팅방의 room_token
+      - name: comment
+        in: formData
+        required: false
+        type: string
+        description: 참고사항
+    responses:
+      200:
+        description: 성공
+        type: object
+        $ref: '#/definitions/Ok'
+
+/abuse/{member_token}/reports:
+  get:
+    summary: 내 신고 내역 및 진행 상태 조회
+    tags: [Abuse]
+    parameters:
+      - name: member_token
+        in: path
+        required: true
+        type: string
+        description: 회원 token
+    responses:
+      200:
+        type: array
+        description: 신고 내역
+        items:
+          $ref: '#/definitions/ReportStatus'

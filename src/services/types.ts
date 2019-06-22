@@ -58,8 +58,13 @@ export namespace ServiceTypes {
   export type CreateMember = (param: ReqCreateMember) => Promise<ResCreateMember>;
   export type Authenticate = (param: ReqAuthenticate) => Promise<ResAuthenticate>;
 
-
+  export enum ReportType {
+    HATE = 'HATE',
+    SEXUAL = 'SEXUAL',
+    ETC = 'ETC'
+  }
   type ReportAbuserParam = {
+    report_type: ReportType;
     reporter_no: number;
     target_no: number;
     room_token: string;
