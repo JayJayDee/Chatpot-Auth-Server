@@ -41,8 +41,6 @@ injectable(StoreModules.Abuse.InsertNewReport,
         param.comment ? param.comment : ''
       ];
 
-      console.log(params);
-
       try {
         await mysql.query(insertSql, params);
       } catch (err) {
