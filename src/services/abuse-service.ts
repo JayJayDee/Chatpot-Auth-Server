@@ -4,7 +4,13 @@ import { ServiceTypes } from './types';
 import { StoreModules, StoreTypes } from '../stores';
 import { ExtApiModules, ExtApiTypes } from '../extapis';
 import { UtilModules, UtilTypes } from '../utils';
-import { InvalidParamError } from '../errors';
+import { InvalidParamError, BaseLogicError } from '../errors';
+
+class SelfReportError extends BaseLogicError {
+  constructor() {
+    super('SELF_REPORT_NOT_ALLOWED', 'you cannot report yourself');
+  }
+}
 
 injectable(ServiceModules.Abuse.ReportAbuser,
   [ StoreModules.Abuse.InsertNewReport,
@@ -17,6 +23,10 @@ injectable(ServiceModules.Abuse.ReportAbuser,
     async (param) => {
       const room = decryptRoomToken(param.room_token);
       if (room === null) throw new InvalidParamError('invalid room_token');
+
+      if (param.reporter_no === param.target_no) {
+        throw new SelfReportError();
+      }
 
       const messages = await requestMessages(param.room_token);
 
