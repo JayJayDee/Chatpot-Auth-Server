@@ -44,7 +44,7 @@ injectable(ServiceModules.Member.Authenticate,
       }
 
       let sessionKey: string = null;
-      if (result.activated === true) {
+      if (result.activated === true || param.auth_type === ServiceTypes.AuthType.SIMPLE) {
         sessionKey = createSession(result.member_no);
       }
 
