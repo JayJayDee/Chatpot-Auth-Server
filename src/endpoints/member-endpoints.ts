@@ -24,23 +24,29 @@ injectable(EndpointModules.Member.CreateSimple,
     method: EndpointTypes.EndpointMethod.POST,
     handler: [
       wrapAsync(async (req, res, next) => {
-        if (!req.body['language'] || !req.body['gender']) {
-          throw new InvalidParamError('language, gender');
+        if (!req.body['language']) {
+          throw new InvalidParamError('language required');
         }
         const ip = getIp(req);
         const region = getRegionCode(ip);
         const language = req.body['language'];
-        const gender = req.body['gender'];
+        const genderExpr = req.body['gender'];
         const auth = {
           auth_type: ServiceTypes.AuthType.SIMPLE
         };
 
+        const gender = parseGender(genderExpr);
         const param = { region, language, gender, auth };
         const resp = await createMember(param);
         res.status(200).json(resp);
       })
     ]
   }));
+
+const parseGender = (genderExpr: string): ServiceTypes.MemberGender =>
+  genderExpr === 'M' ? ServiceTypes.MemberGender.M :
+  genderExpr === 'F' ? ServiceTypes.MemberGender.F :
+  ServiceTypes.MemberGender.NOT_YET;
 
 
 injectable(EndpointModules.Member.CreateEmail,
@@ -64,10 +70,10 @@ injectable(EndpointModules.Member.CreateEmail,
         const email = req.body['email'];
         const password = req.body['password'];
         const language = req.body['language'];
-        const gender = req.body['gender'];
+        const genderExpr = req.body['gender'];
 
-        if (!email || !password || !language || !gender) {
-          throw new InvalidParamError('email, password, language, gender required');
+        if (!email || !password || !language) {
+          throw new InvalidParamError('email, password, language required');
         }
 
         const auth = {
@@ -75,6 +81,8 @@ injectable(EndpointModules.Member.CreateEmail,
           login_id: email,
           password
         };
+
+        const gender = parseGender(genderExpr);
 
         const param = { region, language, gender, auth };
         const resp = await create(param);

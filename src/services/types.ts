@@ -8,13 +8,16 @@ export namespace ServiceTypes {
     login_id: string;
     region_name: string;
     language: string;
-    gender: string;
+    gender: MemberGender;
     auth_type: AuthType;
     nick: Nick;
     avatar: Avatar;
     token: string;
     member_no?: number;
   };
+  export enum MemberGender {
+    M = 'M', F = 'F', NOT_YET = 'NOT_YET'
+  }
   export type Nick = {
     en: string;
     ja: string;
@@ -27,7 +30,7 @@ export namespace ServiceTypes {
   export type ReqCreateMember = {
     region: string;
     language: string;
-    gender: string;
+    gender: MemberGender;
     auth: ReqAuthParam;
   };
   export type ReqAuthParam = {

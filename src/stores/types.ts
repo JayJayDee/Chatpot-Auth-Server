@@ -10,18 +10,21 @@ export namespace StoreTypes {
       token: string;
       region: string;
       language: string;
-      gender: string;
+      gender: MemberGender;
       auth_type: AuthType;
       reg_date: Date;
       profile_img: string;
       profile_thumb: string;
     };
+    export enum MemberGender {
+      M = 'M', F = 'F', NOT_YET = 'NOT_YET'
+    }
     export type ReqCreateMember = {
       region: string;
       language: string;
-      gender: string;
+      gender: MemberGender;
     };
-    export type ResCreateMember = {
+  export type ResCreateMember = {
       member_no: number;
     };
     export type ProfileAvatar = {
