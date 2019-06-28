@@ -17,7 +17,8 @@ export namespace EndpointModules {
   export enum Auth {
     AuthSimple = 'Endpoint/Auth/AuthSimple',
     AuthEmail = 'Endpoint/Auth/AuthEmail',
-    Reauth = 'Endpoint/Auth/Reauth'
+    Reauth = 'Endpoint/Auth/Reauth',
+    Logout = 'Endpoint/Auth/Logout'
   }
 
   export enum Activate {

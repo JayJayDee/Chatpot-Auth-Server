@@ -6,6 +6,7 @@ import { InvalidParamError, MemberBlockedErrror } from '../errors';
 import { UtilModules, UtilTypes } from '../utils';
 import { LoggerModules, LoggerTypes } from '../loggers';
 import { StoreModules, StoreTypes } from '../stores';
+import { MiddlewareModules, MiddlewareTypes } from '../middlewares';
 
 
 injectable(EndpointModules.Auth.AuthEmail,
@@ -120,6 +121,29 @@ injectable(EndpointModules.Auth.Reauth,
         res.status(200).json({
           session_key: revalidated.newSessionKey
         });
+      })
+    ]
+  }));
+
+
+injectable(EndpointModules.Auth.Logout,
+  [ EndpointModules.Utils.WrapAync,
+    MiddlewareModules.Authorization ],
+  async (wrapAsync: EndpointTypes.Utils.WrapAsync,
+    authorize: MiddlewareTypes.Authorization) =>
+
+  ({
+    uri: '/auth/logout',
+    method: EndpointTypes.EndpointMethod.POST,
+    handler: [
+      authorize(['body', 'member_token']),
+      wrapAsync(async (req, res, next) => {
+        const memberToken = req.body['member_token'];
+
+        if (!memberToken) throw new InvalidParamError('member_token required');
+
+        console.log(memberToken);
+        res.status(200).json({});
       })
     ]
   }));
