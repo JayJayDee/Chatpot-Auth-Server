@@ -19,11 +19,16 @@ injectable(EndpointModules.Endpoints,
     EndpointModules.Activate.AppVerify,
     EndpointModules.Abuse.ReportUser,
     EndpointModules.Abuse.GetReports,
+    EndpointModules.Gacha.Nick,
+    EndpointModules.Gacha.Profile,
+    EndpointModules.Gacha.Status,
     EndpointModules.Internal.GetMultiple ],
   async (mcreates, mcreateem, mget, mgetpub, mchpwd,
     authE, authS, reauth, logout,
     actpage, actpageact, actstat,
-    appreq, appveri, abRept, getRept, intGm): Promise<EndpointTypes.Endpoint[]> =>
+    appreq, appveri, abRept, getRept,
+    gnick, gprofile, gstatus,
+    intGm): Promise<EndpointTypes.Endpoint[]> =>
 
   ([
     mcreates,
@@ -42,6 +47,9 @@ injectable(EndpointModules.Endpoints,
     appveri,
     abRept,
     getRept,
+    gnick,
+    gprofile,
+    gstatus,
     intGm
   ]));
 
