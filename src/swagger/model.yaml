@@ -96,3 +96,15 @@ definitions:
       reg_date:
         type: string
         description: 신고 일시
+
+  GachaStatus:
+    type: object
+    properties:
+      remain_nick_gacha:
+        type: number
+        required: true
+        description: 닉네임 가챠 남은 횟수
+      remain_profile_gacha:
+        type: number
+        required: true
+        description: 프로필 사진 가챠 남은 횟수

@@ -1,0 +1,43 @@
+---
+tags:
+  name: Gacha
+  description: 닉네임 및 프로필 사진의 뽑기를 위한 APIs
+
+/gacha/{member_token}/status:
+  get:
+    summary: 현재 내 가챠 상태
+    tags: [Gacha]
+    parameters:
+      - name: member_token
+        in: path
+        required: true
+        type: string
+        description: 회원 token
+    responses:
+      200:
+        description: 성공
+        $ref: '#/definitions/GachaStatus'
+
+/gacha/{member_token}/nick:
+  post:
+    summary: 닉네임 가챠 수행. 수행 성공시 remain_nick_gacha가 1 차감된다.
+    tags: [Gacha]
+    parameters:
+      - name: member_token
+        in: path
+        required: true
+        type: string
+        description: 회원 token
+    responses:
+      200:
+        description: 성공
+        type: object
+        properties:
+          previous:
+            description: 닉네임 가챠 전의 닉네임
+            type: object
+            $ref: '#/definitions/Nick'
+          new:
+            description: 닉네임 가챠 후의 변경된 닉네임
+            type: object
+            $ref: '#/definitions/Nick'
