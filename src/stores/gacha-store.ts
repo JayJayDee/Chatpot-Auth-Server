@@ -25,3 +25,21 @@ injectable(StoreModules.Gacha.GetStatus,
       remain_profile_gacha: rows[0].remain_profile_gacha
     };
   });
+
+
+injectable(StoreModules.Gacha.GachaNick,
+  [ MysqlModules.MysqlDriver ],
+  async (mysql: MysqlTypes.MysqlDriver): Promise<StoreTypes.Gacha.GachaNick> =>
+
+  async (memberNo) => {
+    return null;
+  });
+
+
+injectable(StoreModules.Gacha.GachaProfile,
+  [ MysqlModules.MysqlDriver ],
+  async (mysql: MysqlTypes.MysqlDriver): Promise<StoreTypes.Gacha.GachaProfile> =>
+
+  async (memberNo) => {
+    return null;
+  });

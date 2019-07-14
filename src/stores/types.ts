@@ -179,7 +179,22 @@ export namespace StoreTypes {
       remain_nick_gacha: number;
       remain_profile_gacha: number;
     };
-
     export type GetStatus = (memberNo: number) => Promise<GachaStatus>;
+
+    type GachaNickResponse = {
+      previous: Nick.NickEntity;
+      changed: Nick.NickEntity;
+    };
+    export type GachaNick = (memberNo: number) => Promise<GachaNickResponse>;
+
+    type Profile = {
+      profile_img: string;
+      profile_thumb: string;
+    };
+    type GachaProfileResponse = {
+      previous: Profile;
+      changed: Profile;
+    };
+    export type GachaProfile = (memberNo: number) => Promise<GachaProfileResponse>;
   }
 }
