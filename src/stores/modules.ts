@@ -31,4 +31,10 @@ export namespace StoreModules {
     GetReportStatuses = 'Store/Abuse/GetReportStatuses',
     IsBlocked = 'Store/Abuse/IsBlocked'
   }
+
+  export enum Gacha {
+    GetStatus = 'Store/Gacha/GetStatus',
+    // GachaNick = 'Store/Gacha/GachaNick',
+    // GachaProfile = 'Store/Gacha/GachaProfile'
+  }
 }
