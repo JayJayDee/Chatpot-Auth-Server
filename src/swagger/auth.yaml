@@ -89,3 +89,22 @@ tags:
           session_key:
             type: string
             description: 재발급된 세션 키. 앞으로는 이 키를 만료시까지 사용한다.
+
+/auth/logout:
+  post:
+    summary: member_token에 해당하는 member의 logout 처리.
+    tags: [Auth]
+    parameters:
+      - name: member_token
+        in: formData
+        required: true
+        type: string
+        description: 회원 token
+    responses:
+      200:
+        description: 성공
+        type: object
+        properties:
+          session_key:
+            type: string
+            description: 재발급된 세션 키. 앞으로는 이 키를 만료시까지 사용한다.
