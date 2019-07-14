@@ -8,9 +8,13 @@ import { StoreModules, StoreTypes } from '../stores';
 
 injectable(EndpointModules.Gacha.Nick,
   [ EndpointModules.Utils.WrapAync,
-    MiddlewareModules.Authorization ],
+    MiddlewareModules.Authorization,
+    UtilModules.Auth.DecryptMemberToken,
+    StoreModules.Gacha.GachaNick ],
   async (wrapAsync: EndpointTypes.Utils.WrapAsync,
-    authorize: MiddlewareTypes.Authorization): Promise<EndpointTypes.Endpoint> =>
+    authorize: MiddlewareTypes.Authorization,
+    decryptMember: UtilTypes.Auth.DecryptMemberToken,
+    gachaNick: StoreTypes.Gacha.GachaNick): Promise<EndpointTypes.Endpoint> =>
 
   ({
     uri: '/gacha/:member_token/nick',
@@ -18,7 +22,14 @@ injectable(EndpointModules.Gacha.Nick,
     handler: [
       authorize(['params', 'member_token']),
       wrapAsync(async (req, res, next) => {
-        res.status(200).json({});
+        const memberToken = req.params['member_token'];
+        if (!memberToken) throw new InvalidParamError('member_token required');
+
+        const member = decryptMember(memberToken);
+        if (member === null) throw new InvalidParamError('invalid member_token');
+
+        const result = await gachaNick(member.member_no);
+        res.status(200).json(result);
       })
     ]
   }));

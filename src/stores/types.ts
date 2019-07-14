@@ -183,7 +183,7 @@ export namespace StoreTypes {
 
     type GachaNickResponse = {
       previous: Nick.NickEntity;
-      changed: Nick.NickEntity;
+      new: Nick.NickEntity;
     };
     export type GachaNick = (memberNo: number) => Promise<GachaNickResponse>;
 
@@ -193,7 +193,7 @@ export namespace StoreTypes {
     };
     type GachaProfileResponse = {
       previous: Profile;
-      changed: Profile;
+      new: Profile;
     };
     export type GachaProfile = (memberNo: number) => Promise<GachaProfileResponse>;
   }
