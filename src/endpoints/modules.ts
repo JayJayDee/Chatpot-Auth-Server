@@ -34,6 +34,12 @@ export namespace EndpointModules {
     GetReports = 'Endpoint/Abuse/GetReports'
   }
 
+  export enum Gacha {
+    Nick = 'Gacha/Nick',
+    Profile = 'Gacha/Profile',
+    Status = 'Gacha/Status'
+  }
+
   export enum Internal {
     GetMultiple = 'Endpoint/Internal/GetMultiple'
   }

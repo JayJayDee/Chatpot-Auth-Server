@@ -173,4 +173,28 @@ export namespace StoreTypes {
     export type GetReportStatuses = (param: GetReportStatusesParam) => Promise<CurrentReportStatus[]>;
     export type IsBlocked = (memberNo: number) => Promise<BlockedStatus>;
   }
+
+  export namespace Gacha {
+    type GachaStatus = {
+      remain_nick_gacha: number;
+      remain_profile_gacha: number;
+    };
+    export type GetStatus = (memberNo: number) => Promise<GachaStatus>;
+
+    type GachaNickResponse = {
+      previous: Nick.NickEntity;
+      new: Nick.NickEntity;
+    };
+    export type GachaNick = (memberNo: number) => Promise<GachaNickResponse>;
+
+    type Profile = {
+      profile_img: string;
+      profile_thumb: string;
+    };
+    type GachaProfileResponse = {
+      previous: Profile;
+      new: Profile;
+    };
+    export type GachaProfile = (memberNo: number) => Promise<GachaProfileResponse>;
+  }
 }
