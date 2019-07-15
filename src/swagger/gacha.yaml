@@ -41,3 +41,27 @@ tags:
             description: 닉네임 가챠 후의 변경된 닉네임
             type: object
             $ref: '#/definitions/Nick'
+
+/gacha/{member_token}/avatar:
+  post:
+    summary: 프로필 사진 가챠 수행. 수행 성공시 remain_avatar_gacha가 1 차감된다.
+    tags: [Gacha]
+    parameters:
+      - name: member_token
+        in: path
+        required: true
+        type: string
+        description: 회원 token
+    responses:
+      200:
+        description: 성공
+        type: object
+        properties:
+          previous:
+            description: 가챠 전의 프로필 사진.
+            type: object
+            $ref: '#/definitions/Avatar'
+          new:
+            description: 가챠 후의 프로필 사진
+            type: object
+            $ref: '#/definitions/Avatar'

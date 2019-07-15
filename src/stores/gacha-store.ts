@@ -1,9 +1,11 @@
 import { injectable } from 'smart-factory';
+import { createHash } from 'crypto';
 import { set } from 'lodash';
 import { StoreModules } from './modules';
 import { StoreTypes } from './types';
 import { MysqlModules, MysqlTypes } from '../mysql';
 import { BaseLogicError } from '../errors';
+import { ExtApiModules, ExtApiTypes } from '../extapis';
 
 injectable(StoreModules.Gacha.GetStatus,
   [ MysqlModules.MysqlDriver ],
@@ -13,7 +15,7 @@ injectable(StoreModules.Gacha.GetStatus,
     const sql = `
       SELECT
         remain_nick_gacha,
-        remain_profile_gacha
+        remain_avatar_gacha
       FROM
         chatpot_member
       WHERE
@@ -24,7 +26,7 @@ injectable(StoreModules.Gacha.GetStatus,
     if (rows.length === 0) return null;
     return {
       remain_nick_gacha: rows[0].remain_nick_gacha,
-      remain_profile_gacha: rows[0].remain_profile_gacha
+      remain_avatar_gacha: rows[0].remain_avatar_gacha
     };
   });
 
@@ -92,12 +94,75 @@ injectable(StoreModules.Gacha.GachaNick,
   });
 
 
-injectable(StoreModules.Gacha.GachaProfile,
-  [ MysqlModules.MysqlDriver ],
-  async (mysql: MysqlTypes.MysqlDriver): Promise<StoreTypes.Gacha.GachaProfile> =>
+class AvatarGachaFailedError extends BaseLogicError {
+  constructor(msg: string) {
+    super('AVATAR_GACHA_FAILED', msg);
+  }
+}
+
+injectable(StoreModules.Gacha.GachaAvatar,
+  [ MysqlModules.MysqlDriver,
+    ExtApiModules.Asset.RequestAvatar ],
+  async (mysql: MysqlTypes.MysqlDriver,
+    requestAvatar: ExtApiTypes.Asset.RequestAvatar): Promise<StoreTypes.Gacha.GachaAvatar> =>
 
   async (memberNo) => {
-    return null;
+    return mysql.transaction(async (con) => {
+      const deductionSql = `
+        UPDATE
+          chatpot_member
+        SET
+          remain_avatar_gacha = remain_avatar_gacha	- 1
+        WHERE
+          remain_avatar_gacha	> 0 AND
+          no = ?
+      `;
+      const deductionResp = await con.query(deductionSql, [ memberNo ]) as any;
+      if (deductionResp.changedRows !== 1) {
+        throw new InsufficientNumGachaError(`remain_avatar_gacha was less than 1`);
+      }
+
+      const prevAvatarsql = `
+        SELECT
+          profile_img,
+          profile_thumb
+        FROM
+          chatpot_member
+        WHERE
+          no=?
+      `;
+      const rows: any[] = await con.query(prevAvatarsql, [ memberNo ]) as any[];
+      if (rows.length === 0) throw new AvatarGachaFailedError(`previous profile not found`);
+
+      const prevAvatar = {
+        profile_img: rows[0].profile_img,
+        profile_thumb: rows[0].profile_thumb
+      };
+
+      const avatarKey = createHash('sha1').update(`${Math.random()}${Date.now()}`).digest('hex');
+      const gender = Math.round(Math.random()) % 2 === 0 ? 'M' : 'F';
+      const newAvatar = await requestAvatar(avatarKey, gender);
+
+      const updateSql = `
+        UPDATE
+          chatpot_member
+        SET
+          profile_img=?,
+          profile_thumb=?
+        WHERE
+          no=?
+      `;
+      con.query(updateSql, [
+        newAvatar.profile_img,
+        newAvatar.profile_thumb,
+        memberNo
+      ]);
+
+      return {
+        previous: prevAvatar,
+        new: newAvatar
+      };
+    });
   });
 
 

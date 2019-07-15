@@ -35,6 +35,6 @@ export namespace StoreModules {
   export enum Gacha {
     GetStatus = 'Store/Gacha/GetStatus',
     GachaNick = 'Store/Gacha/GachaNick',
-    GachaProfile = 'Store/Gacha/GachaProfile'
+    GachaAvatar = 'Store/Gacha/GachaAvatar'
   }
 }
