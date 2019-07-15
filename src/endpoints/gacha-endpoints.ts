@@ -35,19 +35,30 @@ injectable(EndpointModules.Gacha.Nick,
   }));
 
 
-injectable(EndpointModules.Gacha.Profile,
+injectable(EndpointModules.Gacha.Avatar,
   [ EndpointModules.Utils.WrapAync,
-    MiddlewareModules.Authorization ],
+    MiddlewareModules.Authorization,
+    UtilModules.Auth.DecryptMemberToken,
+    StoreModules.Gacha.GachaAvatar ],
   async (wrapAsync: EndpointTypes.Utils.WrapAsync,
-    authorize: MiddlewareTypes.Authorization): Promise<EndpointTypes.Endpoint> =>
+    authorize: MiddlewareTypes.Authorization,
+    decryptMember: UtilTypes.Auth.DecryptMemberToken,
+    gachaAvatar: StoreTypes.Gacha.GachaAvatar): Promise<EndpointTypes.Endpoint> =>
 
   ({
-    uri: '/gacha/:member_token/profile',
+    uri: '/gacha/:member_token/avatar',
     method: EndpointTypes.EndpointMethod.POST,
     handler: [
       authorize(['params', 'member_token']),
       wrapAsync(async (req, res, next) => {
-        res.status(200).json({});
+        const memberToken = req.params['member_token'];
+        if (!memberToken) throw new InvalidParamError('member_token required');
+
+        const member = decryptMember(memberToken);
+        if (member === null) throw new InvalidParamError('invalid member_token');
+
+        const result = await gachaAvatar(member.member_no);
+        res.status(200).json(result);
       })
     ]
   }));

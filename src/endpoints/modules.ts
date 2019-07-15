@@ -36,7 +36,7 @@ export namespace EndpointModules {
 
   export enum Gacha {
     Nick = 'Gacha/Nick',
-    Profile = 'Gacha/Profile',
+    Avatar = 'Gacha/Avatar',
     Status = 'Gacha/Status'
   }
 
