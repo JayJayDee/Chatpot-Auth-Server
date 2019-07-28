@@ -15,6 +15,7 @@ export namespace StoreTypes {
       reg_date: Date;
       profile_img: string;
       profile_thumb: string;
+      max_roulette: number;
     };
     export enum MemberGender {
       M = 'M', F = 'F', NOT_YET = 'NOT_YET'
