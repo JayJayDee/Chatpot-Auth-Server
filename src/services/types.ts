@@ -14,6 +14,7 @@ export namespace ServiceTypes {
     avatar: Avatar;
     token: string;
     member_no?: number;
+    max_roulette: number;
   };
   export enum MemberGender {
     M = 'M', F = 'F', NOT_YET = 'NOT_YET'

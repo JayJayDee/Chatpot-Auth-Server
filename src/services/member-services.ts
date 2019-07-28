@@ -99,7 +99,8 @@ injectable(ServiceModules.Member.Fetch,
         avatar: {
           profile_img: member.profile_img,
           profile_thumb: member.profile_thumb
-        }
+        },
+        max_roulette: member.max_roulette
       };
     });
 
@@ -134,7 +135,8 @@ injectable(ServiceModules.Member.FetchMultiple,
         avatar: {
           profile_img: m.profile_img,
           profile_thumb: m.profile_thumb
-        }
+        },
+        max_roulette: m.max_roulette
       }));
       return resp;
     });

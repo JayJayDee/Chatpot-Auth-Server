@@ -44,7 +44,8 @@ injectable(StoreModules.Member.GetMember,
         gender: rows[0].gender,
         reg_date: new Date(rows[0].reg_date),
         profile_img: rows[0].profile_img,
-        profile_thumb: rows[0].profile_thumb
+        profile_thumb: rows[0].profile_thumb,
+        max_roulette: rows[0].max_roulette
       };
       return member;
     });
@@ -92,7 +93,8 @@ injectable(StoreModules.Member.GetMembers,
           gender: r.gender,
           reg_date: r.reg_date,
           profile_img: r.profile_img,
-          profile_thumb: r.profile_thumb
+          profile_thumb: r.profile_thumb,
+          max_roulette: r.max_roulette
         }));
       return resp;
     });
