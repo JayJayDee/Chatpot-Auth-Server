@@ -37,6 +37,12 @@ class InsufficientNumGachaError extends BaseLogicError {
   }
 }
 
+class ActivatedOnlyError extends BaseLogicError {
+  constructor(msg: string) {
+    super('NOT_ACTIVATED_MEMBER_GACHA', msg);
+  }
+}
+
 injectable(StoreModules.Gacha.GachaNick,
   [ MysqlModules.MysqlDriver ],
   async (mysql: MysqlTypes.MysqlDriver): Promise<StoreTypes.Gacha.GachaNick> =>
@@ -85,6 +91,19 @@ injectable(StoreModules.Gacha.GachaNick,
 
       const promises = params.map((p) => con.query(insertSql, p));
       await Promise.all(promises);
+
+      const inspectSql = `
+        SELECT
+          email_status
+        FROM
+          chatpot_auth
+        WHERE
+          member_no=?
+      `;
+      const inspectRows: any[] = await con.query(inspectSql, [ memberNo ]) as any[];
+      if (inspectRows[0].email_status !== 'ACTIVATED') {
+        throw new ActivatedOnlyError('the email of member was not activated');
+      }
 
       return {
         previous: prevNick,
@@ -157,6 +176,19 @@ injectable(StoreModules.Gacha.GachaAvatar,
         newAvatar.profile_thumb,
         memberNo
       ]);
+
+      const inspectSql = `
+        SELECT
+          email_status
+        FROM
+          chatpot_auth
+        WHERE
+          member_no=?
+      `;
+      const inspectRows: any[] = await con.query(inspectSql, [ memberNo ]) as any[];
+      if (inspectRows[0].email_status !== 'ACTIVATED') {
+        throw new ActivatedOnlyError('the email of member was not activated');
+      }
 
       return {
         previous: prevAvatar,
