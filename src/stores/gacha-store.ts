@@ -94,14 +94,15 @@ injectable(StoreModules.Gacha.GachaNick,
 
       const inspectSql = `
         SELECT
-          email_status
+          COUNT(email_status) as cnt
         FROM
           chatpot_auth
         WHERE
-          member_no=?
+          member_no=? AND
+          email_status='ACTIVATED'
       `;
       const inspectRows: any[] = await con.query(inspectSql, [ memberNo ]) as any[];
-      if (inspectRows[0].email_status !== 'ACTIVATED') {
+      if (inspectRows[0].cnt !== 1) {
         throw new ActivatedOnlyError('the email of member was not activated');
       }
 
@@ -179,14 +180,15 @@ injectable(StoreModules.Gacha.GachaAvatar,
 
       const inspectSql = `
         SELECT
-          email_status
+          COUNT(email_status) as cnt
         FROM
           chatpot_auth
         WHERE
-          member_no=?
+          member_no=? AND
+          email_status='ACTIVATED'
       `;
       const inspectRows: any[] = await con.query(inspectSql, [ memberNo ]) as any[];
-      if (inspectRows[0].email_status !== 'ACTIVATED') {
+      if (inspectRows[0].cnt !== 1) {
         throw new ActivatedOnlyError('the email of member was not activated');
       }
 
